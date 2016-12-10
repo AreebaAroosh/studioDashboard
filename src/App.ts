@@ -219,9 +219,9 @@ export class Main {
 
         /** remove localstore **/
         // this.localStorage.removeItem('remember_me')
-        // this.localStorage.removeItem('adnet_customer_id')
-        // this.localStorage.removeItem('adnet_token_id')
         // this.localStorage.removeItem('business_id')
+        this.localStorage.removeItem('adnet_customer_id')
+        this.localStorage.removeItem('adnet_token_id')
 
         // todo: add logic to as when on each env
         // 0 = cloud, 1 = private 2 = hybrid
