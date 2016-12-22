@@ -25,12 +25,9 @@ import {TreeModule, InputTextModule, SelectButtonModule, DropdownModule as Dropd
 import {NgStringPipesModule} from "angular-pipes";
 import {routing} from "../App.routes";
 import {LoginPanel} from "../comps/entry/LoginPanel";
-import {UsersDetails} from "../comps/app1/users/UsersDetails";
 import {Account} from "../comps/app1/account/Account";
 import {Whitelabel} from "../comps/app1/whitelabel/Whitelabel";
-import {Apps} from "../comps/app1/apps/Apps";
 import {App1} from "../comps/app1/App1";
-import {Users} from "../comps/app1/users/Users";
 import {Privileges} from "../comps/app1/privileges/Privileges";
 import {Dashboard} from "../comps/app1/dashboard/Dashboard";
 import {Logout} from "../comps/logout/Logout";
@@ -60,12 +57,7 @@ import {simplelist} from "../comps/simplelist/simplelist";
 import {PrivilegesDetails} from "../comps/app1/privileges/PrivilegesDetails";
 import {ModalDialog} from "../comps/modaldialog/ModalDialog";
 import {Infobox} from "../comps/infobox/Infobox";
-import {UserStorage} from "../comps/app1/users/UserStorage";
 import {Loading} from "../comps/loading/Loading";
-import {Samplelist} from "../comps/app1/users/SampleList";
-import {UserInfo} from "../comps/app1/users/UserInfo";
-import {AddUser} from "../comps/app1/users/AddUser";
-import {ChangePass} from "../comps/app1/users/ChangePass";
 import {ChartModule} from "angular2-highcharts";
 import {simplelistEditable} from "../comps/simplelist/simplelistEditable";
 import {MapAddress} from "../comps/mapaddress/MapAddress";
@@ -175,10 +167,10 @@ let options: ToastOptions = new ToastOptions({
 });
 
 
-var decelerations = [AppComponent, UsersDetails, AutoLogin, LoginPanel, Account, Whitelabel, Apps, App1, Users, Privileges, Dashboard, Logout, Orders, Logo,
+var decelerations = [AppComponent, AutoLogin, LoginPanel, Account, Whitelabel, App1, Privileges, Dashboard, Logout, Orders, Logo,
     LogoCompany, Footer, BlurForwarder, InputEdit, OrderBy, SortBy, FilterPipe, FilterPipeEqual, Tabs, Tab, ServerStats, ServerAvg,
     StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, StationSnapshot, OrderDetails, simplelist, PrivilegesDetails, ModalDialog, Infobox,
-    UserStorage, Loading, Samplelist, UserInfo, AddUser, ChangePass, simplelistEditable, MapAddress, ResourceViewer, InputNumeric, InputString, Dropbox, Twofactor, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
+    Loading, simplelistEditable, MapAddress, ResourceViewer, InputNumeric, InputString, Dropbox, Twofactor, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
 
 @NgModule({
     declarations: [decelerations],
