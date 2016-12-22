@@ -117,6 +117,8 @@ import {ThrottlePipe} from "../pipes/ThrottlePipe";
 import {NgMenu} from "../comps/ng-menu/ng-menu";
 import {NgMenuItem} from "../comps/ng-menu/ng-menu-item";
 import {AutoLogin} from "../comps/entry/AutoLogin";
+import {Sliderpanel} from "../comps/sliderpanel/Sliderpanel";
+import {Slideritem} from "../comps/sliderpanel/Slideritem";
 
 export enum ServerMode {
     CLOUD,
@@ -217,7 +219,7 @@ var decelerations = [AppComponent, RatesTable, UsersDetails, AutoLogin, LoginPan
     UserStorage, Loading, Samplelist, UserInfo, AddUser, AdnetPayment, AdnetTransfer, ChangePass, simplelistEditable, AdnetConfigTargetStations,
     AdnetConfigTargetProps, AdnetLocation, MapAddress, AdnetNetwork, AdnetNetworkCustomerSelector, AdnetNetworkPackageEditor, AdnetNetworkPackageViewer, AdnetNetworkTargetSearch,
     AdnetNetworkPackageProps, AdnetNetworkPackageContent, AdnetNetworkPackageContentProps, AdnetNetworkTarget, AdnetNetworkTargetProps, ResourceViewer, AdnetNetworkPackageViewProps,
-    AdnetNetworkPairProps, AdnetLoader, InputNumeric, InputString, Dropbox, Twofactor, AdnetReports, ThrottlePipe, NgMenu, NgMenuItem];
+    AdnetNetworkPairProps, AdnetLoader, InputNumeric, InputString, Dropbox, Twofactor, AdnetReports, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
 
 @NgModule({
     declarations: [decelerations],

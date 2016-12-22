@@ -30,25 +30,29 @@ import {ResellerAction} from "../../../reseller/ResellerAction";
             transition('* => void', animate(333, style({opacity: 0})))
         ])
     ],
+    styles: [`
+        .page {
+            padding-left: 100px;
+            padding-top: 40px;
+        }
+    `],
     template: `
-        <div *ngIf="apps && apps.size > 0">
-          <simpleGridTable>
-            <thead>
-            <tr>
-              <th>icon</th>
-              <th sortableHeader="appName" [sort]="sort">app name</th>
-              <th>available (off | on)</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr class="simpleGridRecord" simpleGridRecord *ngFor="let item of apps | OrderBy:sort.field:sort.desc; let index=index" [item]="item" [index]="index">
-              <td style="width: 10%" simpleGridDataImage color="dodgerblue" [field]="item.getIcon(item)" [item]="item"></td> 
-              <td style="width: 70%" simpleGridData field="appName" [item]="item"></td>
-              <td style="width: 20%" simpleGridDataChecks slideMode="true" [item]="item" [checkboxes]="getInstalledStatus(item)" (changed)="onAppInstalledChange($event,index)"></td>
-            </tr>
-            </tbody>
-          </simpleGridTable>
-        </div>
+               <Sliderpanel style="padding: 200px">
+                  <div>
+                    <Slideritem class="page center todo1 selected" [toDirection]="'left'" [to]="'todo2'">
+                      <h1>todo 1</h1>
+                    </Slideritem>
+                    <Slideritem class="page right todo2" class="page right todo2" [toDirection]="'left'" [fromDirection]="'right'" [from]="'todo1'" [to]="'todo3'">
+                      <h1>todo 2</h1>
+                    </Slideritem>
+                    <Slideritem class="page right todo3" [fromDirection]="'right'" [from]="'todo2'" >
+                      <h1>todo 3</h1>
+                    </Slideritem>
+                  </div>
+                </Sliderpanel>
+           
+            
+     
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
