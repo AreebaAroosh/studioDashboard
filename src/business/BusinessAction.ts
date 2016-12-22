@@ -262,9 +262,7 @@ export class BusinessAction extends Actions {
                                 studioLite: business._attr.studioLite,
                                 lastLogin: business._attr.lastLogin,
                                 resellerId: business._attr.resellerId,
-                                businessDescription: business._attr.businessDescription,
-                                adnetToken: business.AdNet["0"]._attr.customerToken,
-                                adnetCustomerId: business.AdNet["0"]._attr.customerId
+                                businessDescription: business._attr.businessDescription
                             });
 
                             // collect server sources

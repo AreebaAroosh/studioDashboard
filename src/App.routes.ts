@@ -10,9 +10,6 @@ import {Apps} from "./comps/app1/apps/Apps";
 import {Account} from "./comps/app1/account/Account";
 import {Orders} from "./comps/app1/orders/Orders";
 import {AuthService} from "./services/AuthService";
-import {Adnet} from "./comps/app1/adnet/Adnet";
-import {AdnetResolver} from "./comps/app1/adnet/targets/AdnetResolver";
-import {AdnetLoader} from "./comps/app1/adnet/AdnetLoader";
 import {AutoLogin} from "./comps/entry/AutoLogin";
 
 const routes: Routes = [
@@ -41,16 +38,6 @@ const routes: Routes = [
             {path: 'Apps', component: Apps, data: {title: 'Apps'}, canActivate: [AuthService]},
             {path: 'Account', component: Account, data: {title: 'Account'}, canActivate: [AuthService]},
             {path: 'Orders', component: Orders, data: {title: 'Orders'}, canActivate: [AuthService]},
-            {path: 'Adnet', component: Adnet, data: {title: 'Adnet'}, canActivate: [AuthService], pathMatch: 'full', redirectTo: '/App1/Adnet/Adnet' },
-            {path: 'Adnet',
-                children: [
-                        {path: 'Adnet', component: AdnetLoader,  data: {title: 'Adnet'}, canActivate: [AuthService]},
-                        {path: 'Adnet2/:adnetCustomerId/:adnetTokenId', component: Adnet,  data: {title: 'Ad network'}, canActivate: [AuthService],
-                            resolve: {
-                            adnetResolver: AdnetResolver
-                        }}
-                    ]
-                },
             {path: 'Logout', component: Logout, data: {title: 'Logout'}, canActivate: [AuthService]},
             {path: '**', redirectTo: 'Dashboard'}
         ]

@@ -13,7 +13,6 @@ import notify from "../appdb/NotifyReducer";
 import appdb from "../appdb/AppdbReducer";
 import {business} from "../business/BusinessReducer";
 import {reseller} from "../reseller/ResellerReducer";
-import {adnet} from "../adnet/AdnetReducer";
 import {stations} from "../stations/StationsReducer";
 import {orders} from "../comps/app1/orders/OrdersReducer";
 import {LocalStorage} from "../services/LocalStorage";
@@ -26,14 +25,12 @@ import {TreeModule, InputTextModule, SelectButtonModule, DropdownModule as Dropd
 import {NgStringPipesModule} from "angular-pipes";
 import {routing} from "../App.routes";
 import {LoginPanel} from "../comps/entry/LoginPanel";
-import {RatesTable} from "../comps/app1/adnet/rates/RatesTable/RatesTable";
 import {UsersDetails} from "../comps/app1/users/UsersDetails";
 import {Account} from "../comps/app1/account/Account";
 import {Whitelabel} from "../comps/app1/whitelabel/Whitelabel";
 import {Apps} from "../comps/app1/apps/Apps";
 import {App1} from "../comps/app1/App1";
 import {Users} from "../comps/app1/users/Users";
-import {Adnet} from "../comps/app1/adnet/Adnet";
 import {Privileges} from "../comps/app1/privileges/Privileges";
 import {Dashboard} from "../comps/app1/dashboard/Dashboard";
 import {Logout} from "../comps/logout/Logout";
@@ -48,9 +45,6 @@ import {SortBy} from "../pipes/SortBy";
 import {Ngmslib} from "ng-mslib";
 import {FilterPipe} from "../pipes/FilterPipe";
 import {FilterPipeEqual} from "../pipes/FilterPipeNot";
-import {AdnetBilling} from "../comps/app1/adnet/billing/AdnetBilling";
-import {AdnetConfigTargets} from "../comps/app1/adnet/targets/AdnetConfigTargets";
-import {AdnetConfigRates} from "../comps/app1/adnet/rates/AdnetConfigRates";
 import {Tabs} from "../comps/tabs/tabs";
 import {Tab} from "../comps/tabs/tab";
 import {ServerStats} from "../comps/app1/dashboard/ServerStats";
@@ -60,8 +54,6 @@ import {StationsGrid} from "../comps/app1/dashboard/StationsGrid";
 import {StationDetails} from "../comps/app1/dashboard/StationDetails";
 import {ImgLoader} from "../comps/imgloader/ImgLoader";
 import {Ng2Highcharts} from "../comps/ng2-highcharts/src/directives/ng2-highcharts";
-import {AdnetConfigCustomer} from "../comps/app1/adnet/config/AdnetConfigCustomer";
-import {AdnetConfig} from "../comps/app1/adnet/config/AdnetConfig";
 import {StationSnapshot} from "../comps/app1/dashboard/StationSnapshot";
 import {OrderDetails} from "../comps/app1/orders/OrderDetails";
 import {simplelist} from "../comps/simplelist/simplelist";
@@ -73,44 +65,23 @@ import {Loading} from "../comps/loading/Loading";
 import {Samplelist} from "../comps/app1/users/SampleList";
 import {UserInfo} from "../comps/app1/users/UserInfo";
 import {AddUser} from "../comps/app1/users/AddUser";
-import {AdnetPayment} from "../comps/app1/adnet/billing/AdnetPayment";
-import {AdnetTransfer} from "../comps/app1/adnet/billing/AdnetTransfer";
 import {ChangePass} from "../comps/app1/users/ChangePass";
 import {ChartModule} from "angular2-highcharts";
 import {simplelistEditable} from "../comps/simplelist/simplelistEditable";
-import {AdnetConfigTargetStations} from "../comps/app1/adnet/targets/AdnetConfigTargetStations";
-import {AdnetConfigTargetProps} from "../comps/app1/adnet/targets/AdnetConfigTargetProps";
-import {AdnetLocation} from "../comps/app1/adnet/targets/AdnetLocation";
 import {MapAddress} from "../comps/mapaddress/MapAddress";
-import {AdnetNetwork} from "../comps/app1/adnet/network/AdnetNetwork";
-import {AdnetNetworkCustomerSelector} from "../comps/app1/adnet/network/AdnetNetworkCustomerSelector";
-import {AdnetNetworkPackageEditor} from "../comps/app1/adnet/network/AdnetNetworkPackageEditor";
-import {AdnetNetworkPackageViewer} from "../comps/app1/adnet/network/AdnetNetworkPackageViewer";
-import {AdnetNetworkTargetSearch} from "../comps/app1/adnet/network/AdnetNetworkTargetSearch";
-import {AdnetNetworkPackageProps} from "../comps/app1/adnet/network/AdnetNetworkPackageProps";
-import {AdnetNetworkPackageContent} from "../comps/app1/adnet/network/AdnetNetworkPackageContent";
-import {AdnetNetworkPackageContentProps} from "../comps/app1/adnet/network/AdnetNetworkPackageContentProps";
-import {AdnetNetworkTarget} from "../comps/app1/adnet/network/AdnetNetworkTarget";
-import {AdnetNetworkTargetProps} from "../comps/app1/adnet/network/AdnetNetworkTargetProps";
 import {ResourceViewer} from "../comps/resourceviewer/ResourceViewer";
-import {AdnetNetworkPackageViewProps} from "../comps/app1/adnet/network/AdnetNetworkPackageViewProps";
-import {AdnetNetworkPairProps} from "../comps/app1/adnet/network/AdnetNetworkPairProps";
-import {AdnetLoader} from "../comps/app1/adnet/AdnetLoader";
 import {InputNumeric} from "../comps/inputnumeric/InputNumeric";
 import {InputString} from "../comps/inputstring/InputString";
 import {Dropbox} from "../comps/dropbox/Dropbox";
-import {AdnetReports} from "../comps/app1/adnet/network/AdnetReports";
 import {Twofactor} from "../comps/twofactor/Twofactor";
 import {CommBroker} from "../services/CommBroker";
 import {AUTH_PROVIDERS} from "../services/AuthService";
 import {StoreService} from "../services/StoreService";
 import {BusinessAction} from "../business/BusinessAction";
 import {ResellerAction} from "../reseller/ResellerAction";
-import {AdnetActions} from "../adnet/AdnetActions";
 import {OrdersAction} from "../comps/app1/orders/OrdersAction";
 import {StationsAction} from "../stations/StationsAction";
 import {AppdbAction} from "../appdb/AppdbAction";
-import {AdnetResolver} from "../comps/app1/adnet/targets/AdnetResolver";
 import {CreditService} from "../services/CreditService";
 import {Consts} from "../Conts";
 import {ThrottlePipe} from "../pipes/ThrottlePipe";
@@ -133,7 +104,6 @@ export function appStoreFactory() {
         business,
         stations,
         reseller,
-        adnet,
         orders
     });
     const middlewareEnhancer = applyMiddleware(<any>thunkMiddleware);
@@ -162,10 +132,6 @@ export var providing = [CommBroker, AUTH_PROVIDERS,
         useClass: ResellerAction
     },
     {
-        provide: AdnetActions,
-        useClass: AdnetActions
-    },
-    {
         provide: OrdersAction,
         useClass: OrdersAction
     },
@@ -176,10 +142,6 @@ export var providing = [CommBroker, AUTH_PROVIDERS,
     {
         provide: AppdbAction,
         useClass: AppdbAction
-    },
-    {
-        provide: AdnetResolver,
-        useClass: AdnetResolver
     },
     {
         provide: CreditService,
@@ -213,13 +175,10 @@ let options: ToastOptions = new ToastOptions({
 });
 
 
-var decelerations = [AppComponent, RatesTable, UsersDetails, AutoLogin, LoginPanel, Account, Whitelabel, Apps, App1, Users, Adnet, Privileges, Dashboard, Logout, Orders, Logo,
-    LogoCompany, Footer, BlurForwarder, InputEdit, OrderBy, SortBy, FilterPipe, FilterPipeEqual, AdnetBilling, AdnetConfigTargets, AdnetConfigRates, Tabs, Tab, ServerStats, ServerAvg,
-    StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, AdnetConfigCustomer, AdnetConfig, StationSnapshot, OrderDetails, simplelist, PrivilegesDetails, ModalDialog, Infobox,
-    UserStorage, Loading, Samplelist, UserInfo, AddUser, AdnetPayment, AdnetTransfer, ChangePass, simplelistEditable, AdnetConfigTargetStations,
-    AdnetConfigTargetProps, AdnetLocation, MapAddress, AdnetNetwork, AdnetNetworkCustomerSelector, AdnetNetworkPackageEditor, AdnetNetworkPackageViewer, AdnetNetworkTargetSearch,
-    AdnetNetworkPackageProps, AdnetNetworkPackageContent, AdnetNetworkPackageContentProps, AdnetNetworkTarget, AdnetNetworkTargetProps, ResourceViewer, AdnetNetworkPackageViewProps,
-    AdnetNetworkPairProps, AdnetLoader, InputNumeric, InputString, Dropbox, Twofactor, AdnetReports, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
+var decelerations = [AppComponent, UsersDetails, AutoLogin, LoginPanel, Account, Whitelabel, Apps, App1, Users, Privileges, Dashboard, Logout, Orders, Logo,
+    LogoCompany, Footer, BlurForwarder, InputEdit, OrderBy, SortBy, FilterPipe, FilterPipeEqual, Tabs, Tab, ServerStats, ServerAvg,
+    StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, StationSnapshot, OrderDetails, simplelist, PrivilegesDetails, ModalDialog, Infobox,
+    UserStorage, Loading, Samplelist, UserInfo, AddUser, ChangePass, simplelistEditable, MapAddress, ResourceViewer, InputNumeric, InputString, Dropbox, Twofactor, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
 
 @NgModule({
     declarations: [decelerations],

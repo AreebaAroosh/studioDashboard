@@ -13,14 +13,6 @@ export class BusinessModel extends StoreModel {
         return this.getKey('name');
     }
 
-    public getAdnetCustomerId() {
-        return this.getKey('adnetCustomerId');
-    }
-
-    public getAdnetTokenId() {
-        return this.getKey('adnetToken');
-    }
-
     // a wrapper around base class public setKey<T>(ClassName:any, key:string, value:any):T {...
     // so we don't have to pass in the generic every time
     public setModelKey(key: string, value: any): BusinessModel {
