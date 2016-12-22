@@ -26,7 +26,6 @@ import {NgStringPipesModule} from "angular-pipes";
 import {routing} from "../App.routes";
 import {LoginPanel} from "../comps/entry/LoginPanel";
 import {Account} from "../comps/app1/account/Account";
-import {Whitelabel} from "../comps/app1/whitelabel/Whitelabel";
 import {App1} from "../comps/app1/App1";
 import {Privileges} from "../comps/app1/privileges/Privileges";
 import {Dashboard} from "../comps/app1/dashboard/Dashboard";
@@ -167,7 +166,7 @@ let options: ToastOptions = new ToastOptions({
 });
 
 
-var decelerations = [AppComponent, AutoLogin, LoginPanel, Account, Whitelabel, App1, Privileges, Dashboard, Logout, Orders, Logo,
+var decelerations = [AppComponent, AutoLogin, LoginPanel, Account, App1, Privileges, Dashboard, Logout, Orders, Logo,
     LogoCompany, Footer, BlurForwarder, InputEdit, OrderBy, SortBy, FilterPipe, FilterPipeEqual, Tabs, Tab, ServerStats, ServerAvg,
     StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, StationSnapshot, OrderDetails, simplelist, PrivilegesDetails, ModalDialog, Infobox,
     Loading, simplelistEditable, MapAddress, ResourceViewer, InputNumeric, InputString, Dropbox, Twofactor, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];

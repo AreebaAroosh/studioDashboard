@@ -4,7 +4,6 @@ import {LoginPanel} from "./comps/entry/LoginPanel";
 import {Logout} from "./comps/logout/Logout";
 import {Dashboard} from "./comps/app1/dashboard/Dashboard";
 import {Privileges} from "./comps/app1/privileges/Privileges";
-import {Whitelabel} from "./comps/app1/whitelabel/Whitelabel";
 import {Account} from "./comps/app1/account/Account";
 import {Orders} from "./comps/app1/orders/Orders";
 import {AuthService} from "./services/AuthService";
@@ -31,7 +30,6 @@ const routes: Routes = [
             {path: 'Dashboard', component: Dashboard, data: {title: 'Dashboard'}, canActivate: [AuthService]},
             {path: 'Orders', component: Orders, data: {title: 'Orders'}, canActivate: [AuthService]},
             {path: 'Privileges', component: Privileges, data: {title: 'Privileges'}, canActivate: [AuthService]},
-            {path: 'White label', component: Whitelabel, data: {title: 'Branding'}, canActivate: [AuthService]},
             {path: 'Account', component: Account, data: {title: 'Account'}, canActivate: [AuthService]},
             {path: 'Orders', component: Orders, data: {title: 'Orders'}, canActivate: [AuthService]},
             {path: 'Logout', component: Logout, data: {title: 'Logout'}, canActivate: [AuthService]},
