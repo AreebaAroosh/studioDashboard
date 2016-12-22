@@ -38,14 +38,14 @@ import {ResellerAction} from "../../../reseller/ResellerAction";
     template: `
                <Sliderpanel style="padding: 200px">
                   <div>
-                    <Slideritem class="page center todo1 selected" [toDirection]="'left'" [to]="'todo2'">
-                      <h1>todo 1</h1>
+                    <Slideritem class="page center order1 selected" [toDirection]="'left'" [to]="'order2'">
+                      <h1>Order 1</h1>
                     </Slideritem>
-                    <Slideritem class="page right todo2" class="page right todo2" [toDirection]="'left'" [fromDirection]="'right'" [from]="'todo1'" [to]="'todo3'">
-                      <h1>todo 2</h1>
+                    <Slideritem class="page right order2" class="page right order2" [toDirection]="'left'" [fromDirection]="'right'" [from]="'order1'" [to]="'order3'">
+                      <h1>Order 2</h1>
                     </Slideritem>
-                    <Slideritem class="page right todo3" [fromDirection]="'right'" [from]="'todo2'" >
-                      <h1>todo 3</h1>
+                    <Slideritem class="page right order3" [fromDirection]="'right'" [from]="'order2'" >
+                      <h1>Order 3</h1>
                     </Slideritem>
                   </div>
                 </Sliderpanel>
