@@ -65,7 +65,7 @@ import {ChartModule} from "angular2-highcharts";
 // import {Dropbox} from "../comps/dropbox/Dropbox";
 // import {Twofactor} from "../comps/twofactor/Twofactor";
 import {CommBroker} from "../services/CommBroker";
-import {AUTH_PROVIDERS} from "../services/AuthService";
+import {AUTH_PROVIDERS, AuthService} from "../services/AuthService";
 import {StoreService} from "../services/StoreService";
 import {BusinessAction} from "../business/BusinessAction";
 import {ResellerAction} from "../reseller/ResellerAction";
@@ -116,56 +116,66 @@ export enum ServerMode {
 // }
 
 
+// export var providing2 = [CommBroker, AUTH_PROVIDERS,
+//     {
+//         provide: StoreService,
+//         useClass: StoreService
+//     },
+//     {
+//         provide: BusinessAction,
+//         useClass: BusinessAction
+//     },
+//     {
+//         provide: ResellerAction,
+//         useClass: ResellerAction
+//     },
+//     {
+//         provide: OrdersAction,
+//         useClass: OrdersAction
+//     },
+//     {
+//         provide: StationsAction,
+//         useClass: StationsAction
+//     },
+//     {
+//         provide: AppdbAction,
+//         useClass: AppdbAction
+//     },
+//     {
+//         provide: CreditService,
+//         useClass: CreditService
+//     },
+//     {
+//         provide: LocalStorage,
+//         useClass: LocalStorage
+//     },
+//     {
+//         provide: CommBroker,
+//         useClass: CommBroker
+//     },
+//     {
+//         provide: Consts,
+//         useClass: Consts
+//     },
+//     // {
+//     //     provide: "DEV_ENV",
+//     //     useValue: Ngmslib.DevMode()
+//     // },
+//     {
+//         provide: "OFFLINE_ENV",
+//         useValue: false
+//     }];
+
+
 export var providing = [CommBroker, AUTH_PROVIDERS,
-    {
-        provide: StoreService,
-        useClass: StoreService
-    },
-    {
-        provide: BusinessAction,
-        useClass: BusinessAction
-    },
-    {
-        provide: ResellerAction,
-        useClass: ResellerAction
-    },
-    {
-        provide: OrdersAction,
-        useClass: OrdersAction
-    },
-    {
-        provide: StationsAction,
-        useClass: StationsAction
-    },
-    {
-        provide: AppdbAction,
-        useClass: AppdbAction
-    },
-    {
-        provide: CreditService,
-        useClass: CreditService
-    },
     {
         provide: LocalStorage,
         useClass: LocalStorage
-    },
-    {
-        provide: CommBroker,
-        useClass: CommBroker
-    },
-    {
-        provide: Consts,
-        useClass: Consts
-    },
-    // {
-    //     provide: "DEV_ENV",
-    //     useValue: Ngmslib.DevMode()
-    // },
-    {
-        provide: "OFFLINE_ENV",
-        useValue: false
-    }];
-
+    } ,{
+        provide: ThreadsService,
+        useClass: ThreadsService
+    }
+];
 
 // let options: ToastOptions = new ToastOptions({
 //     toastLife: 4000,
@@ -222,8 +232,8 @@ var decelerations = [AppComponent, AutoLogin];
         DropdownModulePrime,
         routing,
     ],
-    // providers: [providing],
-    providers: [ThreadsService],
+    providers: [providing],
+    // providers: [ThreadsService, AuthService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

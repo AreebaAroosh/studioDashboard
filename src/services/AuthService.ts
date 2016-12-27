@@ -9,6 +9,8 @@ import {Observable} from "rxjs/Observable";
 import {Map} from "immutable";
 import {Ngmslib} from "ng-mslib";
 import * as _ from "lodash";
+import {Store} from "@ngrx/store";
+import {ApplicationState} from "../store/application-state";
 
 
 export enum FlagsAuth {
@@ -23,14 +25,18 @@ export class AuthService {
     private m_authState: AuthState;
     private m_pendingNotify: any;
 
-    // constructor(private router: Router,
-    //             @Inject(forwardRef(() => AppStore)) private appStore: AppStore,
-    //             @Inject(forwardRef(() => AppdbAction)) private appdbAction: AppdbAction,
-    //             @Inject(forwardRef(() => LocalStorage)) private localStorage: LocalStorage,
-    //             @Inject(forwardRef(() => StoreService)) private storeService: StoreService,
-    //             private activatedRoute: ActivatedRoute) {
-    //     this.listenStores();
+    // constructor(private store: Store<ApplicationState>) {
     // }
+
+    constructor(private router: Router,
+                @Inject(forwardRef(() => Store)) private appStore: Store<ApplicationState>,
+                // @Inject(forwardRef(() => AppdbAction)) private appdbAction: AppdbAction,
+                @Inject(forwardRef(() => LocalStorage)) private localStorage: LocalStorage,
+                // @Inject(forwardRef(() => StoreService)) private storeService: StoreService,
+                private activatedRoute: ActivatedRoute) {
+        console.log(appStore);
+        // this.listenStores();
+    }
     //
     // public start() {
     //     var i_user, i_pass, i_remember;

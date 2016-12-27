@@ -13,6 +13,8 @@ import {ServerMode} from "./app.module";
 import * as packageJson from "../../package.json";
 import {AuthService} from "../services/AuthService";
 import {LocalStorage} from "../services/LocalStorage";
+import {Store} from "@ngrx/store";
+import {ApplicationState} from "../store/application-state";
 
 @Component({
     selector: 'app-root',
@@ -21,6 +23,10 @@ import {LocalStorage} from "../services/LocalStorage";
     template: '<h1>running</h1>',
 })
 export class AppComponent {
+
+    constructor(private router: Router, private store: Store<ApplicationState>, private authService: AuthService){
+
+    }
 
     // constructor(private router: Router,
     //             private commBroker: CommBroker,
