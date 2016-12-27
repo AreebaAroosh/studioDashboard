@@ -20,28 +20,12 @@ export class StationDetails {
                 private renderer: Renderer) {
     }
 
-    private sendSnapshot() {
-        this.stationSnapshot.sendSnapshot(this.m_selectedStation);
-    }
 
     private snapshots: Array<any> = [];
 
     private onModalClose($event) {
     }
 
-    private sendCommand(i_command, i_param) {
-        var source = this.m_selectedStation.getSource(this.appStore);
-        var customerUserName = this.m_selectedStation.getCustomerName(this.appStore);
-        var stationId = this.m_selectedStation.getStationId();
-        var businessId = this.m_selectedStation.getKey('businessId');
-        this.businessActions.getUserPass(customerUserName, (i_pass) => {
-            var url = `https://${source}/WebService/sendCommand.ashx?i_user=${customerUserName}&i_password=${i_pass}&i_stationId=${stationId}&i_command=${i_command}&i_param1=${i_param}&i_param2=''&callback=?`;
-            console.log(url)
-            jQuery.getJSON(url, (res) => {
-                console.log(res);
-            });
-        });
-    }
 
     private m_selectedStation: StationModel;
 

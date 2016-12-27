@@ -1,6 +1,5 @@
 import {Component, Injectable, ViewChild, ElementRef, Renderer, keyframes, trigger, state, style, transition, animate} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
-import {AppStore} from "angular2-redux-util";
 import {BusinessAction} from "../../business/BusinessAction";
 import {LocalStorage} from "../../services/LocalStorage";
 import {AuthService, FlagsAuth} from "../../services/AuthService";
@@ -9,6 +8,8 @@ import {AuthState} from "../../appdb/AppdbAction";
 import {Compbaser} from "../compbaser/Compbaser";
 import {Ngmslib} from "ng-mslib";
 import {ToastsManager} from "ng2-toastr";
+import {ApplicationState} from "../../store/application-state";
+import {Store} from "@ngrx/store";
 
 
 @Injectable()
@@ -98,15 +99,13 @@ export class LoginPanel extends Compbaser {
     private m_rememberMe: any;
     private loginState: string = '';
 
-    // constructor(private appStore: AppStore,
-    constructor(
+    constructor(private appStore:Store<ApplicationState>,
                 private renderer: Renderer,
                 private router: Router,
                 private toast:ToastsManager,
                 private activatedRoute: ActivatedRoute,
                 private authService: AuthService) {
         super();
-        debugger;
         // this.listenEvents();
     }
 

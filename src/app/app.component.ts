@@ -19,12 +19,11 @@ import {ApplicationState} from "../store/application-state";
 @Component({
     selector: 'app-root',
     providers: [StyleService, AppdbAction],
-    // templateUrl: './app.component.html',
-    template: '<h1>running</h1>',
+    templateUrl: './app.component.html'
 })
 export class AppComponent {
 
-    constructor(private router: Router, private store: Store<ApplicationState>, private authService: AuthService){
+    constructor(private router: Router, private appStore: Store<ApplicationState>, private authService: AuthService){
 
     }
 
@@ -60,14 +59,14 @@ export class AppComponent {
     //     this.listenRouterUpdateTitle();
     // }
     //
-    // ngOnInit() {
-    //     let s = this.router.events.subscribe((val) => {
-    //         if (val instanceof NavigationEnd) {
-    //             // this.authService.start();
-    //             // s.unsubscribe();
-    //         }
-    //     });
-    // }
+    ngOnInit() {
+        let s = this.router.events.subscribe((val) => {
+            if (val instanceof NavigationEnd) {
+                this.authService.start();
+                s.unsubscribe();
+            }
+        });
+    }
     //
     // public version: string;
     // private ngVersion: string;

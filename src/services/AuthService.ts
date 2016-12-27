@@ -38,38 +38,38 @@ export class AuthService {
         // this.listenStores();
     }
     //
-    // public start() {
-    //     var i_user, i_pass, i_remember;
-    //     // check local store first
-    //     var credentials = this.localStorage.getItem('remember_me');
-    //     if (credentials && (credentials && credentials.u != '')) {
-    //         i_user = credentials.u;
-    //         i_pass = credentials.p;
-    //         i_remember = credentials.r;
-    //
-    //     } else {
-    //         // check url params
-    //         var id = this.activatedRoute.snapshot.queryParams['id'];
-    //         if (!_.isUndefined(id)) {
-    //             id = `${id}=`;
-    //             try {
-    //                 credentials = Ngmslib.Base64().decode(id);
-    //                 var local = this.activatedRoute.snapshot.queryParams['local'];
-    //                 var credentialsArr = credentials.match(/user=(.*),pass=(.*)/);
-    //                 i_user = credentialsArr[1]
-    //                 i_pass = credentialsArr[2]
-    //                 i_remember = 'false';
-    //             } catch (e) {
-    //             }
-    //         }
-    //     }
-    //     if (i_user && i_pass) {
-    //         this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(i_user.trim(), i_pass.trim(), i_remember);
-    //     } else {
-    //         // no valid user/pass found so go to user login, end of process
-    //         this.router.navigate(['/UserLogin']);
-    //     }
-    // }
+    public start() {
+        var i_user, i_pass, i_remember;
+        // check local store first
+        var credentials = this.localStorage.getItem('remember_me');
+        if (credentials && (credentials && credentials.u != '')) {
+            i_user = credentials.u;
+            i_pass = credentials.p;
+            i_remember = credentials.r;
+
+        } else {
+            // check url params
+            var id = this.activatedRoute.snapshot.queryParams['id'];
+            if (!_.isUndefined(id)) {
+                id = `${id}=`;
+                try {
+                    credentials = Ngmslib.Base64().decode(id);
+                    var local = this.activatedRoute.snapshot.queryParams['local'];
+                    var credentialsArr = credentials.match(/user=(.*),pass=(.*)/);
+                    i_user = credentialsArr[1]
+                    i_pass = credentialsArr[2]
+                    i_remember = 'false';
+                } catch (e) {
+                }
+            }
+        }
+        if (i_user && i_pass) {
+            // this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(i_user.trim(), i_pass.trim(), i_remember);
+        } else {
+            // no valid user/pass found so go to user login, end of process
+            this.router.navigate(['/UserLogin']);
+        }
+    }
     //
     // private listenStores() {
     //     this.appStore.sub((twoFactorStatus: {status: boolean, twoFactorStatusReceived: Date}) => {

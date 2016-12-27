@@ -1,9 +1,10 @@
 import {Component, ChangeDetectionStrategy} from "@angular/core";
 import {Compbaser} from "../compbaser/Compbaser";
-import {AppStore} from "angular2-redux-util";
 import {AuthState} from "../../appdb/AppdbAction";
 import {Router} from "@angular/router";
 import {Ngmslib} from "ng-mslib";
+import {Store} from "@ngrx/store";
+import {ApplicationState} from "../../store/application-state";
 
 @Component({
     selector: 'AutoLogin',
@@ -12,10 +13,8 @@ import {Ngmslib} from "ng-mslib";
 })
 export class AutoLogin extends Compbaser {
 
-    // constructor(private appStore: AppStore, private router:Router) {
-    constructor(private router:Router) {
+    constructor(private appStore: Store<ApplicationState>, private router:Router) {
         super();
-        debugger;
         // this.cancelOnDestroy(
         //     appStore.sub((credentials: Map<string,any>) => {
         //         var state = credentials.get('authenticated');

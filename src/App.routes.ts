@@ -9,16 +9,13 @@ import {Orders} from "./comps/app1/orders/Orders";
 import {AuthService} from "./services/AuthService";
 import {AutoLogin} from "./comps/entry/AutoLogin";
 
-const routes: Routes = [
-    {path: 'index.html', data: {title: 'Login'}, component: AutoLogin}
-];
 
-// const routes: Routes = [
-//     {path: 'index.html', data: {title: 'Login'}, component: AutoLogin},
-//     {path: 'AutoLogin', data: {title: 'Login'}, component: AutoLogin},
-//     {path: 'UserLogin', data: {title: 'Login'}, component: LoginPanel},
-//     {path: 'UserLogin/:twoFactor', data: {title: 'Login'}, component: LoginPanel},
-//     {path: 'UserLogin/:twoFactor/:user/:pass', data: {title: 'Login'}, component: LoginPanel},
+const routes: Routes = [
+    {path: 'index.html', data: {title: 'Login'}, component: AutoLogin},
+    {path: 'AutoLogin', data: {title: 'Login'}, component: AutoLogin},
+    {path: 'UserLogin', data: {title: 'Login'}, component: LoginPanel},
+    {path: 'UserLogin/:twoFactor', data: {title: 'Login'}, component: LoginPanel},
+    {path: 'UserLogin/:twoFactor/:user/:pass', data: {title: 'Login'}, component: LoginPanel},
 //     {path: 'Logout', component: Logout},
 //     {path: '', component: App1, canActivate: [AuthService]},
 //     {
@@ -40,7 +37,7 @@ const routes: Routes = [
 //             {path: '**', redirectTo: 'Dashboard'}
 //         ]
 //     }
-// ];
+];
 
 export const routing = RouterModule.forRoot(routes, {enableTracing: false});
 

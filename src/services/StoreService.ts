@@ -39,8 +39,8 @@ export class StoreService {
         this.listenServices();
         this.appStore.dispatch(this.resellerAction.getResellerInfo());
         this.appStore.dispatch(this.resellerAction.getAccountInfo());
-        this.appStore.dispatch(this.businessActions.fetchBusinesses());
-        this.appStore.dispatch(this.businessActions.getSamples());
+        // this.appStore.dispatch(this.businessActions.fetchBusinesses());
+        // this.appStore.dispatch(this.businessActions.getSamples());
         console.log('loaded network services...');
     }
 

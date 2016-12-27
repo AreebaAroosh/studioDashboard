@@ -31,8 +31,8 @@ import {LoginPanel} from "../comps/entry/LoginPanel";
 // import {Dashboard} from "../comps/app1/dashboard/Dashboard";
 // import {Logout} from "../comps/logout/Logout";
 // import {Orders} from "../comps/app1/orders/Orders";
-// import {Logo} from "../comps/logo/Logo";
-// import {LogoCompany} from "../comps/logo/LogoCompany";
+import {Logo} from "../comps/logo/Logo";
+import {LogoCompany} from "../comps/logo/LogoCompany";
 // import {BlurForwarder} from "../comps/blurforwarder/BlurForwarder";
 // import {Footer} from "../comps/footer/Footer";
 // import {InputEdit} from "../comps/inputedit/InputEdit";
@@ -48,7 +48,7 @@ import {LoginPanel} from "../comps/entry/LoginPanel";
 // import {StationsMap} from "../comps/app1/dashboard/StationsMap";
 // import {StationsGrid} from "../comps/app1/dashboard/StationsGrid";
 // import {StationDetails} from "../comps/app1/dashboard/StationDetails";
-// import {ImgLoader} from "../comps/imgloader/ImgLoader";
+import {ImgLoader} from "../comps/imgloader/ImgLoader";
 // import {Ng2Highcharts} from "../comps/ng2-highcharts/src/directives/ng2-highcharts";
 // import {StationSnapshot} from "../comps/app1/dashboard/StationSnapshot";
 // import {OrderDetails} from "../comps/app1/orders/OrderDetails";
@@ -75,8 +75,8 @@ import {AppdbAction} from "../appdb/AppdbAction";
 import {CreditService} from "../services/CreditService";
 import {Consts} from "../Conts";
 // import {ThrottlePipe} from "../pipes/ThrottlePipe";
-// import {NgMenu} from "../comps/ng-menu/ng-menu";
-// import {NgMenuItem} from "../comps/ng-menu/ng-menu-item";
+import {NgMenu} from "../comps/ng-menu/ng-menu";
+import {NgMenuItem} from "../comps/ng-menu/ng-menu-item";
 import {AutoLogin} from "../comps/entry/AutoLogin";
 // import {Sliderpanel} from "../comps/sliderpanel/Sliderpanel";
 // import {Slideritem} from "../comps/sliderpanel/Slideritem";
@@ -188,7 +188,7 @@ export var providing = [CommBroker, AUTH_PROVIDERS,
 //     StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, StationSnapshot, OrderDetails, simplelist, ModalDialog, Infobox,
 //     Loading, simplelistEditable, MapAddress, ResourceViewer, InputNumeric, InputString, Dropbox, Twofactor, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
 
-var decelerations = [AppComponent, AutoLogin];
+var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, NgMenu, NgMenuItem, ImgLoader];
 
 @NgModule({
     declarations: [decelerations],
@@ -202,18 +202,18 @@ var decelerations = [AppComponent, AutoLogin];
         EffectsModule.run(LoadThreadsEffectService),
         StoreDevtoolsModule.instrumentOnlyWithExtension(),
         // ChartModule,
-        // ToastModule.forRoot({
-        //     animate: 'flyRight',
-        //     positionClass: 'toast-bottom-right',
-        //     toastLife: 5000,
-        //     showCloseButton: true,
-        //     maxShown: 5,
-        //     newestOnTop: true,
-        //     enableHTML: true,
-        //     dismiss: 'auto',
-        //     messageClass: "",
-        //     titleClass: ""
-        // }),
+        ToastModule.forRoot({
+            animate: 'flyRight',
+            positionClass: 'toast-bottom-right',
+            toastLife: 5000,
+            showCloseButton: true,
+            maxShown: 5,
+            newestOnTop: true,
+            enableHTML: true,
+            dismiss: 'auto',
+            messageClass: "",
+            titleClass: ""
+        }),
         // AgmCoreModule.forRoot({
         //     apiKey: 'AIzaSyAGD7EQugVG8Gq8X3vpyvkZCnW4E4HONLI'
         // }),
@@ -233,7 +233,6 @@ var decelerations = [AppComponent, AutoLogin];
         routing,
     ],
     providers: [providing],
-    // providers: [ThreadsService, AuthService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

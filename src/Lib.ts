@@ -1,12 +1,13 @@
 /** Common Library **/
 import {Injectable} from "@angular/core";
-import {AppStore} from "angular2-redux-util";
 import * as Immutable from "immutable";
 import {List, Map} from "immutable";
 import {PrivelegesModel} from "./reseller/PrivelegesModel";
 import * as _ from "lodash";
 import * as xml2js from "xml2js";
 import * as moment_ from "moment";
+import {Store} from "@ngrx/store";
+import {ApplicationState} from "./store/application-state";
 
 export const moment = moment_["default"];
 
@@ -188,126 +189,6 @@ export class Lib {
      * @param callBack
      * @constructor
      */
-    static PrivilegesXmlTemplate(defaultValues: boolean, selPrivId: string, appStore: AppStore = null, callBack: (err, result) => any) {
-        // const parseString = require('xml2js').parseString;
-        const parseString = xml2js.parseString;
-
-        var getAttributeGroup = (tableName: string, attribute: string) => {
-            if (_.isNull(appStore) || defaultValues)
-                return 1;
-            var result = 0;
-            var reseller = appStore.getState().reseller;
-            var privileges = reseller.getIn(['privileges']);
-            privileges.forEach((i_privelegesModel: PrivelegesModel, counter) => {
-                if (i_privelegesModel.getPrivelegesId() == selPrivId) {
-                    i_privelegesModel.getColumns().forEach((group, c) => {
-                        if (group.get('tableName') == tableName)
-                            return result = group.get(attribute)
-                    })
-                }
-            })
-            return result;
-        }
-
-        var getPrivilegesTable = (tableName: string, attribute: string) => {
-            if (_.isNull(appStore) || defaultValues)
-                return 7;
-            var result = 0;
-            var reseller = appStore.getState().reseller;
-            var privileges = reseller.getIn(['privileges']);
-            privileges.forEach((i_privelegesModel: PrivelegesModel, counter) => {
-                if (i_privelegesModel.getPrivelegesId() == selPrivId) {
-                    i_privelegesModel.getColumns().forEach((group, c) => {
-                        if (group.get('tableName') == tableName)
-                            return result = group.getIn(['columns', attribute])
-                    })
-                }
-            })
-            return result;
-        }
-        var xmlData = `
-          <Privilege>
-              <Groups>
-                <Group name="Global" visible="${getAttributeGroup('Global', 'visible')}">
-                  <Tables global_settings="${getPrivilegesTable('Global', 'global_settings')}"/>
-                </Group>
-                <Group name="Screens" visible="${getAttributeGroup('Screens', 'visible')}">
-                  <Tables boards="${getPrivilegesTable('Screens', 'boards')}" board_templates="${getPrivilegesTable('Screens', 'board_templates')}" board_template_viewers="${getPrivilegesTable('Screens', 'board_template_viewers')}"/>
-                </Group>
-                <Group name="Resources" visible="${getAttributeGroup('Resources', 'visible')}" resourceMode="${getAttributeGroup('Resources', 'resourceMode')}">
-                  <Tables resources="${getPrivilegesTable('Resources', 'resources')}"/>
-                </Group>                
-                <Group name="Editors" visible="${getAttributeGroup('Editors', 'visible')}">
-                  <Tables player_data="${getPrivilegesTable('Editors', 'player_data')}"/>
-                </Group>
-                <Group name="Catalog" visible="${getAttributeGroup('Catalog', 'visible')}">
-                  <Tables catalog_items="${getPrivilegesTable('Catalog', 'catalog_items')}" catalog_item_infos="${getPrivilegesTable('Catalog', 'catalog_item_infos')}" catalog_item_resources="${getPrivilegesTable('Catalog', 'catalog_item_resources')}" catalog_item_categories="${getPrivilegesTable('Catalog', 'catalog_item_categories')}" category_values="${getPrivilegesTable('Catalog', 'category_values')}"/>
-                </Group>
-                <Group name="Campaigns" visible="${getAttributeGroup('Campaigns', 'visible')}">
-                  <Tables campaigns="${getPrivilegesTable('Campaigns', 'campaigns')}" campaign_events="${getPrivilegesTable('Campaigns', 'campaign_events')}" campaign_timelines="${getPrivilegesTable('Campaigns', 'campaign_timelines')}" campaign_timeline_sequences="${getPrivilegesTable('Campaigns', 'campaign_timeline_sequences')}" campaign_timeline_schedules="${getPrivilegesTable('Campaigns', 'campaign_timeline_schedules')}" campaign_sequences="${getPrivilegesTable('Campaigns', 'campaign_sequences')}" campaign_sequence_timelines="${getPrivilegesTable('Campaigns', 'campaign_sequence_timelines')}" campaign_sequence_schedules="${getPrivilegesTable('Campaigns', 'campaign_sequence_schedules')}" campaign_timeline_channels="${getPrivilegesTable('Campaigns', 'campaign_timeline_channels')}" campaign_timeline_chanels="${getPrivilegesTable('Campaigns', 'campaign_timeline_chanels')}" campaign_timeline_chanel_players="${getPrivilegesTable('Campaigns', 'campaign_timeline_chanel_players')}" campaign_timeline_board_viewer_channels="${getPrivilegesTable('Campaigns', 'campaign_timeline_board_viewer_channels')}" campaign_timeline_board_viewer_chanels="${getPrivilegesTable('Campaigns', 'campaign_timeline_board_viewer_chanels')}" campaign_timeline_board_templates="${getPrivilegesTable('Campaigns', 'campaign_timeline_board_templates')}" campaign_channels="${getPrivilegesTable('Campaigns', 'campaign_channels')}" campaign_channel_players="${getPrivilegesTable('Campaigns', 'campaign_channel_players')}" campaign_boards="${getPrivilegesTable('Campaigns', 'campaign_boards')}"/>
-                </Group>
-                <Group name="Transitions" visible="${getAttributeGroup('Transitions', 'visible')}">
-                  <Tables transition_pools="${getPrivilegesTable('Transitions', 'transition_pools')}" transition_pool_items="${getPrivilegesTable('Transitions', 'transition_pool_items')}"/>
-                </Group>
-                <Group name="Scripts" visible="${getAttributeGroup('Scripts', 'visible')}">
-                  <Tables scripts="${getPrivilegesTable('Scripts', 'scripts')}"/>
-                </Group>
-                <Group name="AdNet" 
-                    visible="${getAttributeGroup('AdNet', 'visible')}" 
-                    profile="${getAttributeGroup('AdNet', 'profile')}"
-                    customerNetwork="${getAttributeGroup('AdNet', 'customerNetwork')}"
-                    resellerNetwork="${getAttributeGroup('AdNet', 'resellerNetwork')}"
-                    globalNetwork="${getAttributeGroup('AdNet', 'globalNetwork')}"
-                    defaultAutoActivate="${getAttributeGroup('AdNet', 'defaultAutoActivate')}"
-                    pairFeedback="${getAttributeGroup('AdNet', 'pairFeedback')}"
-                    pairSetting="${getAttributeGroup('AdNet', 'pairSetting')}"
-                    pairChat="${getAttributeGroup('AdNet', 'pairChat')}"
-                    billing="${getAttributeGroup('AdNet', 'billing')}"
-                    assets="${getAttributeGroup('AdNet', 'assets')}"
-                    >
-                  <Tables 
-                      adnet_rates="${getPrivilegesTable('AdNet', 'adnet_rates')}" 
-                      adnet_targets="${getPrivilegesTable('AdNet', 'adnet_targets')}"
-                      adnet_packages="${getPrivilegesTable('AdNet', 'adnet_packages')}"
-                      adnet_package_contents="${getPrivilegesTable('AdNet', 'adnet_package_contents')}"
-                      adnet_package_targets="${getPrivilegesTable('AdNet', 'adnet_package_targets')}"
-                  />
-                </Group>                
-                <Group name="Music" visible="${getAttributeGroup('Music', 'visible')}">
-                  <Tables 
-                  music_channels="${getPrivilegesTable('Music', 'music_channels')}" 
-                  music_channel_songs="${getPrivilegesTable('Music', 'music_channel_songs')}"/>
-                </Group>
-                <Group name="Stations"
-                    visible="${getAttributeGroup('Stations', 'visible')}" 
-                    stationsNetwork="${getAttributeGroup('Stations', 'stationsNetwork')}" 
-                    updateOnSave="${getAttributeGroup('Stations', 'updateOnSave')}" 
-                    lanServer="${getAttributeGroup('Stations', 'lanServer')}" 
-                    zwave="${getAttributeGroup('Stations', 'zwave')}"
-                  >
-                  <Tables 
-                    branch_stations="${getPrivilegesTable('Stations', 'branch_stations')}" 
-                    station_ads="${getPrivilegesTable('Stations', 'station_ads')}"/>
-                </Group>
-                <Group name="Changelist" visible="${getAttributeGroup('Changelist', 'visible')}">
-                  <Tables/>
-                </Group>
-              </Groups>
-        </Privilege>
-        `
-
-        if (_.isNull(appStore)) {
-            // mode 1: generate object from XML (we don't care about values as this is just a template)
-            parseString(xmlData, {attrkey: '_attr'}, function (err, result) {
-                callBack(err, result);
-            });
-        } else {
-            // mode 2: generate raw XML with real user data from appStore so we can serialize and save to server
-            callBack(null, xmlData);
-        }
-
-    }
-
     static Base64() {
 
         var _PADCHAR = "=", _ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/", _VERSION = "1.0";

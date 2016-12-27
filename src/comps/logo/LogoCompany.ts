@@ -6,6 +6,8 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import {AppStore} from "angular2-redux-util";
 import {WhitelabelModel} from "../../reseller/WhitelabelModel";
 import {ImgLoader} from "../imgloader/ImgLoader";
+import {Store} from "@ngrx/store";
+import {ApplicationState} from "../../store/application-state";
 
 /**
  * Logo component for Application header
@@ -24,13 +26,13 @@ import {ImgLoader} from "../imgloader/ImgLoader";
 })
 
 export class LogoCompany {
-
-    constructor(private appStore:AppStore, private cdr:ChangeDetectorRef) {
-        var i_reseller = this.appStore.getState().reseller;
-        this.whitelabelModel = i_reseller.getIn(['whitelabel']);
-        this.unsub = this.appStore.sub((whitelabelModel:WhitelabelModel) => {
-            this.whitelabelModel = whitelabelModel;
-        }, 'reseller.whitelabel');
+                         
+    constructor(private appStore:Store<ApplicationState>, private cdr:ChangeDetectorRef) {
+        // var i_reseller = this.appStore.getState().reseller;
+        // this.whitelabelModel = i_reseller.getIn(['whitelabel']);
+        // this.unsub = this.appStore.sub((whitelabelModel:WhitelabelModel) => {
+        //     this.whitelabelModel = whitelabelModel;
+        // }, 'reseller.whitelabel');
 
         this.stylesObj = {
             img: {
@@ -59,7 +61,7 @@ export class LogoCompany {
     private getBusinessInfo(field):string {
         if (!this.whitelabelModel)
             return '';
-        return this.appStore.getsKey('reseller', 'whitelabel', field);
+        // return this.appStore.getsKey('reseller', 'whitelabel', field);
     }
 
     private ngOnDestroy() {
