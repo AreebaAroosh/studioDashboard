@@ -33,12 +33,12 @@ import {LoginPanel} from "../comps/entry/LoginPanel";
 // import {Orders} from "../comps/app1/orders/Orders";
 import {Logo} from "../comps/logo/Logo";
 import {LogoCompany} from "../comps/logo/LogoCompany";
-// import {BlurForwarder} from "../comps/blurforwarder/BlurForwarder";
+import {BlurForwarder} from "../comps/blurforwarder/BlurForwarder";
 // import {Footer} from "../comps/footer/Footer";
 // import {InputEdit} from "../comps/inputedit/InputEdit";
 // import {OrderBy} from "../pipes/OrderBy";
 // import {SortBy} from "../pipes/SortBy";
-// import {Ngmslib} from "ng-mslib";
+import {Ngmslib} from "ng-mslib";
 // import {FilterPipe} from "../pipes/FilterPipe";
 // import {FilterPipeEqual} from "../pipes/FilterPipeNot";
 // import {Tabs} from "../comps/tabs/tabs";
@@ -71,7 +71,7 @@ import {BusinessAction} from "../business/BusinessAction";
 import {ResellerAction} from "../reseller/ResellerAction";
 import {OrdersAction} from "../comps/app1/orders/OrdersAction";
 import {StationsAction} from "../stations/StationsAction";
-import {AppdbAction} from "../appdb/AppdbAction";
+// import {AppdbAction} from "../appdb/AppdbAction";
 import {CreditService} from "../services/CreditService";
 import {Consts} from "../Conts";
 // import {ThrottlePipe} from "../pipes/ThrottlePipe";
@@ -88,6 +88,7 @@ import {EffectsModule} from "@ngrx/effects";
 import {LoadThreadsEffectService} from "../store/effects/load-threads-effect.service";
 import {StoreDevtoolsModule} from "@ngrx/store-devtools";
 import {uiState} from "../store/reducers/uiStateReducer";
+import {appDb} from "../store/reducers/appDbReducer";
 import {storeData} from "../store/reducers/uiStoreDataReducer";
 import weatherReducer from "../store/reducers/weatherReducer";
 import {ThreadsService} from "../services/threads.service";
@@ -157,10 +158,10 @@ export enum ServerMode {
 //         provide: Consts,
 //         useClass: Consts
 //     },
-//     // {
-//     //     provide: "DEV_ENV",
-//     //     useValue: Ngmslib.DevMode()
-//     // },
+//      {
+//          provide: "DEV_ENV",
+//          useValue: Ngmslib.DevMode()
+//      },
 //     {
 //         provide: "OFFLINE_ENV",
 //         useValue: false
@@ -171,9 +172,21 @@ export var providing = [CommBroker, AUTH_PROVIDERS,
     {
         provide: LocalStorage,
         useClass: LocalStorage
-    } ,{
+    }, {
         provide: ThreadsService,
         useClass: ThreadsService
+    },
+    {
+        provide: StoreService,
+        useClass: StoreService
+    },
+    {
+        provide: "DEV_ENV",
+        useValue: Ngmslib.DevMode()
+    },
+    {
+        provide: "OFFLINE_ENV",
+        useValue: false
     }
 ];
 
@@ -188,7 +201,7 @@ export var providing = [CommBroker, AUTH_PROVIDERS,
 //     StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, StationSnapshot, OrderDetails, simplelist, ModalDialog, Infobox,
 //     Loading, simplelistEditable, MapAddress, ResourceViewer, InputNumeric, InputString, Dropbox, Twofactor, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
 
-var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, NgMenu, NgMenuItem, ImgLoader];
+var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, NgMenu, NgMenuItem, ImgLoader, BlurForwarder];
 
 @NgModule({
     declarations: [decelerations],
@@ -198,10 +211,10 @@ var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, NgM
         ReactiveFormsModule,
         Ng2Bs3ModalModule,
         HttpModule,
-        StoreModule.provideStore(combineReducers({uiState, storeData, weatherReducer}), INITIAL_APPLICATION_STATE),
+        StoreModule.provideStore(combineReducers({uiState, storeData, weatherReducer, appDb}), INITIAL_APPLICATION_STATE),
         EffectsModule.run(LoadThreadsEffectService),
         StoreDevtoolsModule.instrumentOnlyWithExtension(),
-        // ChartModule,
+        ChartModule,
         ToastModule.forRoot({
             animate: 'flyRight',
             positionClass: 'toast-bottom-right',
@@ -217,7 +230,7 @@ var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, NgM
         // AgmCoreModule.forRoot({
         //     apiKey: 'AIzaSyAGD7EQugVG8Gq8X3vpyvkZCnW4E4HONLI'
         // }),
-        // MsLibModule.forRoot(),
+        MsLibModule.forRoot(),
         // SimpleGridModule.forRoot(),
         JsonpModule,
         AlertModule,

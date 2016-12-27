@@ -10,19 +10,22 @@ import {Consts} from "../Conts";
 import {StationModel} from "../stations/StationModel";
 import {Lib} from "../Lib";
 import {OrdersAction} from "../comps/app1/orders/OrdersAction";
+import {Store} from "@ngrx/store";
+import {ApplicationState} from "../store/application-state";
+import {AppInit} from "../store/actions";
 
 @Injectable()
 export class StoreService {
-    constructor(@Inject(forwardRef(() => AppStore)) private appStore: AppStore,
-                @Inject(forwardRef(() => BusinessAction)) private businessActions: BusinessAction,
-                @Inject(forwardRef(() => OrdersAction)) private ordersActions: OrdersAction,
-                @Inject(forwardRef(() => ResellerAction)) private resellerAction: ResellerAction,
-                @Inject(forwardRef(() => StationsAction)) private stationsAction: StationsAction,
-                @Inject(forwardRef(() => AppdbAction)) private appDbActions: AppdbAction,
+    constructor(@Inject(forwardRef(() => Store)) private appStore: Store<ApplicationState>,
+                // @Inject(forwardRef(() => BusinessAction)) private businessActions: BusinessAction,
+                // @Inject(forwardRef(() => OrdersAction)) private ordersActions: OrdersAction,
+                // @Inject(forwardRef(() => ResellerAction)) private resellerAction: ResellerAction,
+                // @Inject(forwardRef(() => StationsAction)) private stationsAction: StationsAction,
+                // @Inject(forwardRef(() => AppdbAction)) private appDbActions: AppdbAction,
                 @Inject(forwardRef(() => CommBroker)) private commBroker: CommBroker,
                 @Inject('OFFLINE_ENV') private offlineEnv) {
 
-        this.appStore.dispatch(this.appDbActions.initAppDb());
+        this.appStore.dispatch(new AppInit());
     }
 
     // todo: in private / hybrid mode we need to get list of business servers and logic to as when on each env
@@ -36,9 +39,9 @@ export class StoreService {
     public loadServices() {
         if(this.singleton) return;
         this.singleton = true;
-        this.listenServices();
-        this.appStore.dispatch(this.resellerAction.getResellerInfo());
-        this.appStore.dispatch(this.resellerAction.getAccountInfo());
+        // this.listenServices();
+        // this.appStore.dispatch(this.resellerAction.getResellerInfo());
+        // this.appStore.dispatch(this.resellerAction.getAccountInfo());
         // this.appStore.dispatch(this.businessActions.fetchBusinesses());
         // this.appStore.dispatch(this.businessActions.getSamples());
         console.log('loaded network services...');
@@ -50,7 +53,7 @@ export class StoreService {
             return;
         this.running = true;
         setInterval(() => {
-            this.appStore.dispatch(this.appDbActions.serverStatus());
+            // this.appStore.dispatch(this.appDbActions.serverStatus());
             this.fetchStations()
         }, 15000);
     }
@@ -60,48 +63,48 @@ export class StoreService {
          (1) get businesses
          We also listen to samples retrieved
          **/
-        this.appStore.sub(() => {
-            // use 0 instead of ServerMode.CLOUD due to production bug with Enums
-            if (this.commBroker.getValue(Consts.Values().SERVER_MODE) == 0) {
-                this.appStore.dispatch(this.appDbActions.getCloudServers());
-            } else {
-                this.fetchStations();
-            }
-        }, 'business.businessStats');
+        // this.appStore.sub(() => {
+        //     // use 0 instead of ServerMode.CLOUD due to production bug with Enums
+        //     if (this.commBroker.getValue(Consts.Values().SERVER_MODE) == 0) {
+        //         // this.appStore.dispatch(this.appDbActions.getCloudServers());
+        //     } else {
+        //         this.fetchStations();
+        //     }
+        // }, 'business.businessStats');
 
         /** (2 optional) if we are running in cloud, get list of used servers and orders **/
-        this.appStore.sub((servers: List<string>) => {
-            this.knownServers = servers.toArray();
-            this.fetchStations();
-            this.appStore.dispatch(this.ordersActions.fetchAccountType());
-        }, 'appdb.cloudServers');
+        // this.appStore.sub((servers: List<string>) => {
+        //     this.knownServers = servers.toArray();
+        //     this.fetchStations();
+        //     // this.appStore.dispatch(this.ordersActions.fetchAccountType());
+        // }, 'appdb.cloudServers');
 
         /** (3) receive each set of stations status per server **/
-        this.appStore.sub((stations: Map<string, List<StationModel>>) => {
-            //console.log('received station');
-        }, 'stations');
+        // this.appStore.sub((stations: Map<string, List<StationModel>>) => {
+        //     //console.log('received station');
+        // }, 'stations');
 
         /** (4) once we have all stations, we can get their respective servers and geo info **/
-        this.appStore.sub((totalStationsReceived: Map<string,any>) => {
-            this.appStore.dispatch(this.appDbActions.serverStatus());
-            this.appStore.dispatch(this.stationsAction.getStationsIps())
-        }, 'appdb.totalStations');
+        // this.appStore.sub((totalStationsReceived: Map<string,any>) => {
+        //     // this.appStore.dispatch(this.appDbActions.serverStatus());
+        //     // this.appStore.dispatch(this.stationsAction.getStationsIps())
+        // }, 'appdb.totalStations');
 
         /** (5) received station status **/
-        this.appStore.sub((serversStatus: Map<string,any>) => {
-            if (!Lib.DevMode()) this.initPollServices();
-        }, 'appdb.serversStatus', false);
+        // this.appStore.sub((serversStatus: Map<string,any>) => {
+        //     if (!Lib.DevMode()) this.initPollServices();
+        // }, 'appdb.serversStatus', false);
     }
 
     private fetchStations() {
-        var sources: Map<string,any> = this.appStore.getState().business.getIn(['businessSources']).getData();
-        var config = {}
-        sources.forEach((i_businesses: List<string>, source) => {
-            let businesses = i_businesses.toArray();
-            if (this.knownServers.indexOf(source) > -1)
-                config[source] = businesses;
-
-        });
-        this.appStore.dispatch(this.stationsAction.getStationsInfo(config));
+        // var sources: Map<string,any> = this.appStore.getState().business.getIn(['businessSources']).getData();
+        // var config = {}
+        // sources.forEach((i_businesses: List<string>, source) => {
+        //     let businesses = i_businesses.toArray();
+        //     if (this.knownServers.indexOf(source) > -1)
+        //         config[source] = businesses;
+        //
+        // });
+        // this.appStore.dispatch(this.stationsAction.getStationsInfo(config));
     }
 }

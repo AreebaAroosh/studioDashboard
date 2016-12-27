@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {Ngmslib} from "ng-mslib";
 import {Store} from "@ngrx/store";
 import {ApplicationState} from "../../store/application-state";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'AutoLogin',
@@ -15,6 +16,11 @@ export class AutoLogin extends Compbaser {
 
     constructor(private appStore: Store<ApplicationState>, private router:Router) {
         super();
+        debugger;
+        this.appStore.select(state => state.appDb.credentials).subscribe((e)=>{
+            console.log(e);
+        });
+
         // this.cancelOnDestroy(
         //     appStore.sub((credentials: Map<string,any>) => {
         //         var state = credentials.get('authenticated');
@@ -38,6 +44,8 @@ export class AutoLogin extends Compbaser {
         //     }, 'appdb.credentials', false)
         // )
     }
+
+    private currentSelectedThreadId$:Observable<any>;
 
     private navigateTo(to){
         // setTimeout(()=>{

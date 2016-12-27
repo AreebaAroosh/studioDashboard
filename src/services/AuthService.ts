@@ -25,16 +25,12 @@ export class AuthService {
     private m_authState: AuthState;
     private m_pendingNotify: any;
 
-    // constructor(private store: Store<ApplicationState>) {
-    // }
-
     constructor(private router: Router,
                 @Inject(forwardRef(() => Store)) private appStore: Store<ApplicationState>,
                 // @Inject(forwardRef(() => AppdbAction)) private appdbAction: AppdbAction,
                 @Inject(forwardRef(() => LocalStorage)) private localStorage: LocalStorage,
-                // @Inject(forwardRef(() => StoreService)) private storeService: StoreService,
+                @Inject(forwardRef(() => StoreService)) private storeService: StoreService,
                 private activatedRoute: ActivatedRoute) {
-        console.log(appStore);
         // this.listenStores();
     }
     //
@@ -121,9 +117,10 @@ export class AuthService {
     //     }
     // }
     //
-    // public authUser(i_user: string, i_pass: string, i_remember: string): void {
-    //     this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(i_user.trim(), i_pass.trim(), i_remember);
-    // }
+    public authUser(i_user: string, i_pass: string, i_remember: string): void {
+        console.log(i_user,i_pass);
+        // this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(i_user.trim(), i_pass.trim(), i_remember);
+    }
     //
     // public authServerTwoFactor(i_twoFactorToken): void {
     //     this.appStore.dispatch(this.appdbAction.authenticateTwoFactor(i_twoFactorToken, false));

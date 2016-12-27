@@ -18,6 +18,16 @@ export interface MyStoreData {
     weather: List<WeatherModel>;
 }
 
+export interface IAppDb {
+    totalStations: Map<string,any>;
+    appStartTime: number;
+    appBaseUrl: string;
+    credentials: Map<string,any>;
+    twoFactorStatus: Map<string,any>;
+    accountType: Map<string,any>;
+    cloudServers: Map<string,any>;
+    serversStatus: Map<string,any>;
+}
 
 export const INITIAL_STORE_DATA: StoreData = {
     threads: {},
@@ -29,4 +39,15 @@ export const INITIAL_WEATHER_DATA: MyStoreData = {
     local: Map<string,any>(),
     customers: List<any>([1, 2, 3, 4]),
     weather: List<WeatherModel>()
+};
+
+export const INITIAL_APP_DB: IAppDb = {
+        totalStations: Map<string,any>(),
+        appStartTime: -1,
+        appBaseUrl: '',
+        credentials: Map<string,any>(),
+        twoFactorStatus: Map<string,any>(),
+        accountType: Map<string,any>(),
+        cloudServers: Map<string,any>(),
+        serversStatus: Map<string,any>(),
 };

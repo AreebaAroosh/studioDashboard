@@ -106,103 +106,106 @@ export class LoginPanel extends Compbaser {
                 private activatedRoute: ActivatedRoute,
                 private authService: AuthService) {
         super();
-        // this.listenEvents();
+        this.listenEvents();
     }
 
     @ViewChild('userPass') userPass: ElementRef;
 
-    // private listenEvents() {
-    //     this.cancelOnDestroy(
-    //         this.activatedRoute.params.subscribe(params => {
-    //             if (params['twoFactor']){
-    //                 this.m_user = Ngmslib.Base64().decode(params['user']);
-    //                 this.m_pass = Ngmslib.Base64().decode(params['pass']);
-    //                 this.m_showTwoFactor = true;
-    //             }
-    //         })
-    //     )
-    //     this.cancelOnDestroy(
-    //         this.appStore.sub((credentials: Map<string,any>) => {
-    //             var state = credentials.get('authenticated');
-    //             var reason = credentials.get('reason');
-    //             switch (state) {
-    //                 case AuthState.FAIL: {
-    //                     this.onAuthFail(reason);
-    //                     break;
-    //                 }
-    //                 case AuthState.PASS: {
-    //                     this.enterApplication();
-    //                     break;
-    //                 }
-    //                 case AuthState.TWO_FACTOR: {
-    //                     this.m_showTwoFactor = true;
-    //                     this.m_rememberMe = false;
-    //                     this.loginState = 'default';
-    //                     break;
-    //                 }
-    //             }
-    //         }, 'appdb.credentials'))
-    //     this.cancelOnDestroy(
-    //         this.appStore.sub((twoFactorStatus: {status: boolean, twoFactorStatusReceived: Date}) => {
-    //             // twoFactorStatus.status = false;//debug
-    //             if (twoFactorStatus.status) {
-    //                 this.enterApplication();
-    //             } else {
-    //                 this.onAuthFail(FlagsAuth.WrongTwoFactor);
-    //             }
-    //         }, 'appdb.twoFactorStatus'))
-    // }
-    //
-    // private passFocus() {
-    //     this.renderer.invokeElementMethod(this.userPass.nativeElement, 'focus', [])
-    // }
-    //
-    // private onClickedLogin() {
-    //     if (this.m_showTwoFactor) {
-    //         this.toast.warning('Authenticating Two factor...');
-    //         this.authService.authServerTwoFactor(this.m_twoFactor);
-    //     } else {
-    //         this.toast.info('Authenticating...');
-    //         this.authService.authUser(this.m_user, this.m_pass, this.m_rememberMe);
-    //
-    //     }
-    // }
-    //
-    // private enterApplication() {
-    //     this.loginState = 'active';
-    //     this.router.navigate(['/App1/Dashboard']);
-    // }
-    //
-    // private onAuthFail(i_reason) {
-    //     this.loginState = 'inactive';
-    //     let msg1: string;
-    //     let msg2: string;
-    //     switch (i_reason) {
-    //         case FlagsAuth.WrongPass: {
-    //             msg1 = 'User or password are incorrect...'
-    //             msg2 = 'Please try again or click forgot password to reset your credentials'
-    //             break;
-    //         }
-    //         case FlagsAuth.NotEnterprise: {
-    //             msg1 = 'Not an enterprise account'
-    //             msg2 = 'You must login with an Enterprise account, not an end user account...'
-    //             break;
-    //         }
-    //         case FlagsAuth.WrongTwoFactor: {
-    //             msg1 = 'Invalid token'
-    //             msg2 = 'Wrong token entered or the 60 seconds limit may have exceeded, try again...'
-    //             break;
-    //         }
-    //     }
-    //     setTimeout(() => {
-    //         bootbox.dialog({
-    //             closeButton: true,
-    //             title: msg1,
-    //             message: msg2
-    //         });
-    //     }, 1200);
-    //     return false;
-    // }
+    private listenEvents() {
+
+        this.cancelOnDestroy(
+            this.activatedRoute.params.subscribe(params => {
+                if (params['twoFactor']){
+                    this.m_user = Ngmslib.Base64().decode(params['user']);
+                    this.m_pass = Ngmslib.Base64().decode(params['pass']);
+                    this.m_showTwoFactor = true;
+                }
+            })
+        )
+
+        // this.cancelOnDestroy(
+        //     this.appStore.sub((credentials: Map<string,any>) => {
+        //         var state = credentials.get('authenticated');
+        //         var reason = credentials.get('reason');
+        //         switch (state) {
+        //             case AuthState.FAIL: {
+        //                 this.onAuthFail(reason);
+        //                 break;
+        //             }
+        //             case AuthState.PASS: {
+        //                 this.enterApplication();
+        //                 break;
+        //             }
+        //             case AuthState.TWO_FACTOR: {
+        //                 this.m_showTwoFactor = true;
+        //                 this.m_rememberMe = false;
+        //                 this.loginState = 'default';
+        //                 break;
+        //             }
+        //         }
+        //     }, 'appdb.credentials'))
+
+        // this.cancelOnDestroy(
+        //     this.appStore.sub((twoFactorStatus: {status: boolean, twoFactorStatusReceived: Date}) => {
+        //         // twoFactorStatus.status = false;//debug
+        //         if (twoFactorStatus.status) {
+        //             this.enterApplication();
+        //         } else {
+        //             this.onAuthFail(FlagsAuth.WrongTwoFactor);
+        //         }
+        //     }, 'appdb.twoFactorStatus'))
+    }
+
+    private passFocus() {
+        this.renderer.invokeElementMethod(this.userPass.nativeElement, 'focus', [])
+    }
+
+    private onClickedLogin() {
+        if (this.m_showTwoFactor) {
+            // this.toast.warning('Authenticating Two factor...');
+            // this.authService.authServerTwoFactor(this.m_twoFactor);
+        } else {
+            // this.toast.info('Authenticating...');
+            this.authService.authUser(this.m_user, this.m_pass, this.m_rememberMe);
+
+        }
+    }
+
+    private enterApplication() {
+        this.loginState = 'active';
+        // this.router.navigate(['/App1/Dashboard']);
+    }
+
+    private onAuthFail(i_reason) {
+        this.loginState = 'inactive';
+        let msg1: string;
+        let msg2: string;
+        switch (i_reason) {
+            case FlagsAuth.WrongPass: {
+                msg1 = 'User or password are incorrect...'
+                msg2 = 'Please try again or click forgot password to reset your credentials'
+                break;
+            }
+            case FlagsAuth.NotEnterprise: {
+                msg1 = 'Not an enterprise account'
+                msg2 = 'You must login with an Enterprise account, not an end user account...'
+                break;
+            }
+            case FlagsAuth.WrongTwoFactor: {
+                msg1 = 'Invalid token'
+                msg2 = 'Wrong token entered or the 60 seconds limit may have exceeded, try again...'
+                break;
+            }
+        }
+        setTimeout(() => {
+            bootbox.dialog({
+                closeButton: true,
+                title: msg1,
+                message: msg2
+            });
+        }, 1200);
+        return false;
+    }
 }
 
 
