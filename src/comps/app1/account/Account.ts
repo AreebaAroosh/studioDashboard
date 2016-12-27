@@ -1,7 +1,6 @@
 import {Component, ChangeDetectionStrategy, trigger, transition, animate, state, style} from "@angular/core";
 import {WhitelabelModel} from "../../../reseller/WhitelabelModel";
 import {ResellerAction} from "../../../reseller/ResellerAction";
-import {AppStore} from "angular2-redux-util";
 import {List} from "immutable";
 import {Lib} from "../../../Lib";
 import {AccountModel} from "../../../reseller/AccountModel";
@@ -38,23 +37,23 @@ import * as _ from "lodash";
 })
 
 export class Account {
-    constructor(private creditService: CreditService, private appStore: AppStore, private fb: FormBuilder, private resellerAction: ResellerAction) {
-        var i_reseller = this.appStore.getState().reseller;
+    constructor(private creditService: CreditService, private fb: FormBuilder, private resellerAction: ResellerAction) {
+        // var i_reseller = this.appStore.getState().reseller;
 
         /** Whitelabel **/
-        this.whitelabelModel = i_reseller.getIn(['whitelabel']);
-        this.unsub = this.appStore.sub((whitelabelModel: WhitelabelModel) => {
-            this.whitelabelModel = whitelabelModel;
-            //this.renderFormInputs();
-        }, 'reseller.whitelabel');
+        // this.whitelabelModel = i_reseller.getIn(['whitelabel']);
+        // this.unsub = this.appStore.sub((whitelabelModel: WhitelabelModel) => {
+        //     this.whitelabelModel = whitelabelModel;
+        //     //this.renderFormInputs();
+        // }, 'reseller.whitelabel');
 
         /** Accounts **/
-        this.accountModels = i_reseller.getIn(['accounts']);
+        // this.accountModels = i_reseller.getIn(['accounts']);
         this.renderFormInputs();
-        this.unsub = this.appStore.sub((accountModels: List<AccountModel>) => {
-            this.accountModels = accountModels;
-            this.renderFormInputs();
-        }, 'reseller.accounts');
+        // this.unsub = this.appStore.sub((accountModels: List<AccountModel>) => {
+        //     this.accountModels = accountModels;
+        //     this.renderFormInputs();
+        // }, 'reseller.accounts');
 
         this.contGroup = fb.group({
             'enterprise_login': [''],
@@ -150,51 +149,50 @@ export class Account {
     }
 
     private onInputBlur(event) {
-        setTimeout(() => this.appStore.dispatch(this.resellerAction.saveAccountInfo(Lib.CleanCharForXml(this.contGroup.value))), 1);
+        // setTimeout(() => this.appStore.dispatch(this.resellerAction.saveAccountInfo(Lib.CleanCharForXml(this.contGroup.value))), 1);
     }
 
     private onSubmit(value) {
-        //setTimeout(()=>console.log(JSON.stringify(this.contGroup.value)), 1);
-        setTimeout(() => this.appStore.dispatch(this.resellerAction.saveAccountInfo(Lib.CleanCharForXml(this.contGroup.value))), 1);
+        // setTimeout(() => this.appStore.dispatch(this.resellerAction.saveAccountInfo(Lib.CleanCharForXml(this.contGroup.value))), 1);
     }
 
     private renderFormInputs() {
         if (!this.accountModels)
             return;
-        this.companyName = this.appStore.getsKey('reseller', 'whitelabel', 'companyName');
-        this.userName = this.appStore.getState().appdb.getIn(['credentials']).get('user');
-        this.businessId = this.appStore.getState().reseller.getIn(['whitelabel']).getKey('businessId');
-        this.payerId = this.appStore.getState().reseller.getIn(['whitelabel']).getKey('payerId');
-
-        this.accountModels.forEach((accountModel: AccountModel) => {
-            var type: string = accountModel.getType().toLowerCase();
-            switch (type) {
-                case 'contact': {
-                }
-                case 'shipping': {
-                }
-                case 'billing': {
-                    _.forEach(this.formInputs, (value, key: string) => {
-                        if (_.isUndefined(key))
-                            return;
-                        var table = key.split('_')[0];
-                        if (table == type) {
-                            var field = key.split('_')[1];
-                            var data = accountModel.getKey(field);
-                            this.formInputs[key].setValue(data);
-                        }
-                    })
-                    break;
-                }
-                case 'recurring': {
-                    break;
-                }
-            }
-        })
+        // this.companyName = this.appStore.getsKey('reseller', 'whitelabel', 'companyName');
+        // this.userName = this.appStore.getState().appdb.getIn(['credentials']).get('user');
+        // this.businessId = this.appStore.getState().reseller.getIn(['whitelabel']).getKey('businessId');
+        // this.payerId = this.appStore.getState().reseller.getIn(['whitelabel']).getKey('payerId');
+        //
+        // this.accountModels.forEach((accountModel: AccountModel) => {
+        //     var type: string = accountModel.getType().toLowerCase();
+        //     switch (type) {
+        //         case 'contact': {
+        //         }
+        //         case 'shipping': {
+        //         }
+        //         case 'billing': {
+        //             _.forEach(this.formInputs, (value, key: string) => {
+        //                 if (_.isUndefined(key))
+        //                     return;
+        //                 var table = key.split('_')[0];
+        //                 if (table == type) {
+        //                     var field = key.split('_')[1];
+        //                     var data = accountModel.getKey(field);
+        //                     this.formInputs[key].setValue(data);
+        //                 }
+        //             })
+        //             break;
+        //         }
+        //         case 'recurring': {
+        //             break;
+        //         }
+        //     }
+        // })
     };
 
     private onCompanyNameEdited(value) {
-        this.appStore.dispatch(this.resellerAction.saveWhiteLabel(Lib.CleanCharForXml({companyName: value})));
+        // this.appStore.dispatch(this.resellerAction.saveWhiteLabel(Lib.CleanCharForXml({companyName: value})));
     }
 
     private getAccountModelKey(modelType, key) {
@@ -252,64 +250,64 @@ export class Account {
             return k.name == payment;
         })
         var recurringMode = this.getRecurringValue('recurringMode');
-        switch (payment.name) {
-            case 'disable': {
-                bootbox.prompt(`are you sure you want to cancel your current subscription? type [DELETE_NOW] to cancel association of all your screens`, (result) => {
-                    if (result == 'DELETE_NOW') {
-                        this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": 0}));
-                        this.onSubmit(null);
-                    } else {
-                        this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": 0}));
-                        setTimeout(() => {
-                            this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": recurringMode}));
-                            this.onSubmit(null);
-                        }, 1)
-                    }
-                });
-                break;
-            }
-            case 'credit card': {
-                this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": payment.index}));
-                this.onSubmit(null);
-                break;
-            }
-            case 'paypal': {
-                bootbox.dialog({
-                    message: "for new accounts only, please allow 24 hours for your account to be activated",
-                    title: "Pay with PayPal",
-                    closeButton: false,
-                    buttons: {
-                        main: {
-                            label: "Cancel",
-                            callback: () => {
-                                this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": 0}));
-                                setTimeout(() => {
-                                    this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": recurringMode}));
-                                    this.onSubmit(null);
-                                }, 1)
-                            }
-                        },
-                        success: {
-                            label: "Connect to Paypal now",
-                            className: "btn-success",
-                            callback: () => {
-                                if (!this.onPaypalConnect()) {
-                                    this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": 0}));
-                                    setTimeout(() => {
-                                        this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": recurringMode}));
-                                        this.onSubmit(null);
-                                    }, 1)
-                                } else {
-                                    this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": payment.index}));
-                                    this.onSubmit(null);
-                                }
-                            }
-                        }
-                    }
-                });
-                break;
-            }
-        }
+        // switch (payment.name) {
+        //     case 'disable': {
+        //         bootbox.prompt(`are you sure you want to cancel your current subscription? type [DELETE_NOW] to cancel association of all your screens`, (result) => {
+        //             if (result == 'DELETE_NOW') {
+        //                 this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": 0}));
+        //                 this.onSubmit(null);
+        //             } else {
+        //                 this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": 0}));
+        //                 setTimeout(() => {
+        //                     this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": recurringMode}));
+        //                     this.onSubmit(null);
+        //                 }, 1)
+        //             }
+        //         });
+        //         break;
+        //     }
+        //     case 'credit card': {
+        //         this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": payment.index}));
+        //         this.onSubmit(null);
+        //         break;
+        //     }
+        //     case 'paypal': {
+        //         bootbox.dialog({
+        //             message: "for new accounts only, please allow 24 hours for your account to be activated",
+        //             title: "Pay with PayPal",
+        //             closeButton: false,
+        //             buttons: {
+        //                 main: {
+        //                     label: "Cancel",
+        //                     callback: () => {
+        //                         this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": 0}));
+        //                         setTimeout(() => {
+        //                             this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": recurringMode}));
+        //                             this.onSubmit(null);
+        //                         }, 1)
+        //                     }
+        //                 },
+        //                 success: {
+        //                     label: "Connect to Paypal now",
+        //                     className: "btn-success",
+        //                     callback: () => {
+        //                         if (!this.onPaypalConnect()) {
+        //                             this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": 0}));
+        //                             setTimeout(() => {
+        //                                 this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": recurringMode}));
+        //                                 this.onSubmit(null);
+        //                             }, 1)
+        //                         } else {
+        //                             this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": payment.index}));
+        //                             this.onSubmit(null);
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         });
+        //         break;
+        //     }
+        // }
     }
 
     private onPaypalConnect(): boolean {
@@ -404,7 +402,7 @@ export class Account {
 
     private onWhiteLabelChange(value) {
         value = value ? 1 : 0;
-        this.appStore.dispatch(this.resellerAction.updateResellerInfo({whitelabelEnabled: value}))
+        // this.appStore.dispatch(this.resellerAction.updateResellerInfo({whitelabelEnabled: value}))
     }
 
     private isCardSelected(i_cardType) {
@@ -426,10 +424,7 @@ export class Account {
         return true;
     }
 
-    private ngOnDestroy() {
-        this.unsub();
-    }
+    // private ngOnDestroy() {
+    //     this.unsub();
+    // }
 }
-// this.appStore.dispatch(this.resellerAction.updateResellerInfo({accountStatus: 2}));
-// this.appStore.dispatch(this.resellerAction.updateAccountInfo({"recurring_recurringMode": 0}));
-//this.appStore.dispatch(this.resellerAction.updateResellerInfo({accountStatus: this.PAY_SUBSCRIBER}));

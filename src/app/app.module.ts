@@ -53,7 +53,6 @@ import {Ng2Highcharts} from "../comps/ng2-highcharts/src/directives/ng2-highchar
 import {StationSnapshot} from "../comps/app1/dashboard/StationSnapshot";
 import {OrderDetails} from "../comps/app1/orders/OrderDetails";
 import {simplelist} from "../comps/simplelist/simplelist";
-import {PrivilegesDetails} from "../comps/app1/privileges/PrivilegesDetails";
 import {ModalDialog} from "../comps/modaldialog/ModalDialog";
 import {Infobox} from "../comps/infobox/Infobox";
 import {Loading} from "../comps/loading/Loading";
@@ -168,7 +167,7 @@ let options: ToastOptions = new ToastOptions({
 
 var decelerations = [AppComponent, AutoLogin, LoginPanel, Account, App1, Privileges, Dashboard, Logout, Orders, Logo,
     LogoCompany, Footer, BlurForwarder, InputEdit, OrderBy, SortBy, FilterPipe, FilterPipeEqual, Tabs, Tab, ServerStats, ServerAvg,
-    StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, StationSnapshot, OrderDetails, simplelist, PrivilegesDetails, ModalDialog, Infobox,
+    StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, StationSnapshot, OrderDetails, simplelist, ModalDialog, Infobox,
     Loading, simplelistEditable, MapAddress, ResourceViewer, InputNumeric, InputString, Dropbox, Twofactor, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
 
 @NgModule({
