@@ -2,7 +2,7 @@ import {Action} from "@ngrx/store";
 import {AllUserData} from "../../shared/to/all-user-data";
 
 
-export const APP_INIT = 'APP_INIT';
+
 export const LOAD_WEATHER_ACTION = 'LOAD_WEATHER_ACTION';
 export const WEATHER_LOADED_ACTION = 'WEATHER_LOADED_ACTION';
 export const USER_THREADS_LOADED_ACTION = 'USER_THREADS_LOADED_ACTION';
@@ -25,12 +25,7 @@ export class UserThreadsLoadedAction implements Action {
     }
 }
 
-export class AppInit implements Action {
-    readonly type = APP_INIT;
 
-    constructor(public payload?: string) {
-    }
-}
 
 export class WeatherLoadedAction implements Action {
     readonly type = WEATHER_LOADED_ACTION;

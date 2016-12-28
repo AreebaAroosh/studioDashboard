@@ -3,6 +3,7 @@ import {Thread} from "../../shared/model/thread";
 import {Message} from "../../shared/model/message";
 import {Map, List} from 'immutable';
 import {WeatherModel} from "./model/WeatherModel";
+import {UserModel} from "../models/UserModel";
 
 export interface StoreData {
 
@@ -18,15 +19,21 @@ export interface MyStoreData {
     weather: List<WeatherModel>;
 }
 
+interface IUserInfo {
+
+}
+
 export interface IAppDb {
-    totalStations: Map<string,any>;
+    totalStations: string;
     appStartTime: number;
     appBaseUrl: string;
-    credentials: Map<string,any>;
-    twoFactorStatus: Map<string,any>;
-    accountType: Map<string,any>;
-    cloudServers: Map<string,any>;
-    serversStatus: Map<string,any>;
+    credentials: UserModel,
+    twoFactorStatus: string;
+    accountType: string;
+    cloudServers: string;
+    serversStatus: string;
+    appBaseUrlUser: string;
+    appBaseUrlCloud: string;
 }
 
 export const INITIAL_STORE_DATA: StoreData = {
@@ -42,12 +49,14 @@ export const INITIAL_WEATHER_DATA: MyStoreData = {
 };
 
 export const INITIAL_APP_DB: IAppDb = {
-        totalStations: Map<string,any>(),
+        totalStations: '',
         appStartTime: -1,
         appBaseUrl: '',
-        credentials: Map<string,any>(),
-        twoFactorStatus: Map<string,any>(),
-        accountType: Map<string,any>(),
-        cloudServers: Map<string,any>(),
-        serversStatus: Map<string,any>(),
+        credentials: new UserModel({}),
+        twoFactorStatus: '',
+        accountType: '',
+        cloudServers: '',
+        serversStatus: '',
+        appBaseUrlUser: '',
+        appBaseUrlCloud: ''
 };

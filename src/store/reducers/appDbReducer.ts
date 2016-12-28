@@ -5,10 +5,13 @@ import {List, Map} from 'immutable';
 import {WeatherModel} from "../model/WeatherModel";
 import {WEATHER_LOADED_ACTION} from "../actions";
 import {StoreModel} from "../model/StoreModel";
+import {UserModel} from "../../models/UserModel";
 
 
+const baseUrl = 'https://galaxy.signage.me/WebService/ResellerService.ashx';
+export const appBaseUrlCloud = 'https://secure.digitalsignage.com';
 
-export function appDb (state: IAppDb, action: any): IAppDb {
+export function appDb(state: IAppDb, action: any): IAppDb {
 
     switch (action.type) {
 
@@ -20,30 +23,28 @@ export function appDb (state: IAppDb, action: any): IAppDb {
         //         }
         //     });
         //
+        case 'TEST':{
+            state.credentials = new UserModel({
+                user: 'sean',
+                pass: '123'
+            })
+            return state;
+        }
+
         case 'APP_INIT':
             state.appStartTime = Date.now();
-            state.appBaseUrl = 'http';
+            state.appBaseUrl = `${baseUrl}`;
             return state;
-            // return state.merge({
-            //     appStartTime: Date.now(),
-            //     appBaseUrl: `${baseUrl}`
-            // });
-        //
-        // case 'AUTH_FAIL':
-        // case 'AUTH_PASS_WAIT_TWO_FACTOR':
-        // case 'AUTH_PASS':
-        //     return state.merge({
-        //         credentials: {
-        //             authenticated: action.authenticated,
-        //             user: action.user,
-        //             pass: action.pass,
-        //             remember: action.remember,
-        //             reason: action.reason,
-        //             businessId: action.businessId
-        //         },
-        //         appBaseUrlUser: `${baseUrl}?resellerUserName=${action.user}&resellerPassword=${action.pass}`,
-        //         appBaseUrlCloud: `${appBaseUrlCloud}/END_POINT/${action.user}/${action.pass}`
-        //     });
+
+        case 'AUTH_FAIL':
+        case 'AUTH_PASS_WAIT_TWO_FACTOR':
+        case 'AUTH_PASS':
+            state.credentials = new UserModel(action)
+            state.appBaseUrlUser = `${baseUrl}?resellerUserName=${action.user}&resellerPassword=${action.pass}`;
+            state.appBaseUrlCloud = `${appBaseUrlCloud}/END_POINT/${action.user}/${action.pass}`;
+            return state;
+
+
         //
         // case AppdbAction.TWO_FACTOR_SERVER_RESULT:
         //     return state.set('twoFactorStatus', {

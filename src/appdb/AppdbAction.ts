@@ -15,7 +15,7 @@ import "rxjs/add/operator/debounceTime";
 import * as xml2js from "xml2js";
 import {Observable} from "rxjs/Observable";
 
-export const APP_INIT = 'APP_INIT';
+// export const APP_INIT = 'APP_INIT';
 export const SERVERS_STATUS = 'SERVERS_STATUS';
 export const CLOUD_SERVERS = 'CLOUD_SERVERS';
 export const AUTH_PASS = 'AUTH_PASS';
@@ -41,12 +41,12 @@ export class AppdbAction extends Actions {
         this.parseString = xml2js.parseString;
     }
 
-    public initAppDb() {
-        return {
-            type: APP_INIT,
-            value: Date.now()
-        };
-    }
+    // public initAppDb() {
+    //     return {
+    //         type: APP_INIT,
+    //         value: Date.now()
+    //     };
+    // }
 
     public serverStatus() {
         return (dispatch) => {

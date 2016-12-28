@@ -107,6 +107,15 @@ export class LoginPanel extends Compbaser {
                 private authService: AuthService) {
         super();
         this.listenEvents();
+
+        this.appStore.select(state => state.appDb.credentials).subscribe((e)=>{
+            console.log(e);
+        });
+
+        setTimeout(()=>{
+            this.appStore.dispatch({type: 'TEST'})
+        },3000)
+
     }
 
     @ViewChild('userPass') userPass: ElementRef;

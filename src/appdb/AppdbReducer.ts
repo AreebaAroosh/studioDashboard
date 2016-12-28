@@ -20,11 +20,11 @@ export default function appdb(state: Map<string, any> = Map<string, any>({}), ac
                 }
             });
 
-        case AppdbAction.APP_INIT:
-            return state.merge({
-                appStartTime: Date.now(),
-                appBaseUrl: `${baseUrl}`
-            });
+        // case AppdbAction.APP_INIT:
+        //     return state.merge({
+        //         appStartTime: Date.now(),
+        //         appBaseUrl: `${baseUrl}`
+        //     });
 
         case AppdbAction.AUTH_FAIL:
         case AppdbAction.AUTH_PASS_WAIT_TWO_FACTOR:
@@ -48,11 +48,11 @@ export default function appdb(state: Map<string, any> = Map<string, any>({}), ac
                 'twoFactorStatusReceived': Date.now()
             });
 
-        case AppdbAction.APP_INIT:
-            return state.merge({
-                appStartTime: Date.now(),
-                appBaseUrl: `${baseUrl}`
-            });
+        // case AppdbAction.APP_INIT:
+        //     return state.merge({
+        //         appStartTime: Date.now(),
+        //         appBaseUrl: `${baseUrl}`
+        //     });
 
         case OrdersAction.RECEIVE_ACCOUNT_TYPE:
             return state.merge({
