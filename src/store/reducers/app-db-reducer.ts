@@ -33,7 +33,11 @@ export function appDb(state: IAppDb, action: any): IAppDb {
         // }
 
         case 'AUTH_END':
-            console.log(_.size(action.payload.Businesses.BusinessInfo));
+            if (!action.payload.Businesses){
+                console.log('auth fail')
+            } else {
+                console.log('auth pass ' + _.size(action.payload.Businesses.BusinessInfo));
+            }
             return state;
 
         case 'APP_INIT':

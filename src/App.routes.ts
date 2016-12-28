@@ -2,7 +2,6 @@ import {Routes, RouterModule} from "@angular/router";
 import {App1} from "./comps/app1/App1";
 import {LoginPanel} from "./comps/entry/LoginPanel";
 import {Logout} from "./comps/logout/Logout";
-import {Dashboard} from "./comps/app1/dashboard/Dashboard";
 import {Privileges} from "./comps/app1/privileges/Privileges";
 import {Account} from "./comps/app1/account/Account";
 import {Orders} from "./comps/app1/orders/Orders";

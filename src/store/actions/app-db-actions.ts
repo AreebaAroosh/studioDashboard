@@ -9,6 +9,7 @@ import {Action, Store} from "@ngrx/store";
 import {ApplicationState} from "../application-state";
 import {Actions, Effect} from "@ngrx/effects";
 import {Observable} from "rxjs";
+import * as _ from 'lodash';
 
 
 export const SERVERS_STATUS = 'SERVERS_STATUS';
@@ -50,51 +51,31 @@ export class AppdbAction {
     @Effect() userThreads$: Observable<Action> = this.actions$
         .ofType(AUTH_START)
         .switchMap(action => this.authUser(action))
-        .debug('all user data')
         .map(allUserData => ({type: AUTH_END, payload: allUserData}));
 
     authUser(action): Observable<any> {
-
         return this.store.select(store => store.appDb.appBaseUrl)
             .take(1)
             .mergeMap(baseUrl => {
-                const url = `${baseUrl}?command=GetCustomers&resellerUserName=reseller@ms.com&resellerPassword=xx`;
+                const url = `${baseUrl}?command=GetCustomers&resellerUserName=${action.payload.user}&resellerPassword=${action.payload.pass}`;
                 return this.http.get(url)
+                    .catch((err:any) => {
+                        alert('Error getting order details');
+                        return Observable.throw(err);
+                    })
+                    .finally(() => {
+                    })
                     .map(res => {
                         return res.text()
-                    }).flatMap((i_xmlData:string)=>{
+                    }).flatMap((i_xmlData: string) => {
                         const boundCallback = Observable.bindCallback(this.processXml, (xmlData: any) => xmlData);
                         return boundCallback(this, i_xmlData)
-                    }).map(businessData=>{
+                    }).map(businessData => {
+                        if (_.isNull(businessData))
+                            return ({})
                         return businessData;
                     })
             })
-
-        // return this.store.select(store => store.appDb.appBaseUrl)
-        //     .take(1)
-        //     .mergeMap(baseUrl => {
-        //         console.log(action);
-        //         var i_user = 'reseller@ms.com'
-        //         var i_pass = '123123'
-        //         const url = `${baseUrl}?command=GetCustomers&resellerUserName=${i_user}&resellerPassword=${i_pass}`;
-        //         return this.http.get(url)
-        //             .map(res => {
-        //
-        //
-        //                 var xmlData = res.text()
-        //                 const boundCallback = Observable.bindCallback(this.processXml, (xmlData: any) => xmlData);
-        //                 const results = [];
-        //                 boundCallback(this, xmlData)
-        //                     .do((x) => {
-        //                         console.log(x);
-        //                     });
-        //
-        //
-        //             }).map(final => {
-        //                 return final;
-        //             })
-        //     })
-
     }
 
     private authenticateUser(i_user, i_pass, i_remember): any {
