@@ -16,8 +16,8 @@ const routes: Routes = [
     {path: 'UserLogin', data: {title: 'Login'}, component: LoginPanel},
     {path: 'UserLogin/:twoFactor', data: {title: 'Login'}, component: LoginPanel},
     {path: 'UserLogin/:twoFactor/:user/:pass', data: {title: 'Login'}, component: LoginPanel},
-//     {path: 'Logout', component: Logout},
-//     {path: '', component: App1, canActivate: [AuthService]},
+    {path: 'Logout', component: Logout},
+    // {path: '', component: App1, canActivate: [AuthService]},
 //     {
 //         path: 'src', component: App1,
 //         children: [

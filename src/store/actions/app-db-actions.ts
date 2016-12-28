@@ -8,3 +8,4 @@ export class AppInit implements Action {
     constructor(public payload?: string) {
     }
 }
+

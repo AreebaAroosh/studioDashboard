@@ -21,10 +21,6 @@ export class AutoLogin extends Compbaser {
             console.log(e);
         });
 
-        setTimeout(()=>{
-            this.appStore.dispatch({type: 'TEST'})
-        },3000)
-
         // this.cancelOnDestroy(
         //     appStore.sub((credentials: Map<string,any>) => {
         //         var state = credentials.get('authenticated');

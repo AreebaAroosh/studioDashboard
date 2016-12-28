@@ -10,6 +10,7 @@ import {Ngmslib} from "ng-mslib";
 import {ToastsManager} from "ng2-toastr";
 import {ApplicationState} from "../../store/application-state";
 import {Store} from "@ngrx/store";
+import {UserModel} from "../../models/UserModel";
 
 
 @Injectable()
@@ -108,14 +109,15 @@ export class LoginPanel extends Compbaser {
         super();
         this.listenEvents();
 
-        this.appStore.select(state => state.appDb.credentials).subscribe((e)=>{
-            console.log(e);
-        });
-
-        setTimeout(()=>{
-            this.appStore.dispatch({type: 'TEST'})
-        },3000)
-
+        // this.appStore.select(state => state.appDb.credentials).subscribe((e:UserModel)=>{
+        //     console.log(e.user());
+        // });
+        //
+        // this.appStore.dispatch({type: 'APP_INIT'})
+        //
+        // setInterval(()=>{
+        //     this.appStore.dispatch({type: 'APP_INIT'})
+        // },1000)
     }
 
     @ViewChild('userPass') userPass: ElementRef;

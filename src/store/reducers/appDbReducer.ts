@@ -23,13 +23,13 @@ export function appDb(state: IAppDb, action: any): IAppDb {
         //         }
         //     });
         //
-        case 'TEST':{
-            state.credentials = new UserModel({
-                user: 'sean',
-                pass: '123'
-            })
-            return state;
-        }
+        // case 'TEST':{
+        //     state.credentials = new UserModel({
+        //         user: 'sean',
+        //         pass: '123'
+        //     })
+        //     return state;
+        // }
 
         case 'APP_INIT':
             state.appStartTime = Date.now();

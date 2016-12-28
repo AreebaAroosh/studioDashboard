@@ -29,7 +29,7 @@ import {LoginPanel} from "../comps/entry/LoginPanel";
 // import {App1} from "../comps/app1/App1";
 // import {Privileges} from "../comps/app1/privileges/Privileges";
 // import {Dashboard} from "../comps/app1/dashboard/Dashboard";
-// import {Logout} from "../comps/logout/Logout";
+import {Logout} from "../comps/logout/Logout";
 // import {Orders} from "../comps/app1/orders/Orders";
 import {Logo} from "../comps/logo/Logo";
 import {LogoCompany} from "../comps/logo/LogoCompany";
@@ -201,7 +201,7 @@ export var providing = [CommBroker, AUTH_PROVIDERS,
 //     StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, StationSnapshot, OrderDetails, simplelist, ModalDialog, Infobox,
 //     Loading, simplelistEditable, MapAddress, ResourceViewer, InputNumeric, InputString, Dropbox, Twofactor, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
 
-var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, NgMenu, NgMenuItem, ImgLoader, BlurForwarder];
+var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, Logout, NgMenu, NgMenuItem, ImgLoader, BlurForwarder];
 
 @NgModule({
     declarations: [decelerations],

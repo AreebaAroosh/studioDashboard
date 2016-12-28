@@ -26,7 +26,7 @@ export class AuthService {
     private m_pendingNotify: any;
 
     constructor(private router: Router,
-                @Inject(forwardRef(() => Store)) private appStore: Store<ApplicationState>,
+                @Inject(forwardRef(() => Store)) private store: Store<ApplicationState>,
                 // @Inject(forwardRef(() => AppdbAction)) private appdbAction: AppdbAction,
                 @Inject(forwardRef(() => LocalStorage)) private localStorage: LocalStorage,
                 @Inject(forwardRef(() => StoreService)) private storeService: StoreService,
@@ -119,6 +119,7 @@ export class AuthService {
     //
     public authUser(i_user: string, i_pass: string, i_remember: string): void {
         console.log(i_user,i_pass);
+        // this.store.dispatch()
         // this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(i_user.trim(), i_pass.trim(), i_remember);
     }
     //
