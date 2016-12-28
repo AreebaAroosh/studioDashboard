@@ -49,80 +49,59 @@ export class AppdbAction {
 
     @Effect() userThreads$: Observable<Action> = this.actions$
         .ofType(AUTH_START)
-        .debug("action received")
-        .switchMap(action => this.loadUserThreads('1', '2', '3'))
-        .debug("data received via the HTTP request")
+        .switchMap(action => this.authUser(action))
         .map(allUserData => ({type: AUTH_END, payload: allUserData}));
 
-    loadUserThreads(a, b, c): Observable<any> {
+    authUser(action): Observable<any> {
         return this.store.select(store => store.appDb.appBaseUrl)
             .take(1)
-            .debug('aaa')
-            .mergeMap(url => {
+            .mergeMap(baseUrl => {
+                console.log(action);
+                var i_user = 'reseller@ms.com'
+                var i_pass = '123123'
+                const url = `${baseUrl}?command=GetCustomers&resellerUserName=${i_user}&resellerPassword=${i_pass}`;
                 return this.http.get(url)
-                    .debug('received ' + url)
-                    .map(res => res.json())
+                    .map(res => {
+
+
+                        var xmlData = res.text()
+
+                        function callback(datum, cb) {
+                            cb('aaaa ' + datum);
+                        }
+                        const boundCallback = Observable.bindCallback(this.processXml, (xmlData: any) => xmlData);
+                        const results = [];
+                        boundCallback(this, xmlData)
+                            .subscribe((x) => {
+                                results.push(x);
+                            }, null, () => {
+                                results.push('done');
+                            });
+
+
+                        const hello = (message, callback) => callback(`Hello ${message}`);
+                        const sayHello = Observable.bindCallback(hello);
+                        const source = sayHello(' world');
+                        console.log(source);
+                        return source;
+
+                    }).map(final=>{
+                        return final;
+                    })
             })
 
     }
 
     private authenticateUser(i_user, i_pass, i_remember): any {
         var self = this;
-        var processXml = (xmlData) => {
-            this.parseString(xmlData, {attrkey: 'attr'}, function (err, result) {
-                if (!result) {
-                    self.store.dispatch({
-                        type: AUTH_FAIL,
-                        payload: {
-                            authenticated: AuthState.FAIL,
-                            user: i_user,
-                            pass: i_pass,
-                            remember: i_remember,
-                            reason: FlagsAuth.WrongPass
-                        }
-                    });
-                } else if (result && !result.Businesses) {
-                    self.store.dispatch({
-                        type: AUTH_FAIL,
-                        payload: {
-                            authenticated: AuthState.FAIL,
-                            user: i_user,
-                            pass: i_pass,
-                            remember: i_remember,
-                            reason: FlagsAuth.NotEnterprise
-                        }
 
-                    });
-                } else {
-                    // Auth passed, next check if two factor enabled
-                    // self.twoFactorCheck(i_user, i_pass).subscribe((twoFactorResult) => {
-                    //     if (twoFactorResult.enabled == false) {
-                    //         var eventType = AUTH_PASS;
-                    //         var authState = AuthState.PASS;
-                    //     } else {
-                    //         var eventType = AUTH_PASS_WAIT_TWO_FACTOR;
-                    //         var authState = AuthState.TWO_FACTOR;
-                    //     }
-                    //     dispatch({
-                    //         type: eventType,
-                    //         authenticated: authState,
-                    //         user: i_user,
-                    //         pass: i_pass,
-                    //         businessId: twoFactorResult.businessId,
-                    //         remember: i_remember,
-                    //         reason: FlagsAuth.Enterprise
-                    //     });
-                    // })
-                }
-            });
-        }
 
         this.store.select(store => store.appDb.appBaseUrl).take(1).subscribe((baseUrl) => {
             const url = `${baseUrl}?command=GetCustomers&resellerUserName=${i_user}&resellerPassword=${i_pass}`;
             return this.http.get(url)
                 .map(result => {
                     var xmlData: string = result.text()
-                    return Observable.of(processXml(xmlData));
+                    // return Observable.of(processXml(xmlData));
                 });
             // if (this.offlineEnv) {
             //     this.http.get('offline/getCustomers.xml').subscribe((result) => {
@@ -143,10 +122,19 @@ export class AppdbAction {
 
     }
 
-    // private loadUserThreads(userId:number): Observable<any> {
+    // private authUser(userId:number): Observable<any> {
     //     return this.http.get('/api/threads')
     //         .map(res => res.json());
     // }
+
+    private processXml(context, xmlData, cb) {
+        context.parseString(xmlData, {attrkey: 'attr'}, function (err, result) {
+            if (err || !result)
+                return cb(null);
+            return cb(result);
+        })
+
+    }
 
     public initAppDb() {
         return {

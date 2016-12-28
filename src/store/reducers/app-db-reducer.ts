@@ -8,8 +8,8 @@ import {StoreModel} from "../model/StoreModel";
 import {UserModel} from "../../models/UserModel";
 
 
-// const baseUrl = 'https://galaxy.signage.me/WebService/ResellerService.ashx';
-const baseUrl = 'https://secure.digitalsignage.com/Digg';
+const baseUrl = 'https://galaxy.signage.me/WebService/ResellerService.ashx';
+// const baseUrl = 'https://secure.digitalsignage.com/Digg';
 export const appBaseUrlCloud = 'https://secure.digitalsignage.com';
 
 export function appDb(state: IAppDb, action: any): IAppDb {
