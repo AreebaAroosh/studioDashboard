@@ -32,6 +32,10 @@ export function appDb(state: IAppDb, action: any): IAppDb {
         //     return state;
         // }
 
+        case 'AUTH_END':
+            console.log(_.size(action.payload.Businesses.BusinessInfo));
+            return state;
+
         case 'APP_INIT':
             state.appStartTime = Date.now();
             state.appBaseUrl = `${baseUrl}`;

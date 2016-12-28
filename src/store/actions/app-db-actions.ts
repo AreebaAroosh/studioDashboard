@@ -50,45 +50,50 @@ export class AppdbAction {
     @Effect() userThreads$: Observable<Action> = this.actions$
         .ofType(AUTH_START)
         .switchMap(action => this.authUser(action))
+        .debug('all user data')
         .map(allUserData => ({type: AUTH_END, payload: allUserData}));
 
     authUser(action): Observable<any> {
+
         return this.store.select(store => store.appDb.appBaseUrl)
             .take(1)
             .mergeMap(baseUrl => {
-                console.log(action);
-                var i_user = 'reseller@ms.com'
-                var i_pass = '123123'
-                const url = `${baseUrl}?command=GetCustomers&resellerUserName=${i_user}&resellerPassword=${i_pass}`;
+                const url = `${baseUrl}?command=GetCustomers&resellerUserName=reseller@ms.com&resellerPassword=xx`;
                 return this.http.get(url)
                     .map(res => {
-
-
-                        var xmlData = res.text()
-
-                        function callback(datum, cb) {
-                            cb('aaaa ' + datum);
-                        }
+                        return res.text()
+                    }).flatMap((i_xmlData:string)=>{
                         const boundCallback = Observable.bindCallback(this.processXml, (xmlData: any) => xmlData);
-                        const results = [];
-                        boundCallback(this, xmlData)
-                            .subscribe((x) => {
-                                results.push(x);
-                            }, null, () => {
-                                results.push('done');
-                            });
-
-
-                        const hello = (message, callback) => callback(`Hello ${message}`);
-                        const sayHello = Observable.bindCallback(hello);
-                        const source = sayHello(' world');
-                        console.log(source);
-                        return source;
-
-                    }).map(final=>{
-                        return final;
+                        return boundCallback(this, i_xmlData)
+                    }).map(businessData=>{
+                        return businessData;
                     })
             })
+
+        // return this.store.select(store => store.appDb.appBaseUrl)
+        //     .take(1)
+        //     .mergeMap(baseUrl => {
+        //         console.log(action);
+        //         var i_user = 'reseller@ms.com'
+        //         var i_pass = '123123'
+        //         const url = `${baseUrl}?command=GetCustomers&resellerUserName=${i_user}&resellerPassword=${i_pass}`;
+        //         return this.http.get(url)
+        //             .map(res => {
+        //
+        //
+        //                 var xmlData = res.text()
+        //                 const boundCallback = Observable.bindCallback(this.processXml, (xmlData: any) => xmlData);
+        //                 const results = [];
+        //                 boundCallback(this, xmlData)
+        //                     .do((x) => {
+        //                         console.log(x);
+        //                     });
+        //
+        //
+        //             }).map(final => {
+        //                 return final;
+        //             })
+        //     })
 
     }
 
