@@ -88,10 +88,11 @@ import {EffectsModule} from "@ngrx/effects";
 import {LoadThreadsEffectService} from "../store/effects/load-threads-effect.service";
 import {StoreDevtoolsModule} from "@ngrx/store-devtools";
 import {uiState} from "../store/reducers/uiStateReducer";
-import {appDb} from "../store/reducers/appDbReducer";
+import {appDb} from "../store/reducers/app-db-reducer";
 import {storeData} from "../store/reducers/uiStoreDataReducer";
 import weatherReducer from "../store/reducers/weatherReducer";
 import {ThreadsService} from "../services/threads.service";
+import {AppdbAction} from "../store/actions/app-db-actions";
 
 export enum ServerMode {
     CLOUD,
@@ -181,6 +182,10 @@ export var providing = [CommBroker, AUTH_PROVIDERS,
         useClass: StoreService
     },
     {
+        provide: AppdbAction,
+        useClass: AppdbAction
+    },
+    {
         provide: "DEV_ENV",
         useValue: Ngmslib.DevMode()
     },
@@ -213,6 +218,7 @@ var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, Log
         HttpModule,
         StoreModule.provideStore(combineReducers({uiState, storeData, weatherReducer, appDb}), INITIAL_APPLICATION_STATE),
         EffectsModule.run(LoadThreadsEffectService),
+        EffectsModule.run(AppdbAction),
         StoreDevtoolsModule.instrumentOnlyWithExtension(),
         ChartModule,
         ToastModule.forRoot({

@@ -1,7 +1,7 @@
 import {Injectable, Inject, forwardRef} from "@angular/core";
 import {BusinessAction} from "../business/BusinessAction";
 import {ResellerAction} from "../reseller/ResellerAction";
-import {AppdbAction} from "../appdb/AppdbAction";
+// import {AppdbAction} from "../appdb/AppdbAction";
 import {AppStore} from "angular2-redux-util";
 import {StationsAction} from "../stations/StationsAction";
 import {List, Map} from "immutable";
@@ -12,7 +12,8 @@ import {Lib} from "../Lib";
 import {OrdersAction} from "../comps/app1/orders/OrdersAction";
 import {Store} from "@ngrx/store";
 import {ApplicationState} from "../store/application-state";
-import {AppInit} from "../store/actions/app-db-actions";
+import {AppdbAction} from "../store/actions/app-db-actions";
+// import {AppInit} from "../store/actions/app-db-actions";
 
 @Injectable()
 export class StoreService {
@@ -21,11 +22,11 @@ export class StoreService {
                 // @Inject(forwardRef(() => OrdersAction)) private ordersActions: OrdersAction,
                 // @Inject(forwardRef(() => ResellerAction)) private resellerAction: ResellerAction,
                 // @Inject(forwardRef(() => StationsAction)) private stationsAction: StationsAction,
-                // @Inject(forwardRef(() => AppdbAction)) private appDbActions: AppdbAction,
+                @Inject(forwardRef(() => AppdbAction)) private appdbAction: AppdbAction,
                 @Inject(forwardRef(() => CommBroker)) private commBroker: CommBroker,
                 @Inject('OFFLINE_ENV') private offlineEnv) {
 
-        this.appStore.dispatch(new AppInit());
+         this.appStore.dispatch(this.appdbAction.initAppDb());
     }
 
     // todo: in private / hybrid mode we need to get list of business servers and logic to as when on each env
@@ -46,6 +47,7 @@ export class StoreService {
         // this.appStore.dispatch(this.businessActions.getSamples());
         console.log('loaded network services...');
     }
+    
 
     private initPollServices() {
         console.log('starting poll services...');

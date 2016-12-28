@@ -1,9 +1,9 @@
 import {Injectable, Inject, forwardRef} from "@angular/core";
 import {Router, ActivatedRouteSnapshot, RouterStateSnapshot, ActivatedRoute} from "@angular/router";
-import {AppStore} from "angular2-redux-util";
+// import {AppStore} from "angular2-redux-util";
 import {LocalStorage} from "./LocalStorage";
 import {StoreService} from "./StoreService";
-import {AppdbAction, AuthState} from "../appdb/AppdbAction";
+// import {AppdbAction, AuthState} from "../appdb/AppdbAction";
 import "rxjs/add/observable/fromPromise";
 import {Observable} from "rxjs/Observable";
 import {Map} from "immutable";
@@ -11,6 +11,7 @@ import {Ngmslib} from "ng-mslib";
 import * as _ from "lodash";
 import {Store} from "@ngrx/store";
 import {ApplicationState} from "../store/application-state";
+import {AppdbAction, AuthState, AUTH_START} from "../store/actions/app-db-actions";
 
 
 export enum FlagsAuth {
@@ -27,12 +28,13 @@ export class AuthService {
 
     constructor(private router: Router,
                 @Inject(forwardRef(() => Store)) private store: Store<ApplicationState>,
-                // @Inject(forwardRef(() => AppdbAction)) private appdbAction: AppdbAction,
+                @Inject(forwardRef(() => AppdbAction)) private appdbAction: AppdbAction,
                 @Inject(forwardRef(() => LocalStorage)) private localStorage: LocalStorage,
                 @Inject(forwardRef(() => StoreService)) private storeService: StoreService,
                 private activatedRoute: ActivatedRoute) {
         // this.listenStores();
     }
+
     //
     public start() {
         var i_user, i_pass, i_remember;
@@ -66,6 +68,7 @@ export class AuthService {
             this.router.navigate(['/UserLogin']);
         }
     }
+
     //
     // private listenStores() {
     //     this.appStore.sub((twoFactorStatus: {status: boolean, twoFactorStatusReceived: Date}) => {
@@ -117,11 +120,11 @@ export class AuthService {
     //     }
     // }
     //
-    public authUser(i_user: string, i_pass: string, i_remember: string): void {
-        console.log(i_user,i_pass);
-        // this.store.dispatch()
+    public authUser(user: string, pass: string, remember: string): void {
+        this.store.dispatch({type: AUTH_START, payload: {user, pass, remember}});
         // this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(i_user.trim(), i_pass.trim(), i_remember);
     }
+
     //
     // public authServerTwoFactor(i_twoFactorToken): void {
     //     this.appStore.dispatch(this.appdbAction.authenticateTwoFactor(i_twoFactorToken, false));

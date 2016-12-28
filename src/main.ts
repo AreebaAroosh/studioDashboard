@@ -15,17 +15,19 @@ Observable.prototype.debug = function(message:string) {
     return this.do(
         nextValue => {
             if (debuggerOn) {
-                console.log(message, nextValue)
+                console.debug('ObsDebug-I: ' + message, (nextValue.type || nextValue))
             }
         },
         error => {
             if (debuggerOn) {
-                console.error(message, error)
+                console.error('ObsDebug-E: ' + message, error)
             }
         },
         () => {
             if (debuggerOn) {
-                console.error("Observable completed - ", message)
+                console.debug('ObsDebug-C: ' + message);
+                /** for DevTools colors: **/
+                //console.log("%cObsDebug-C %s", "color: red", message);
             }
         }
     );

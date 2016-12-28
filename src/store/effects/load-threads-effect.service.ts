@@ -6,8 +6,6 @@ import {Observable} from "rxjs";
 import {Action} from "@ngrx/store";
 
 
-
-
 @Injectable()
 export class LoadThreadsEffectService {
 

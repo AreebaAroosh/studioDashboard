@@ -124,15 +124,15 @@ export class LoginPanel extends Compbaser {
 
     private listenEvents() {
 
-        this.cancelOnDestroy(
-            this.activatedRoute.params.subscribe(params => {
-                if (params['twoFactor']){
-                    this.m_user = Ngmslib.Base64().decode(params['user']);
-                    this.m_pass = Ngmslib.Base64().decode(params['pass']);
-                    this.m_showTwoFactor = true;
-                }
-            })
-        )
+        // this.cancelOnDestroy(
+        //     this.activatedRoute.params.subscribe(params => {
+        //         if (params['twoFactor']){
+        //             this.m_user = Ngmslib.Base64().decode(params['user']);
+        //             this.m_pass = Ngmslib.Base64().decode(params['pass']);
+        //             this.m_showTwoFactor = true;
+        //         }
+        //     })
+        // )
 
         // this.cancelOnDestroy(
         //     this.appStore.sub((credentials: Map<string,any>) => {
