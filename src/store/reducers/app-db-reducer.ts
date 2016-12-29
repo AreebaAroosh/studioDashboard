@@ -32,25 +32,26 @@ export function appDb(state: IAppDb, action: any): IAppDb {
         //     return state;
         // }
 
-        case 'AUTH_END':
-            if (!action.payload.Businesses){
-                console.log('auth fail')
-            } else {
-                console.log('auth pass ' + _.size(action.payload.Businesses.BusinessInfo));
-            }
-            return state;
+        // case 'AUTH_END':
+        //     // if (!action.payload.Businesses){
+        //     //     console.log('auth fail')
+        //     // } else {
+        //     //     console.log('auth pass ' + _.size(action.payload.Businesses.BusinessInfo));
+        //     // }
+        //     return state;
 
         case 'APP_INIT':
             state.appStartTime = Date.now();
             state.appBaseUrl = `${baseUrl}`;
             return state;
 
+        case 'ACTION_AUTH_PROGRESS':
         case 'AUTH_FAIL':
         case 'AUTH_PASS_WAIT_TWO_FACTOR':
         case 'AUTH_PASS':
             state.credentials = new UserModel(action)
-            state.appBaseUrlUser = `${baseUrl}?resellerUserName=${action.user}&resellerPassword=${action.pass}`;
-            state.appBaseUrlCloud = `${appBaseUrlCloud}/END_POINT/${action.user}/${action.pass}`;
+            state.appBaseUrlUser = `${baseUrl}?resellerUserName=${action.payload.user}&resellerPassword=${action.payload.pass}`;
+            state.appBaseUrlCloud = `${appBaseUrlCloud}/END_POINT/${action.payload.user}/${action.payload.pass}`;
             return state;
 
 
