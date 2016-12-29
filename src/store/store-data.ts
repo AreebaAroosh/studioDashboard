@@ -53,7 +53,7 @@ export const INITIAL_APP_DB: IAppDb = {
         userModel: new UserModel({
             user: '',
             pass: '',
-            reason: '',
+            reason: -1,
             authenticated: false,
             businessId: -1,
             rememberMe: false,

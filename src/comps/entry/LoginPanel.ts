@@ -100,7 +100,7 @@ export class LoginPanel extends Compbaser {
     private m_rememberMe: any;
     private loginState: string = '';
 
-    constructor(private appStore:Store<ApplicationState>,
+    constructor(private store:Store<ApplicationState>,
                 private renderer: Renderer,
                 private router: Router,
                 private toast:ToastsManager,
@@ -124,15 +124,24 @@ export class LoginPanel extends Compbaser {
 
     private listenEvents() {
 
-        // this.cancelOnDestroy(
-        //     this.activatedRoute.params.subscribe(params => {
-        //         if (params['twoFactor']){
-        //             this.m_user = Ngmslib.Base64().decode(params['user']);
-        //             this.m_pass = Ngmslib.Base64().decode(params['pass']);
-        //             this.m_showTwoFactor = true;
-        //         }
-        //     })
-        // )
+        this.store.select(store => store.appDb.userModel)
+            .subscribe((userModel: UserModel) => {
+                if (userModel.getReason() >= 0){
+                    console.log('reason ' + userModel.getReason());
+                }
+
+
+            })
+
+        this.cancelOnDestroy(
+            this.activatedRoute.params.subscribe(params => {
+                if (params['twoFactor']){
+                    this.m_user = Ngmslib.Base64().decode(params['user']);
+                    this.m_pass = Ngmslib.Base64().decode(params['pass']);
+                    this.m_showTwoFactor = true;
+                }
+            })
+        )
 
         // this.cancelOnDestroy(
         //     this.appStore.sub((credentials: Map<string,any>) => {

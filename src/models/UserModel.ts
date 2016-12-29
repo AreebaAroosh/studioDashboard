@@ -1,7 +1,7 @@
 import {StoreModel} from "../models/StoreModel";
 export class UserModel extends StoreModel {
 
-    constructor(data: {user: string, pass: string, reason: string, authenticated: boolean, businessId: number, rememberMe: boolean, twoFactorRequired:boolean, accountType: number, authTime?: Date}) {
+    constructor(data: {user: string, pass: string, reason: number, authenticated: boolean, businessId: number, rememberMe: boolean, twoFactorRequired:boolean, accountType: number, authTime?: Date}) {
         super(data);
     }
 
@@ -65,7 +65,7 @@ export class UserModel extends StoreModel {
         return this.setKey<UserModel>(UserModel, 'reason', value);
     }
 
-    getReason(): boolean {
+    getReason(): number {
         return this.getKey('reason');
     }
 

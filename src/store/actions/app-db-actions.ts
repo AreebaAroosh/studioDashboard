@@ -113,13 +113,17 @@ export class AppdbAction {
                             });
                         } else {
                             // Auth passed, next check if two factor enabled
-                            userModel = userModel.setAuthenticated(true);
                             userModel = userModel.setAccountType(AuthenticateFlags.ENTERPRISE_ACCOUNT);
                             this.twoFactorCheck()
                                 .take(1)
                                 .subscribe((twoFactorResult) => {
                                     userModel = userModel.setBusinessId(twoFactorResult.businessId);
                                     userModel = userModel.setTwoFactorRequired(twoFactorResult.enabled);
+                                    if (twoFactorResult.enabled){
+                                        userModel = userModel.setAuthenticated(false);
+                                    } else {
+                                        userModel = userModel.setAuthenticated(true);
+                                    }
                                     this.store.dispatch({
                                         type: ACTION_AUTH_PASS,
                                         payload: userModel

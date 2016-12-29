@@ -13,7 +13,7 @@ import {Store} from "@ngrx/store";
 import {ApplicationState} from "../store/application-state";
 import {AppdbAction, AuthenticateFlags, AUTH_START} from "../store/actions/app-db-actions";
 import {UserModel} from "../models/UserModel";
-
+          
 
 export enum FlagsAuth {
     WrongPass,
@@ -27,12 +27,33 @@ export class AuthService {
     private m_authenticateFlags: AuthenticateFlags;
     private m_pendingNotify: any;
 
+    private userModel: UserModel;
+
     constructor(private router: Router,
                 @Inject(forwardRef(() => Store)) private store: Store<ApplicationState>,
                 @Inject(forwardRef(() => AppdbAction)) private appdbAction: AppdbAction,
                 @Inject(forwardRef(() => LocalStorage)) private localStorage: LocalStorage,
                 @Inject(forwardRef(() => StoreService)) private storeService: StoreService,
                 private activatedRoute: ActivatedRoute) {
+
+        this.store.select(store => store.appDb.userModel)
+            .subscribe((userModel: UserModel) => {
+                this.userModel = userModel;
+
+                if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == false) {
+                    var user = Ngmslib.Base64().encode(this.userModel.getUser());
+                    var pass = Ngmslib.Base64().encode(this.userModel.getPass());
+                    this.router.navigate([`/UserLogin/twoFactor/${user}/${pass}`])
+                }
+
+                if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == true) {
+                    alert('show app')
+                }
+
+
+            })
+
+
         // this.listenStores();
     }
 
@@ -55,15 +76,16 @@ export class AuthService {
                     credentials = Ngmslib.Base64().decode(id);
                     var local = this.activatedRoute.snapshot.queryParams['local'];
                     var credentialsArr = credentials.match(/user=(.*),pass=(.*)/);
-                    i_user = credentialsArr[1]
-                    i_pass = credentialsArr[2]
+                    i_user = credentialsArr[1];
+                    i_pass = credentialsArr[2];
                     i_remember = 'false';
                 } catch (e) {
                 }
             }
         }
         if (i_user && i_pass) {
-            // this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(i_user.trim(), i_pass.trim(), i_remember);
+            this.router.navigate(['/AutoLogin']);
+            this.authUser(i_user, i_pass, i_remember)
         } else {
             // no valid user/pass found so go to user login, end of process
             this.router.navigate(['/UserLogin']);
@@ -122,9 +144,9 @@ export class AuthService {
     // }
     //
     public authUser(user: string, pass: string, rememberMe: boolean = false): void {
-        this.store.select(store => store.appDb.userModel).take(1).subscribe((userModel: UserModel) => {
-            this.store.dispatch({type: AUTH_START, payload: userModel.setUser(user).setPass(pass).setRememberMe(rememberMe)});
-            // this.store.dispatch({type: AUTH_START, payload: userModel.setUser('reseller@ms.com').setPass('123123').setRememberMe(rememberMe)});
+        this.store.dispatch({
+            type: AUTH_START,
+            payload: this.userModel.setUser(user.trim()).setPass(pass.trim()).setRememberMe(rememberMe)
         })
     }
 
