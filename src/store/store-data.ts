@@ -28,8 +28,6 @@ export interface IAppDb {
     appStartTime: number;
     appBaseUrl: string;
     userModel: UserModel,
-    twoFactorStatus: string;
-    accountType: string;
     cloudServers: string;
     serversStatus: string;
     appBaseUrlUser: string;
@@ -59,11 +57,9 @@ export const INITIAL_APP_DB: IAppDb = {
             authenticated: false,
             businessId: -1,
             rememberMe: false,
-            twoFactorStatus: -1,
+            twoFactorRequired: false,
             accountType: -1
         }),
-        twoFactorStatus: '',
-        accountType: '',
         cloudServers: '',
         serversStatus: '',
         appBaseUrlUser: '',

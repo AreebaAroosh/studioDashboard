@@ -50,7 +50,6 @@ export const APP_INIT = 'APP_INIT';
 
 export enum AuthenticateFlags {
     PASS,
-    PASS_WAITING_TWO_FACTOR,
     WRONG_PASS,
     NOT_ENTERPRISE,
     WRONG_TWO_FACTOR,
@@ -114,25 +113,16 @@ export class AppdbAction {
                             });
                         } else {
                             // Auth passed, next check if two factor enabled
-                            let eventType, authState;
                             userModel = userModel.setAuthenticated(true);
                             userModel = userModel.setAccountType(AuthenticateFlags.ENTERPRISE_ACCOUNT);
                             this.twoFactorCheck()
                                 .take(1)
                                 .subscribe((twoFactorResult) => {
-                                    eventType = ACTION_AUTH_PASS;
                                     userModel = userModel.setBusinessId(twoFactorResult.businessId);
-                                    if (twoFactorResult.enabled == false) {
-                                        authState = AuthenticateFlags.PASS;
-                                    } else {
-                                        authState = AuthenticateFlags.PASS_WAITING_TWO_FACTOR;
-                                    }
+                                    userModel = userModel.setTwoFactorRequired(twoFactorResult.enabled);
                                     this.store.dispatch({
-                                        type: eventType,
-                                        payload: {
-                                            userModel: userModel,
-                                            authState: authState
-                                        }
+                                        type: ACTION_AUTH_PASS,
+                                        payload: userModel
                                     });
                                 })
                         }

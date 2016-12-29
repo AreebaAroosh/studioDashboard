@@ -58,9 +58,8 @@ export function appDb(state: IAppDb, action: any): IAppDb {
             return state;
 
         case StoreActions.ACTION_AUTH_PASS:
-            var userModel:UserModel = action.payload.userModel;
+            var userModel:UserModel = action.payload;
             state.userModel = userModel.setTime();
-            state.twoFactorStatus = action.payload.authState
             return state;
 
 
