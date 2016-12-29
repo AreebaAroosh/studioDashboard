@@ -12,6 +12,7 @@ import * as _ from "lodash";
 import {Store} from "@ngrx/store";
 import {ApplicationState} from "../store/application-state";
 import {AppdbAction, AuthState, AUTH_START} from "../store/actions/app-db-actions";
+import {UserModel} from "../models/UserModel";
 
 
 export enum FlagsAuth {
@@ -120,8 +121,16 @@ export class AuthService {
     //     }
     // }
     //
-    public authUser(user: string, pass: string, remember: string): void {
-        this.store.dispatch({type: AUTH_START, payload: {user, pass, remember}});
+    public authUser(user: string, pass: string, remember: boolean): void {
+        let userModel:UserModel = new UserModel({
+            user: user,
+            pass: pass,
+            reason: '',
+            authenticated: false,
+            businessId: -1,
+            rememberMe: remember
+        });
+        this.store.dispatch({type: AUTH_START, payload: userModel});
         // this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(i_user.trim(), i_pass.trim(), i_remember);
     }
 

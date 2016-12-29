@@ -6,7 +6,7 @@ import {WeatherModel} from "../model/WeatherModel";
 import {WEATHER_LOADED_ACTION} from "../actions";
 import {StoreModel} from "../model/StoreModel";
 import {UserModel} from "../../models/UserModel";
-
+import * as StoreActions from "../actions/app-db-actions";
 
 const baseUrl = 'https://galaxy.signage.me/WebService/ResellerService.ashx';
 // const baseUrl = 'https://secure.digitalsignage.com/Digg';
@@ -40,18 +40,27 @@ export function appDb(state: IAppDb, action: any): IAppDb {
         //     // }
         //     return state;
 
-        case 'APP_INIT':
+        case StoreActions.APP_INIT:
             state.appStartTime = Date.now();
             state.appBaseUrl = `${baseUrl}`;
             return state;
 
-        case 'ACTION_AUTH_PROGRESS':
-        case 'AUTH_FAIL':
-        case 'AUTH_PASS_WAIT_TWO_FACTOR':
-        case 'AUTH_PASS':
-            state.credentials = new UserModel(action)
-            state.appBaseUrlUser = `${baseUrl}?resellerUserName=${action.payload.user}&resellerPassword=${action.payload.pass}`;
-            state.appBaseUrlCloud = `${appBaseUrlCloud}/END_POINT/${action.payload.user}/${action.payload.pass}`;
+        case StoreActions.ACTION_AUTH_PROGRESS:
+            var userModel:UserModel = action.payload;
+            state.userModel = userModel.setTime();
+            state.appBaseUrlUser = `${baseUrl}?resellerUserName=${userModel.getKey('user')}&resellerPassword=${userModel.getKey('pass')}`;
+            state.appBaseUrlCloud = `${appBaseUrlCloud}/END_POINT/${userModel.getKey('user')}/${userModel.getKey('pass')}`;
+            return state;
+
+        case StoreActions.ACTION_AUTH_FAIL:
+            var userModel:UserModel = action.payload;
+            state.userModel = userModel.setTime();
+            return state;
+
+        case StoreActions.ACTION_AUTH_PASS:
+            var userModel:UserModel = action.payload.userModel;
+            state.userModel = userModel.setTime();
+            state.twoFactorStatus = action.payload.authState
             return state;
 
 

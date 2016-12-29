@@ -17,7 +17,7 @@ export class AutoLogin extends Compbaser {
     constructor(private appStore: Store<ApplicationState>, private router:Router) {
         super();
         debugger;
-        this.appStore.select(state => state.appDb.credentials).subscribe((e)=>{
+        this.appStore.select(state => state.appDb.userModel).subscribe((e)=>{
             console.log(e);
         });
 

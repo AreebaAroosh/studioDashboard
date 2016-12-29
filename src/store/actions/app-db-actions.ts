@@ -10,16 +10,26 @@ import {ApplicationState} from "../application-state";
 import {Actions, Effect} from "@ngrx/effects";
 import {Observable} from "rxjs";
 import * as _ from 'lodash';
+import {UserModel} from "../../models/UserModel";
 
 
 export const SERVERS_STATUS = 'SERVERS_STATUS';
 export const CLOUD_SERVERS = 'CLOUD_SERVERS';
+
 export const AUTH_PASS = 'AUTH_PASS';
 export const AUTH_PASS_WAIT_TWO_FACTOR = 'AUTH_PASS_WAIT_TWO_FACTOR';
 export const AUTH_FAIL = 'AUTH_FAIL';
 export const AUTH_START = 'AUTH_START';
 export const AUTH_END = 'AUTH_END';
 export const TWO_FACTOR_SERVER_RESULT = 'TWO_FACTOR_SERVER_RESULT';
+
+
+export const ACTION_AUTH_PROGRESS = 'ACTION_AUTH_PROGRESS';
+export const ACTION_AUTH_PASS = 'ACTION_AUTH_PASS';
+export const ACTION_AUTH_FAIL = 'ACTION_AUTH_FAIL';
+export const ACTION_AUTH_START = 'ACTION_AUTH_START';
+export const ACTION_AUTH_END = 'ACTION_AUTH_END';
+export const ACTION_TWO_FACTOR_SERVER_RESULT = 'ACTION_TWO_FACTOR_SERVER_RESULT';
 
 
 export const APP_INIT = 'APP_INIT';
@@ -38,6 +48,16 @@ export enum FlagsAuth {
     WrongTwoFactor
 }
 
+export enum AuthenticateFlags {
+    FAIL,
+    PASS,
+    PASS_WAITING_TWO_FACTOR,
+    WRONG_PASS,
+    NOT_ENTERPRISE,
+    ENTERPRISE,
+    WRONG_TWO_FACTOR
+}
+
 @Injectable()
 export class AppdbAction {
     parseString;
@@ -46,63 +66,21 @@ export class AppdbAction {
         this.parseString = xml2js.parseString;
     }
 
-    // action.payload['user'], action.payload['pass'], action.payload['remember']
-
-    // @Effect() userThreads$: Observable<Action> = this.actions$
-    //     .ofType(AUTH_START)
-    //     .switchMap(action => this.authUser(action))
-    //     .map(allUserData => ({type: AUTH_END, payload: allUserData}));
-    // authUser(action): Observable<any> {
-    //     return this.store.select(store => store.appDb.appBaseUrl)
-    //         .take(1)
-    //         .mergeMap(baseUrl => {
-    //             const url = `${baseUrl}?command=GetCustomers&resellerUserName=${action.payload.user}&resellerPassword=${action.payload.pass}`;
-    //             return this.http.get(url)
-    //                 .catch((err:any) => {
-    //                     alert('Error getting order details');
-    //                     return Observable.throw(err);
-    //                 })
-    //                 .finally(() => {
-    //                 })
-    //                 .map(res => {
-    //                     return res.text()
-    //                 }).flatMap((i_xmlData: string) => {
-    //                     const boundCallback = Observable.bindCallback(this.processXml, (xmlData: any) => xmlData);
-    //                     return boundCallback(this, i_xmlData)
-    //                 }).map(businessData => {
-    //                     if (_.isNull(businessData))
-    //                         return ({})
-    //                     return businessData;
-    //                 })
-    //         })
-    // }
-
-
-
     @Effect() userThreads$: Observable<Action> = this.actions$
         .ofType(AUTH_START)
         .switchMap(action => this.authUser(action))
         .map(authStatus => ({type: AUTH_END, payload: authStatus}));
 
-    private authUser(action): Observable<any> {
-        action.payload.user = 'reseller@ms.com';
-        action.payload.pass = '123123';
-
+    private authUser(action: Action): Observable<any> {
+        let userModel: UserModel = action.payload;
         this.store.dispatch({
-            type: 'ACTION_AUTH_PROGRESS',
-            payload: {
-                result: '',
-                authenticated: '',
-                user: action.payload.user,
-                pass: action.payload.pass,
-                remember: action.payload.remember,
-                reason: ''
-            }
+            type: ACTION_AUTH_PROGRESS,
+            payload: userModel
         });
         return this.store.select(store => store.appDb.appBaseUrl)
             .take(1)
             .mergeMap(baseUrl => {
-                const url = `${baseUrl}?command=GetCustomers&resellerUserName=${action.payload.user}&resellerPassword=${action.payload.pass}`;
+                const url = `${baseUrl}?command=GetCustomers&resellerUserName=${userModel.user()}&resellerPassword=${userModel.pass()}`;
                 return this.http.get(url)
                     .catch((err: any) => {
                         alert('Error getting order details');
@@ -117,47 +95,48 @@ export class AppdbAction {
                         return boundCallback(this, i_xmlData)
                     }).map(result => {
                         if (_.isNull(result)) {
-                            return {
-                                result: AUTH_FAIL,
-                                authenticated: AuthState.FAIL,
-                                user: action.payload.user,
-                                pass: action.payload.pass,
-                                remember: action.payload.remember,
-                                reason: 'AuthLoginType.WrongPass'
-                            };
+                            userModel = userModel.setAuthenticated(false);
+                            userModel = userModel.setReason(AuthenticateFlags.WRONG_PASS);
+                            return this.store.dispatch({
+                                type: ACTION_AUTH_FAIL,
+                                payload: userModel
+
+                            });
                         } else if (result && !result.Businesses) {
-                            return {
-                                result: AUTH_FAIL,
-                                authenticated: AuthState.FAIL,
-                                user: action.payload.user,
-                                pass: action.payload.pass,
-                                remember: action.payload.remember,
-                                reason: 'AuthLoginType.NotEnterprise'
-                            };
+                            userModel = userModel.setAuthenticated(true);
+                            userModel = userModel.setReason(AuthenticateFlags.NOT_ENTERPRISE);
+                            return this.store.dispatch({
+                                type: ACTION_AUTH_FAIL,
+                                payload: userModel
+
+                            });
                         } else {
                             // Auth passed, next check if two factor enabled
-                            this.twoFactorCheck(action.payload.user, action.payload.pass).subscribe((twoFactorResult) => {
-                                if (twoFactorResult.enabled == false) {
-                                    var eventType = AUTH_PASS;
-                                    var authState = AuthState.PASS;
-                                } else {
-                                    var eventType = AUTH_PASS_WAIT_TWO_FACTOR;
-                                    var authState = AuthState.TWO_FACTOR;
-                                }
-                                return {
-                                    type: eventType,
-                                    authenticated: authState,
-                                    user: action.payload.user,
-                                    pass: action.payload.pass,
-                                    businessId: twoFactorResult.businessId,
-                                    remember: action.payload.remember,
-                                    reason: 'AuthLoginType.Enterprise'
-                                };
-                            })
+                            let eventType, authState;
+                            userModel = userModel.setAuthenticated(true);
+                            this.twoFactorCheck()
+                                .take(1)
+                                .subscribe((twoFactorResult) => {
+                                    eventType = ACTION_AUTH_PASS;
+                                    userModel = userModel.setBusinessId(twoFactorResult.businessId);
+                                    if (twoFactorResult.enabled == false) {
+                                        authState = AuthenticateFlags.PASS;
+                                    } else {
+                                        authState = AuthenticateFlags.PASS_WAITING_TWO_FACTOR;
+                                    }
+                                    this.store.dispatch({
+                                        type: eventType,
+                                        payload: {
+                                            userModel: userModel,
+                                            authState: authState
+                                        }
+                                    });
+                                })
                         }
                     })
             })
     }
+
     private processXml(context, xmlData, cb) {
         context.parseString(xmlData, {attrkey: 'attr'}, function (err, result) {
             if (err || !result)
@@ -167,13 +146,11 @@ export class AppdbAction {
 
     }
 
-    private twoFactorCheck(i_user, i_pass): Observable<any> {
+    private twoFactorCheck(): Observable<any> {
         return this.store.select(store => store.appDb.appBaseUrlCloud)
             .take(1)
             .mergeMap(appBaseUrlCloud => {
-                // let appBaseUrlCloud= appBaseUrlCloud.replac;
                 var url = appBaseUrlCloud.replace('END_POINT', 'twoFactorCheck');
-                console.log(url);
                 return this.http.get(url)
                     .catch((err: any) => {
                         return Observable.throw(err);

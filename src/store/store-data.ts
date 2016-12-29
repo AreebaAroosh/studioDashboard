@@ -27,7 +27,7 @@ export interface IAppDb {
     totalStations: string;
     appStartTime: number;
     appBaseUrl: string;
-    credentials: UserModel,
+    userModel: UserModel,
     twoFactorStatus: string;
     accountType: string;
     cloudServers: string;
@@ -52,7 +52,14 @@ export const INITIAL_APP_DB: IAppDb = {
         totalStations: '',
         appStartTime: -1,
         appBaseUrl: '',
-        credentials: new UserModel({}),
+        userModel: new UserModel({
+            user: '',
+            pass: '',
+            reason: '',
+            authenticated: false,
+            businessId: -1,
+            rememberMe: false
+        }),
         twoFactorStatus: '',
         accountType: '',
         cloudServers: '',
