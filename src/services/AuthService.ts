@@ -11,7 +11,7 @@ import {Ngmslib} from "ng-mslib";
 import * as _ from "lodash";
 import {Store} from "@ngrx/store";
 import {ApplicationState} from "../store/application-state";
-import {AppdbAction, AuthState, AUTH_START} from "../store/actions/app-db-actions";
+import {AppdbAction, AuthenticateFlags, AUTH_START} from "../store/actions/app-db-actions";
 import {UserModel} from "../models/UserModel";
 
 
@@ -24,7 +24,7 @@ export enum FlagsAuth {
 
 @Injectable()
 export class AuthService {
-    private m_authState: AuthState;
+    private m_authenticateFlags: AuthenticateFlags;
     private m_pendingNotify: any;
 
     constructor(private router: Router,
@@ -121,17 +121,11 @@ export class AuthService {
     //     }
     // }
     //
-    public authUser(user: string, pass: string, remember: boolean): void {
-        let userModel:UserModel = new UserModel({
-            user: user,
-            pass: pass,
-            reason: '',
-            authenticated: false,
-            businessId: -1,
-            rememberMe: remember
-        });
-        this.store.dispatch({type: AUTH_START, payload: userModel});
-        // this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(i_user.trim(), i_pass.trim(), i_remember);
+    public authUser(user: string, pass: string, rememberMe: boolean = false): void {
+        this.store.select(store => store.appDb.userModel).take(1).subscribe((userModel: UserModel) => {
+            this.store.dispatch({type: AUTH_START, payload: userModel.setUser(user).setPass(pass).setRememberMe(rememberMe)});
+            // this.store.dispatch({type: AUTH_START, payload: userModel.setUser('reseller@ms.com').setPass('123123').setRememberMe(rememberMe)});
+        })
     }
 
     //

@@ -1,9 +1,25 @@
 import {StoreModel} from "../models/StoreModel";
 export class UserModel extends StoreModel {
 
-    constructor(data: {user: string, pass: string, reason: string, authenticated: boolean, businessId: number, rememberMe: boolean, authTime?: Date}) {
+    constructor(data: {user: string, pass: string, reason: string, authenticated: boolean, businessId: number, rememberMe: boolean, twoFactorStatus:number, accountType: number, authTime?: Date}) {
         super(data);
     }
+
+    // setKey2 = <T extends new (...args: any[]) => UserModel, K extends keyof UserModel>
+    //     (c: T, key: K, value: UserModel[K]) => {
+    //     c.prototype[key] = value;
+    // };
+    // getKey2 = (key: string) => {
+    //     return key as any;
+    // };
+    //
+    // set authenticated2(value: boolean) {
+    //     this.setKey2(UserModel, 'authenticated2', value);
+    // }
+    //
+    // get authenticated2(): boolean {
+    //     return this.getKey2('authenticated');
+    // }
 
     public setTime() {
         return this.setKey<UserModel>(UserModel, 'authTime', new Date());
@@ -21,8 +37,24 @@ export class UserModel extends StoreModel {
         return this.getKey('authenticated');
     }
 
+    setUser(value:string) {
+        return this.setKey<UserModel>(UserModel, 'user', value);
+    }
+
+    getUser() {
+        return this.user();
+    }
+
     user() {
         return this.getKey('user');
+    }
+
+    setPass(value:string) {
+        return this.setKey<UserModel>(UserModel, 'pass', value);
+    }
+
+    getPass() {
+        return this.pass();
     }
 
     pass() {
@@ -37,6 +69,14 @@ export class UserModel extends StoreModel {
         return this.getKey('reason');
     }
 
+    setAccountType(value:number) {
+        return this.setKey<UserModel>(UserModel, 'accountType', value);
+    }
+
+    getAccountType(): boolean {
+        return this.getKey('accountType');
+    }
+
     setBusinessId(value:number) {
         return this.setKey<UserModel>(UserModel, 'businessId', value);
     }
@@ -47,6 +87,14 @@ export class UserModel extends StoreModel {
 
     businessId() {
         return this.getKey('businessId');
+    }
+
+    setRememberMe(value:boolean) {
+        return this.setKey<UserModel>(UserModel, 'rememberMe', value);
+    }
+
+    getRememberMe() {
+        return this.rememberMe()
     }
 
     rememberMe() {

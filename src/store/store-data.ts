@@ -58,7 +58,9 @@ export const INITIAL_APP_DB: IAppDb = {
             reason: '',
             authenticated: false,
             businessId: -1,
-            rememberMe: false
+            rememberMe: false,
+            twoFactorStatus: -1,
+            accountType: -1
         }),
         twoFactorStatus: '',
         accountType: '',

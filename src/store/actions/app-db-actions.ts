@@ -34,28 +34,28 @@ export const ACTION_TWO_FACTOR_SERVER_RESULT = 'ACTION_TWO_FACTOR_SERVER_RESULT'
 
 export const APP_INIT = 'APP_INIT';
 
-export enum AuthState {
-    FAIL,
-    PASS,
-    TWO_FACTOR
-}
+// export enum AuthState {
+//     FAIL,
+//     PASS,
+//     TWO_FACTOR
+// }
 
 
-export enum FlagsAuth {
-    WrongPass,
-    NotEnterprise,
-    Enterprise,
-    WrongTwoFactor
-}
+// export enum FlagsAuth {
+//     WrongPass,
+//     NotEnterprise,
+//     Enterprise,
+//     WrongTwoFactor
+// }
 
 export enum AuthenticateFlags {
-    FAIL,
     PASS,
     PASS_WAITING_TWO_FACTOR,
     WRONG_PASS,
     NOT_ENTERPRISE,
-    ENTERPRISE,
-    WRONG_TWO_FACTOR
+    WRONG_TWO_FACTOR,
+    USER_ACCOUNT,
+    ENTERPRISE_ACCOUNT
 }
 
 @Injectable()
@@ -96,6 +96,7 @@ export class AppdbAction {
                     }).map(result => {
                         if (_.isNull(result)) {
                             userModel = userModel.setAuthenticated(false);
+                            userModel = userModel.setAccountType(-1);
                             userModel = userModel.setReason(AuthenticateFlags.WRONG_PASS);
                             return this.store.dispatch({
                                 type: ACTION_AUTH_FAIL,
@@ -104,6 +105,7 @@ export class AppdbAction {
                             });
                         } else if (result && !result.Businesses) {
                             userModel = userModel.setAuthenticated(true);
+                            userModel = userModel.setAccountType(AuthenticateFlags.USER_ACCOUNT);
                             userModel = userModel.setReason(AuthenticateFlags.NOT_ENTERPRISE);
                             return this.store.dispatch({
                                 type: ACTION_AUTH_FAIL,
@@ -114,6 +116,7 @@ export class AppdbAction {
                             // Auth passed, next check if two factor enabled
                             let eventType, authState;
                             userModel = userModel.setAuthenticated(true);
+                            userModel = userModel.setAccountType(AuthenticateFlags.ENTERPRISE_ACCOUNT);
                             this.twoFactorCheck()
                                 .take(1)
                                 .subscribe((twoFactorResult) => {
