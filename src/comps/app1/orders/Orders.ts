@@ -36,15 +36,10 @@ import {Component, ChangeDetectionStrategy, trigger, transition, animate, state,
                     </Slideritem>
                   </div>
                 </Sliderpanel>
-           
-            
-     
     `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class Orders {
-
-
 }
 
