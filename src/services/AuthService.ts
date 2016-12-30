@@ -48,17 +48,13 @@ export class AuthService {
 
                 if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == true) {
                 }
-
-
             })
-
-
         // this.listenStores();
     }
 
-    //
     public start() {
         var i_user, i_pass, i_remember;
+
         // check local store first
         var credentials = this.localStorage.getItem('remember_me');
         if (credentials && (credentials && credentials.u != '')) {

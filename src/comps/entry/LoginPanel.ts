@@ -122,16 +122,6 @@ export class LoginPanel extends Compbaser {
                 private authService: AuthService) {
         super();
         this.listenEvents();
-
-        // this.appStore.select(state => state.appDb.credentials).subscribe((e:UserModel)=>{
-        //     console.log(e.user());
-        // });
-        //
-        // this.appStore.dispatch({type: 'APP_INIT'})
-        //
-        // setInterval(()=>{
-        //     this.appStore.dispatch({type: 'APP_INIT'})
-        // },1000)
     }
 
     @ViewChild('userPass') userPass: ElementRef;
@@ -146,43 +136,24 @@ export class LoginPanel extends Compbaser {
 
         this.cancelOnDestroy(
             this.store.select(store => store.appDb.appAuthStatus).subscribe((authStatus: AuthenticateFlags) => {
-
-                if (this.checkFailedLogin(authStatus))
+                if (this.isAccessAllowed(authStatus) == false)
                     return;
-
-                switch(authStatus){
+                switch (authStatus) {
                     case AuthenticateFlags.TWO_FACTOR_ENABLED: {
                         this.m_showTwoFactor = true;
                         break;
                     }
-                    case AuthenticateFlags.TWO_FACTOR_DISABLED: {
-                        alert('enter app')
+                    case AuthenticateFlags.TWO_FACTOR_PASS: {
+                        this.enterApplication();
                         break;
                     }
-                 }
+                    case AuthenticateFlags.TWO_FACTOR_DISABLED: {
+                        this.enterApplication();
+                        break;
+                    }
+                }
             })
         )
-
-
-        // this.store.select(store => store.appDb.userModel)
-        //     .filter((userModel: UserModel) => {
-        //         console.log('aaaa' + userModel.getReason());
-        //         if (userModel.getReason() == -1)
-        //             return false;
-        //         return userModel;
-        //     })
-        //     .distinctUntilChanged((current: UserModel, previous: UserModel) => {
-        //         debugger;
-        //         var a = previous.getReason();
-        //         var b = current.getReason()
-        //         return previous.getReason() === current.getReason()
-        //     })
-        //     .subscribe((userModel: UserModel) => {
-        //         debugger;
-        //         // if (userModel.getReason() > -1) {
-        //         //     this.checkFailedLogin(userModel.getReason());
-        //         // }
-        //     });
 
         this.cancelOnDestroy(
             this.activatedRoute.params.subscribe(params => {
@@ -193,38 +164,6 @@ export class LoginPanel extends Compbaser {
                 }
             })
         )
-
-        // this.cancelOnDestroy(
-        //     this.appStore.sub((credentials: Map<string,any>) => {
-        //         var state = credentials.get('authenticated');
-        //         var reason = credentials.get('reason');
-        //         switch (state) {
-        //             case AuthState.FAIL: {
-        //                 this.checkFailedLogin(reason);
-        //                 break;
-        //             }
-        //             case AuthState.PASS: {
-        //                 this.enterApplication();
-        //                 break;
-        //             }
-        //             case AuthState.TWO_FACTOR: {
-        //                 this.m_showTwoFactor = true;
-        //                 this.m_rememberMe = false;
-        //                 this.loginState = 'default';
-        //                 break;
-        //             }
-        //         }
-        //     }, 'appdb.credentials'))
-
-        // this.cancelOnDestroy(
-        //     this.appStore.sub((twoFactorStatus: {status: boolean, twoFactorStatusReceived: Date}) => {
-        //         // twoFactorStatus.status = false;//debug
-        //         if (twoFactorStatus.status) {
-        //             this.enterApplication();
-        //         } else {
-        //             this.checkFailedLogin(FlagsAuth.WrongTwoFactor);
-        //         }
-        //     }, 'appdb.twoFactorStatus'))
     }
 
     private passFocus() {
@@ -237,58 +176,133 @@ export class LoginPanel extends Compbaser {
             this.authService.authServerTwoFactor(this.m_twoFactor);
         } else {
             // this.toast.info('Authenticating...');
-            // this.authService.authUser(this.m_user, this.m_pass, this.m_rememberMe);
-            this.authService.authUser('reseller@ms.com','123123', this.m_rememberMe);
+            this.authService.authUser(this.m_user, this.m_pass, this.m_rememberMe);
+            // this.authService.authUser('reseller@ms.com', '123123', this.m_rememberMe);
 
         }
     }
 
     private enterApplication() {
         this.loginState = 'active';
-        // this.router.navigate(['/App1/Dashboard']);
+        setTimeout(() => {
+            // this.router.navigate(['/App1/Dashboard']);
+        }, 1000)
+
     }
 
-    private checkFailedLogin(i_reason:AuthenticateFlags):boolean {
+    private isAccessAllowed(i_reason: AuthenticateFlags): boolean {
         let msg1: string;
         let msg2: string;
         switch (i_reason) {
             case AuthenticateFlags.WRONG_PASS: {
                 msg1 = 'User or password are incorrect...'
                 msg2 = 'Please try again or click forgot password to reset your credentials'
-                break;
+                this.showMessage(msg1, msg2);
+                this.loginState = 'inactive';
+                return false;
             }
             case AuthenticateFlags.WRONG_TWO_FACTOR: {
                 msg1 = 'Invalid token'
                 msg2 = 'Wrong token entered or the 60 seconds limit may have exceeded, try again...'
-                break;
-            }
-            case AuthenticateFlags.TWO_FACTOR_CHECK: {
-                alert('checking secure login');
+                this.showMessage(msg1, msg2);
+                this.loginState = 'inactive';
                 return false;
             }
-            case AuthenticateFlags.TWO_FACTOR_PASS: {
-                alert('two facor pass, enter app');
+            case AuthenticateFlags.TWO_FACTOR_CHECK: {
+                this.loginState = 'default';
                 return false;
             }
             case AuthenticateFlags.TWO_FACTOR_FAIL: {
-                alert('two factor fail');
+                msg1 = 'Two factor failed'
+                msg2 = 'please try again...'
+                this.showMessage(msg1, msg2);
+                this.loginState = 'inactive';
                 return false;
             }
-            default: {
-                return false;
+            case AuthenticateFlags.TWO_FACTOR_PASS: {
+                msg1 = 'Two factor completed successfully'
+                msg2 = 'please wait...'
+                this.showMessage(msg1, msg2);
+                this.loginState = 'active';
+                return true;
             }
         }
-        this.loginState = 'inactive';
+    }
+
+    private showMessage(title, message) {
         setTimeout(() => {
             bootbox.dialog({
                 closeButton: true,
-                title: msg1,
-                message: msg2
+                title: title,
+                message: message
             });
         }, 200);
-        return true;
     }
 }
 
 
 // this.m_rememberMe = this.authService.getLocalstoreCred().r;
+
+
+// this.appStore.select(state => state.appDb.credentials).subscribe((e:UserModel)=>{
+//     console.log(e.user());
+// });
+//
+// this.appStore.dispatch({type: 'APP_INIT'})
+//
+// setInterval(()=>{
+//     this.appStore.dispatch({type: 'APP_INIT'})
+// },1000)
+
+// this.cancelOnDestroy(
+//     this.appStore.sub((credentials: Map<string,any>) => {
+//         var state = credentials.get('authenticated');
+//         var reason = credentials.get('reason');
+//         switch (state) {
+//             case AuthState.FAIL: {
+//                 this.isAccessAllowed(reason);
+//                 break;
+//             }
+//             case AuthState.PASS: {
+//                 this.enterApplication();
+//                 break;
+//             }
+//             case AuthState.TWO_FACTOR: {
+//                 this.m_showTwoFactor = true;
+//                 this.m_rememberMe = false;
+//                 this.loginState = 'default';
+//                 break;
+//             }
+//         }
+//     }, 'appdb.credentials'))
+
+// this.cancelOnDestroy(
+//     this.appStore.sub((twoFactorStatus: {status: boolean, twoFactorStatusReceived: Date}) => {
+//         // twoFactorStatus.status = false;//debug
+//         if (twoFactorStatus.status) {
+//             this.enterApplication();
+//         } else {
+//             this.isAccessAllowed(FlagsAuth.WrongTwoFactor);
+//         }
+//     }, 'appdb.twoFactorStatus'))
+
+
+// this.store.select(store => store.appDb.userModel)
+//     .filter((userModel: UserModel) => {
+//         console.log('aaaa' + userModel.getReason());
+//         if (userModel.getReason() == -1)
+//             return false;
+//         return userModel;
+//     })
+//     .distinctUntilChanged((current: UserModel, previous: UserModel) => {
+//         debugger;
+//         var a = previous.getReason();
+//         var b = current.getReason()
+//         return previous.getReason() === current.getReason()
+//     })
+//     .subscribe((userModel: UserModel) => {
+//         debugger;
+//         // if (userModel.getReason() > -1) {
+//         //     this.isAccessAllowed(userModel.getReason());
+//         // }
+//     });

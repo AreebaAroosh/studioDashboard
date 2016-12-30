@@ -76,9 +76,6 @@ export class AppdbAction {
                         } else {
                             this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_FAIL})
                         }
-                        // userModel = userModel.setAuthenticated(true);
-                        // userModel = userModel.setAccountType(AuthenticateFlags.USER_ACCOUNT);
-                        // this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
                     })
             })
     }
