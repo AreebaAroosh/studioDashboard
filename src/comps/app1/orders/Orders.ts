@@ -1,17 +1,4 @@
-import {
-    Component,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    trigger,
-    transition,
-    animate,
-    state,
-    style
-} from "@angular/core";
-import {AppModel} from "../../../reseller/AppModel";
-import {List} from "immutable";
-import {AppStore} from "angular2-redux-util";
-import {ResellerAction} from "../../../reseller/ResellerAction";
+import {Component, ChangeDetectionStrategy, trigger, transition, animate, state, style} from "@angular/core";
 
 @Component({
     selector: 'orders',
@@ -58,7 +45,6 @@ import {ResellerAction} from "../../../reseller/ResellerAction";
 
 export class Orders {
 
-   
 
 }
 

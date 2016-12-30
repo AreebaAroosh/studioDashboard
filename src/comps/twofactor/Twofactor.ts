@@ -1,21 +1,12 @@
-import {
-    Component,
-    ChangeDetectionStrategy,
-    ElementRef,
-    ViewChild,
-    ChangeDetectorRef
-} from "@angular/core";
-import {
-    FormControl,
-    FormGroup,
-    FormBuilder
-} from "@angular/forms";
-import {AppStore} from "angular2-redux-util";
+import {Component, ChangeDetectionStrategy, ElementRef, ViewChild, ChangeDetectorRef} from "@angular/core";
+import {FormControl, FormGroup, FormBuilder} from "@angular/forms";
 import * as _ from "lodash";
-import {AppdbAction} from "../../appdb/AppdbAction";
 import {LocalStorage} from "../../services/LocalStorage";
 import {Compbaser} from "../compbaser/Compbaser";
-// import * as bootbox from 'bootbox';
+import {Store} from "@ngrx/store";
+import {AppdbAction} from "../../store/actions/app-db-actions";
+import {ApplicationState} from "../../store/application-state";
+import {UserModel} from "../../models/UserModel";
 
 @Component({
     selector: 'Twofactor',
@@ -63,7 +54,7 @@ export class Twofactor extends Compbaser {
                 private el: ElementRef,
                 private cd: ChangeDetectorRef,
                 private appdbAction: AppdbAction,
-                private appStore: AppStore) {
+                private store: Store<ApplicationState>) {
         super();
         this.contGroup = fb.group({
             'TwofactorCont': ['']
@@ -71,16 +62,22 @@ export class Twofactor extends Compbaser {
         _.forEach(this.contGroup.controls, (value, key: string) => {
             this.formInputs[key] = this.contGroup.controls[key] as FormControl;
         })
-        var twoFactorStatus = this.twoFactorStatus = this.appStore.getState().appdb.get('twoFactorStatus');
-        if (_.isUndefined(twoFactorStatus)) {
-            this.twoFactorStatus = false;
-        } else {
-            this.twoFactorStatus = twoFactorStatus.status;
-        }
-        this.unsub = this.appStore.sub(i_twoFactorStatus => {
-            //this.twoFactorStatus = i_twoFactorStatus;
-            this.changeTwoFactorStatus(i_twoFactorStatus.status);
-        }, 'appdb.twoFactorStatus');
+
+        this.store.select(store => store.appDb.userModel).skip(1).subscribe((userModel: UserModel) => {
+            this.twoFactorStatus = userModel.getTwoFactorRequired();
+            this.changeTwoFactorStatus();
+        })
+
+        // var twoFactorStatus = this.twoFactorStatus = this.appStore.getState().appdb.get('twoFactorStatus');
+        // if (_.isUndefined(twoFactorStatus)) {
+        //     this.twoFactorStatus = false;
+        // } else {
+        //     this.twoFactorStatus = twoFactorStatus.status;
+        // }
+        // this.unsub = this.appStore.sub(i_twoFactorStatus => {
+        //     //this.twoFactorStatus = i_twoFactorStatus;
+        //     this.changeTwoFactorStatus(i_twoFactorStatus.status);
+        // }, 'appdb.twoFactorStatus');
 
         this.renderFormInputs();
     }
@@ -91,10 +88,9 @@ export class Twofactor extends Compbaser {
     private twoFactorStatus: boolean;
     private contGroup: FormGroup;
     private formInputs = {};
-    private unsub;
 
-    private changeTwoFactorStatus(enabled: boolean) {
-        if (enabled) {
+    private changeTwoFactorStatus() {
+        if (this.twoFactorStatus) {
             bootbox.alert('Congratulations, activated');
             this.twoFactorStatus = true;
             this.removeQrCode();
@@ -111,12 +107,12 @@ export class Twofactor extends Compbaser {
     private onActivate() {
         if (this.activateToken.nativeElement.value.length < 6)
             return bootbox.alert('token is too short');
-        this.appStore.dispatch(this.appdbAction.authenticateTwoFactor(this.activateToken.nativeElement.value, true));
+        // this.appStore.dispatch(this.appdbAction.authenticateTwoFactor(this.activateToken.nativeElement.value, true));
     }
 
     private addQrCode() {
         this.removeQrCode();
-        this.appdbAction.getQrCodeTwoFactor((qrCode) => {
+        this.appdbAction.getQrCodeTwoFactor().subscribe((qrCode) => {
             this.removeQrCode();
             jQuery(this.el.nativeElement).append(qrCode);
             var svg = jQuery(this.el.nativeElement).find('svg').get(0);
@@ -125,7 +121,7 @@ export class Twofactor extends Compbaser {
             svg.setAttribute('viewBox', '0 0 ' + 100 + ' ' + 100);
             svg.setAttribute('width', '100%');
             // svg.setAttribute('height', '100%');
-        })
+        });
     }
 
     private removeQrCode() {
@@ -151,7 +147,4 @@ export class Twofactor extends Compbaser {
         }
     }
 
-    destroy() {
-        this.unsub();
-    }
 }

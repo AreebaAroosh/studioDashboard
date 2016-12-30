@@ -181,19 +181,20 @@ export class AppdbAction {
             })
     }
 
-    // public authenticateTwoFactor(i_token: string, i_enable: boolean) {
-    //     return (dispatch) => {
-    //         var appdb: Map<string,any> = this.appStore.getState().appdb;
-    //         var url = appdb.get('appBaseUrlCloud').replace('END_POINT', 'twoFactor') + `/${i_token}/${i_enable}`
-    //         this._http.get(url)
-    //             .map(result => {
-    //                 dispatch({
-    //                     type: TWO_FACTOR_SERVER_RESULT,
-    //                     status: result.json().result
-    //                 })
-    //             }).subscribe()
-    //     };
-    // }
+    public getQrCodeTwoFactor():Observable<string> {
+        return this.store.select(store => store.appDb.appBaseUrlCloud)
+            .take(1)
+            .mergeMap(appBaseUrlCloud => {
+                var url = appBaseUrlCloud.replace('END_POINT', 'twoFactorGenQr');
+                return this.http.get(url)
+                    .catch((err: any) => {
+                        return Observable.throw(err);
+                    })
+                    .map(res => {
+                        return res.text();
+                    })
+            })
+    }
 
     public initAppDb() {
         return {

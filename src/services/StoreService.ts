@@ -1,6 +1,5 @@
 import {Injectable, Inject, forwardRef} from "@angular/core";
 import {BusinessAction} from "../business/BusinessAction";
-import {ResellerAction} from "../reseller/ResellerAction";
 // import {AppdbAction} from "../appdb/AppdbAction";
 import {AppStore} from "angular2-redux-util";
 import {StationsAction} from "../stations/StationsAction";
@@ -47,7 +46,7 @@ export class StoreService {
         // this.appStore.dispatch(this.businessActions.getSamples());
         console.log('loaded network services...');
     }
-    
+
 
     private initPollServices() {
         console.log('starting poll services...');
