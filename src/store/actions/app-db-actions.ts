@@ -31,6 +31,7 @@ export const APP_INIT = 'APP_INIT';
 
 
 export enum AuthenticateFlags {
+    NONE,
     USER_ACCOUNT,
     ENTERPRISE_ACCOUNT,
     WRONG_TWO_FACTOR,
@@ -41,6 +42,7 @@ export enum AuthenticateFlags {
     TWO_FACTOR_FAIL,
     TWO_FACTOR_PASS
 }
+// export type AuthenticateFlagsMapType = Map<string,AuthenticateFlags>;
 
 @Injectable()
 export class AppdbAction {
@@ -111,7 +113,7 @@ export class AppdbAction {
                             userModel = userModel.setAuthenticated(false);
                             userModel = userModel.setAccountType(-1);
                             this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
-                            this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.WRONG_PASS})
+                            this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.WRONG_PASS});
                             return;
 
                         } else if (result && !result.Businesses) {

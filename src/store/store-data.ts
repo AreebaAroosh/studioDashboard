@@ -4,6 +4,7 @@ import {Message} from "../../shared/model/message";
 import {Map, List} from 'immutable';
 import {WeatherModel} from "./model/WeatherModel";
 import {UserModel} from "../models/UserModel";
+import {AuthenticateFlags} from "./actions/app-db-actions";
 
 export interface StoreData {
 
@@ -30,7 +31,7 @@ export interface IAppDb {
     userModel: UserModel,
     cloudServers: string;
     serversStatus: string;
-    appAuthStatus: number;
+    appAuthStatus: Map<string,AuthenticateFlags>;
     appBaseUrlUser: string;
     appBaseUrlCloud: string;
 }
@@ -60,7 +61,7 @@ export const INITIAL_APP_DB: IAppDb = {
         twoFactorRequired: false,
         accountType: -1
     }),
-    appAuthStatus: -1,
+    appAuthStatus: Map({authStatus: AuthenticateFlags.NONE}),
     cloudServers: '',
     serversStatus: '',
     appBaseUrlUser: '',

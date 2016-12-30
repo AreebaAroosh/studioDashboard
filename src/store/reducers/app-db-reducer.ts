@@ -7,6 +7,7 @@ import {WEATHER_LOADED_ACTION} from "../actions";
 import {StoreModel} from "../model/StoreModel";
 import {UserModel} from "../../models/UserModel";
 import * as StoreActions from "../actions/app-db-actions";
+import {AuthenticateFlags} from "../actions/app-db-actions";
 
 const baseUrl = 'https://galaxy.signage.me/WebService/ResellerService.ashx';
 // const baseUrl = 'https://secure.digitalsignage.com/Digg';
@@ -46,17 +47,17 @@ export function appDb(state: IAppDb, action: any): IAppDb {
             return state;
 
         case StoreActions.ACTION_UPDATE_USER_MODEL:
-            var userModel:UserModel = action.payload;
+            var userModel: UserModel = action.payload;
             state.userModel = userModel.setTime();
             state.appBaseUrlUser = `${baseUrl}?resellerUserName=${userModel.getKey('user')}&resellerPassword=${userModel.getKey('pass')}`;
             state.appBaseUrlCloud = `${appBaseUrlCloud}/END_POINT/${userModel.getKey('user')}/${userModel.getKey('pass')}`;
             return state;
 
         case StoreActions.ACTION_AUTH_STATUS:
-            state.appAuthStatus = action.payload;
+            state.appAuthStatus = Map({authStatus: action.payload});
             return state;
 
-            
+
         //
         // case AppdbAction.TWO_FACTOR_SERVER_RESULT:
         //     return state.set('twoFactorStatus', {

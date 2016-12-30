@@ -135,7 +135,8 @@ export class LoginPanel extends Compbaser {
         )
 
         this.cancelOnDestroy(
-            this.store.select(store => store.appDb.appAuthStatus).subscribe((authStatus: AuthenticateFlags) => {
+            this.store.select(store => store.appDb.appAuthStatus).subscribe((i_authStatus:Map<string,AuthenticateFlags>) => {
+                let authStatus = i_authStatus.get('authStatus')
                 if (this.isAccessAllowed(authStatus) == false)
                     return;
                 switch (authStatus) {
@@ -193,6 +194,7 @@ export class LoginPanel extends Compbaser {
     private isAccessAllowed(i_reason: AuthenticateFlags): boolean {
         let msg1: string;
         let msg2: string;
+        // this.loginState = 'default';
         switch (i_reason) {
             case AuthenticateFlags.WRONG_PASS: {
                 msg1 = 'User or password are incorrect...'
@@ -209,7 +211,6 @@ export class LoginPanel extends Compbaser {
                 return false;
             }
             case AuthenticateFlags.TWO_FACTOR_CHECK: {
-                this.loginState = 'default';
                 return false;
             }
             case AuthenticateFlags.TWO_FACTOR_FAIL: {
