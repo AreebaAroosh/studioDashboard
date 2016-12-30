@@ -28,7 +28,7 @@ export function appDb(state: IAppDb, action: any): IAppDb {
             state.userModel = userModel.setTime();
             return state;
 
-        case EffectActions.ACTION_TWO_FACTOR_REMOVED:
+        case StoreActions.ACTION_TWO_FACTOR_REMOVED:
             var userModel = state.userModel;
             userModel = userModel.setTwoFactorRequired(false);
             state.userModel = userModel.setTime();

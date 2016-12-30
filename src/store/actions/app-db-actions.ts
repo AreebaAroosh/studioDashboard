@@ -9,9 +9,9 @@ import {Store} from "@ngrx/store";
 import {ApplicationState} from "../application-state";
 import {Actions} from "@ngrx/effects";
 import {Observable} from "rxjs";
-import {ACTION_TWO_FACTOR_REMOVED} from "../effects/app-db-effects";
 
 export const APP_INIT = 'APP_INIT';
+export const ACTION_TWO_FACTOR_REMOVED = 'ACTION_TWO_FACTOR_REMOVED';
 
 export enum AuthenticateFlags {
     NONE,
