@@ -7,9 +7,9 @@ import {UserModel} from "../models/UserModel";
 
 export interface StoreData {
 
-    participants: {[key: number]: Participant};
-    threads: {[key: number]: Thread};
-    messages: {[key: number]: Message};
+    participants: { [key: number]: Participant };
+    threads: { [key: number]: Thread };
+    messages: { [key: number]: Message };
 
 }
 
@@ -30,6 +30,7 @@ export interface IAppDb {
     userModel: UserModel,
     cloudServers: string;
     serversStatus: string;
+    appAuthStatus: number;
     appBaseUrlUser: string;
     appBaseUrlCloud: string;
 }
@@ -47,21 +48,22 @@ export const INITIAL_WEATHER_DATA: MyStoreData = {
 };
 
 export const INITIAL_APP_DB: IAppDb = {
-        totalStations: '',
-        appStartTime: -1,
-        appBaseUrl: '',
-        userModel: new UserModel({
-            user: '',
-            pass: '',
-            reason: -1,
-            authenticated: false,
-            businessId: -1,
-            rememberMe: false,
-            twoFactorRequired: false,
-            accountType: -1
-        }),
-        cloudServers: '',
-        serversStatus: '',
-        appBaseUrlUser: '',
-        appBaseUrlCloud: ''
+    totalStations: '',
+    appStartTime: -1,
+    appBaseUrl: '',
+    userModel: new UserModel({
+        user: '',
+        pass: '',
+        reason: -1,
+        authenticated: false,
+        businessId: -1,
+        rememberMe: false,
+        twoFactorRequired: false,
+        accountType: -1
+    }),
+    appAuthStatus: -1,
+    cloudServers: '',
+    serversStatus: '',
+    appBaseUrlUser: '',
+    appBaseUrlCloud: ''
 };

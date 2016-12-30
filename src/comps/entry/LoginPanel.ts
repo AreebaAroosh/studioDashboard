@@ -1,4 +1,16 @@
-import {Component, Injectable, ViewChild, ElementRef, Renderer, keyframes, trigger, state, style, transition, animate} from "@angular/core";
+import {
+    Component,
+    Injectable,
+    ViewChild,
+    ElementRef,
+    Renderer,
+    keyframes,
+    trigger,
+    state,
+    style,
+    transition,
+    animate
+} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {BusinessAction} from "../../business/BusinessAction";
 import {LocalStorage} from "../../services/LocalStorage";
@@ -11,7 +23,8 @@ import {ToastsManager} from "ng2-toastr";
 import {ApplicationState} from "../../store/application-state";
 import {Store} from "@ngrx/store";
 import {UserModel} from "../../models/UserModel";
-
+import {AuthenticateFlags} from "../../store/actions/app-db-actions";
+import {Observable} from "rxjs";
 
 @Injectable()
 @Component({
@@ -100,10 +113,10 @@ export class LoginPanel extends Compbaser {
     private m_rememberMe: any;
     private loginState: string = '';
 
-    constructor(private store:Store<ApplicationState>,
+    constructor(private store: Store<ApplicationState>,
                 private renderer: Renderer,
                 private router: Router,
-                private toast:ToastsManager,
+                private toast: ToastsManager,
                 private activatedRoute: ActivatedRoute,
                 private authService: AuthService) {
         super();
@@ -124,18 +137,29 @@ export class LoginPanel extends Compbaser {
 
     private listenEvents() {
 
-        this.store.select(store => store.appDb.userModel)
-            .subscribe((userModel: UserModel) => {
-                if (userModel.getReason() >= 0){
-                    console.log('reason ' + userModel.getReason());
-                }
-
-
-            })
+        // this.store.select(store => store.appDb.userModel)
+        //     .filter((userModel: UserModel) => {
+        //         console.log('aaaa' + userModel.getReason());
+        //         if (userModel.getReason() == -1)
+        //             return false;
+        //         return userModel;
+        //     })
+        //     .distinctUntilChanged((current: UserModel, previous: UserModel) => {
+        //         debugger;
+        //         var a = previous.getReason();
+        //         var b = current.getReason()
+        //         return previous.getReason() === current.getReason()
+        //     })
+        //     .subscribe((userModel: UserModel) => {
+        //         debugger;
+        //         // if (userModel.getReason() > -1) {
+        //         //     this.onAuthFail(userModel.getReason());
+        //         // }
+        //     });
 
         this.cancelOnDestroy(
             this.activatedRoute.params.subscribe(params => {
-                if (params['twoFactor']){
+                if (params['twoFactor']) {
                     this.m_user = Ngmslib.Base64().decode(params['user']);
                     this.m_pass = Ngmslib.Base64().decode(params['pass']);
                     this.m_showTwoFactor = true;
@@ -202,17 +226,17 @@ export class LoginPanel extends Compbaser {
         let msg1: string;
         let msg2: string;
         switch (i_reason) {
-            case FlagsAuth.WrongPass: {
+            case AuthenticateFlags.WRONG_PASS: {
                 msg1 = 'User or password are incorrect...'
                 msg2 = 'Please try again or click forgot password to reset your credentials'
                 break;
             }
-            case FlagsAuth.NotEnterprise: {
+            case AuthenticateFlags.NOT_ENTERPRISE: {
                 msg1 = 'Not an enterprise account'
                 msg2 = 'You must login with an Enterprise account, not an end user account...'
                 break;
             }
-            case FlagsAuth.WrongTwoFactor: {
+            case AuthenticateFlags.WRONG_TWO_FACTOR: {
                 msg1 = 'Invalid token'
                 msg2 = 'Wrong token entered or the 60 seconds limit may have exceeded, try again...'
                 break;
