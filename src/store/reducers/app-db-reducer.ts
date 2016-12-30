@@ -16,30 +16,6 @@ export const appBaseUrlCloud = 'https://secure.digitalsignage.com';
 export function appDb(state: IAppDb, action: any): IAppDb {
 
     switch (action.type) {
-        // case 'RECEIVE_TOTAL_STATIONS':
-        //     return state.merge({
-        //         totalStations: {
-        //             time: Date.now(),
-        //             totalStations: action.totalStations
-        //         }
-        //     });
-        //
-        // case 'TEST':{
-        //     state.credentials = new UserModel({
-        //         user: 'sean',
-        //         pass: '123'
-        //     })
-        //     return state;
-        // }
-
-        // case 'AUTH_END':
-        //     // if (!action.payload.Businesses){
-        //     //     console.log('auth fail')
-        //     // } else {
-        //     //     console.log('auth pass ' + _.size(action.payload.Businesses.BusinessInfo));
-        //     // }
-        //     return state;
-
         case StoreActions.APP_INIT:
             state.appStartTime = Date.now();
             state.appBaseUrl = `${baseUrl}`;
@@ -50,6 +26,12 @@ export function appDb(state: IAppDb, action: any): IAppDb {
             state.userModel = userModel.setTime();
             state.appBaseUrlUser = `${baseUrl}?resellerUserName=${userModel.getKey('user')}&resellerPassword=${userModel.getKey('pass')}`;
             state.appBaseUrlCloud = `${appBaseUrlCloud}/END_POINT/${userModel.getKey('user')}/${userModel.getKey('pass')}`;
+            return state;
+
+        case StoreActions.ACTION_TWO_FACTOR_UPDATED:
+            var userModel = state.userModel;
+            userModel = userModel.setTwoFactorRequired(action.payload);
+            state.userModel = userModel.setTime();
             return state;
 
         case StoreActions.ACTION_AUTH_STATUS:

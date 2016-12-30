@@ -4,7 +4,7 @@ import * as _ from "lodash";
 import {LocalStorage} from "../../services/LocalStorage";
 import {Compbaser} from "../compbaser/Compbaser";
 import {Store} from "@ngrx/store";
-import {AppdbAction} from "../../store/actions/app-db-actions";
+import {AppdbAction, ACTION_TWO_FACTOR_UPDATE} from "../../store/actions/app-db-actions";
 import {ApplicationState} from "../../store/application-state";
 import {UserModel} from "../../models/UserModel";
 
@@ -62,23 +62,10 @@ export class Twofactor extends Compbaser {
         _.forEach(this.contGroup.controls, (value, key: string) => {
             this.formInputs[key] = this.contGroup.controls[key] as FormControl;
         })
-
-        this.store.select(store => store.appDb.userModel).skip(1).subscribe((userModel: UserModel) => {
+        this.store.select(store => store.appDb.userModel).subscribe((userModel: UserModel) => {
             this.twoFactorStatus = userModel.getTwoFactorRequired();
             this.changeTwoFactorStatus();
         })
-
-        // var twoFactorStatus = this.twoFactorStatus = this.appStore.getState().appdb.get('twoFactorStatus');
-        // if (_.isUndefined(twoFactorStatus)) {
-        //     this.twoFactorStatus = false;
-        // } else {
-        //     this.twoFactorStatus = twoFactorStatus.status;
-        // }
-        // this.unsub = this.appStore.sub(i_twoFactorStatus => {
-        //     //this.twoFactorStatus = i_twoFactorStatus;
-        //     this.changeTwoFactorStatus(i_twoFactorStatus.status);
-        // }, 'appdb.twoFactorStatus');
-
         this.renderFormInputs();
     }
 
@@ -107,19 +94,29 @@ export class Twofactor extends Compbaser {
     private onActivate() {
         if (this.activateToken.nativeElement.value.length < 6)
             return bootbox.alert('token is too short');
+        this.store.dispatch({
+            type: ACTION_TWO_FACTOR_UPDATE,
+            payload: {
+                token: this.activateToken.nativeElement.value,
+                enable: true
+            }
+        })
+        // this.appdbAction.authenticateTwoFactor(this.activateToken.nativeElement.value, true).subscribe((result) => {
+        //     console.log(result);
+        // });
         // this.appStore.dispatch(this.appdbAction.authenticateTwoFactor(this.activateToken.nativeElement.value, true));
     }
 
     private addQrCode() {
         this.removeQrCode();
-        this.appdbAction.getQrCodeTwoFactor().subscribe((qrCode) => {
+        this.appdbAction.getQrCodeTwoFactor().take(1).subscribe((qrCode) => {
             this.removeQrCode();
             jQuery(this.el.nativeElement).append(qrCode);
             var svg = jQuery(this.el.nativeElement).find('svg').get(0);
             // var w = svg.width.baseVal.value;
             // var h = svg.height.baseVal.value;
             svg.setAttribute('viewBox', '0 0 ' + 100 + ' ' + 100);
-            svg.setAttribute('width', '100%');
+            svg.setAttribute('width', '40%');
             // svg.setAttribute('height', '100%');
         });
     }

@@ -16,12 +16,6 @@ import {Component, ChangeDetectionStrategy, trigger, transition, animate, state,
             transition('* => void', animate(333, style({opacity: 0})))
         ])
     ],
-    styles: [`
-        .page {
-            padding-left: 100px;
-            padding-top: 40px;
-        }
-    `],
     template: `<Twofactor></Twofactor>`,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

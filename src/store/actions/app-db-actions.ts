@@ -27,6 +27,8 @@ export const TWO_FACTOR_SERVER_RESULT = 'TWO_FACTOR_SERVER_RESULT';
 export const ACTION_UPDATE_USER_MODEL = 'ACTION_UPDATE_USER_MODEL';
 export const ACTION_AUTH_STATUS = 'ACTION_AUTH_STATUS';
 export const ACTION_TWO_FACTOR_AUTH = 'ACTION_TWO_FACTOR_AUTH';
+export const ACTION_TWO_FACTOR_UPDATE = 'ACTION_TWO_FACTOR_UPDATE';
+export const ACTION_TWO_FACTOR_UPDATED = 'ACTION_TWO_FACTOR_UPDATED';
 export const APP_INIT = 'APP_INIT';
 
 export enum AuthenticateFlags {
@@ -39,7 +41,9 @@ export enum AuthenticateFlags {
     AUTH_PASS_NO_TWO_FACTOR,
     TWO_FACTOR_CHECK,
     TWO_FACTOR_FAIL,
-    TWO_FACTOR_PASS
+    TWO_FACTOR_PASS,
+    TWO_FACTOR_UPDATE
+
 }
 // export type AuthenticateFlagsMapType = Map<string,AuthenticateFlags>;
 
@@ -77,6 +81,30 @@ export class AppdbAction {
                         } else {
                             this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_FAIL})
                         }
+                    })
+            })
+    }
+
+    @Effect() updatedTwoFactor$: Observable<Action> = this.actions$
+        .ofType(ACTION_TWO_FACTOR_UPDATE)
+        .switchMap(action => this.updatedTwoFactor(action))
+        .map(authStatus => ({type: AUTH_END, payload: authStatus}));
+
+    private updatedTwoFactor(action: Action): Observable<any> {
+        return this.store.select(store => store.appDb.appBaseUrlCloud)
+            .take(1)
+            .mergeMap(baseUrl => {
+                const url = baseUrl.replace('END_POINT', 'twoFactor') + `/${action.payload.token}/${action.payload.enable}`
+                return this.http.get(url)
+                    .catch((err: any) => {
+                        alert('Error getting two factor');
+                        return Observable.throw(err);
+                    })
+                    .finally(() => {
+                    })
+                    .map(res => {
+                        var status = res.json().result;
+                        this.store.dispatch({type: ACTION_TWO_FACTOR_UPDATED, payload: status})
                     })
             })
     }
@@ -181,7 +209,7 @@ export class AppdbAction {
             })
     }
 
-    public getQrCodeTwoFactor():Observable<string> {
+    public getQrCodeTwoFactor(): Observable<string> {
         return this.store.select(store => store.appDb.appBaseUrlCloud)
             .take(1)
             .mergeMap(appBaseUrlCloud => {
