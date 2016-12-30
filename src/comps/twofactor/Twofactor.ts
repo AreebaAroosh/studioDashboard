@@ -4,9 +4,10 @@ import * as _ from "lodash";
 import {LocalStorage} from "../../services/LocalStorage";
 import {Compbaser} from "../compbaser/Compbaser";
 import {Store} from "@ngrx/store";
-import {AppdbAction, ACTION_TWO_FACTOR_UPDATE} from "../../store/actions/app-db-actions";
+import {AppdbAction, ACTION_TWO_FACTOR_UPDATING, AuthenticateFlags} from "../../store/actions/app-db-actions";
 import {ApplicationState} from "../../store/application-state";
 import {UserModel} from "../../models/UserModel";
+import {Map} from "immutable";
 
 @Component({
     selector: 'Twofactor',
@@ -67,6 +68,7 @@ export class Twofactor extends Compbaser {
             this.changeTwoFactorStatus();
         })
         this.renderFormInputs();
+        this.listenEvents();
     }
 
     @ViewChild('activate')
@@ -76,16 +78,31 @@ export class Twofactor extends Compbaser {
     private contGroup: FormGroup;
     private formInputs = {};
 
+    private listenEvents() {
+        this.cancelOnDestroy(
+            this.store.select(store => store.appDb.appAuthStatus).skip(1).subscribe((i_authStatus: Map<string,AuthenticateFlags>) => {
+                let authStatus: AuthenticateFlags = i_authStatus.get('authStatus')
+                switch (authStatus) {
+                    case AuthenticateFlags.TWO_FACTOR_UPDATE_PASS: {
+                        bootbox.alert('Congratulations, activated');
+                        break;
+                    }
+                    case AuthenticateFlags.TWO_FACTOR_UPDATE_FAIL: {
+                        bootbox.alert('wrong token entered');
+                        break;
+                    }
+                }
+            }))
+    }
+
     private changeTwoFactorStatus() {
         if (this.twoFactorStatus) {
-            bootbox.alert('Congratulations, activated');
             this.twoFactorStatus = true;
             this.removeQrCode();
             this.cd.markForCheck();
             this.localStorage.removeItem('remember_me');
             this.renderFormInputs();
         } else {
-            bootbox.alert('wrong token entered');
             // this.removeQrCode();
             this.cd.markForCheck();
         }
@@ -95,16 +112,12 @@ export class Twofactor extends Compbaser {
         if (this.activateToken.nativeElement.value.length < 6)
             return bootbox.alert('token is too short');
         this.store.dispatch({
-            type: ACTION_TWO_FACTOR_UPDATE,
+            type: ACTION_TWO_FACTOR_UPDATING,
             payload: {
                 token: this.activateToken.nativeElement.value,
                 enable: true
             }
         })
-        // this.appdbAction.authenticateTwoFactor(this.activateToken.nativeElement.value, true).subscribe((result) => {
-        //     console.log(result);
-        // });
-        // this.appStore.dispatch(this.appdbAction.authenticateTwoFactor(this.activateToken.nativeElement.value, true));
     }
 
     private addQrCode() {

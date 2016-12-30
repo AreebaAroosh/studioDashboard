@@ -58,7 +58,7 @@ export class AuthService {
 
     private listenEvents() {
         this.store.select(store => store.appDb.appAuthStatus).subscribe((i_authStatus: Map<string,AuthenticateFlags>) => {
-            let authStatus = i_authStatus.get('authStatus')
+            let authStatus:AuthenticateFlags = i_authStatus.get('authStatus')
             switch (authStatus) {
                 case AuthenticateFlags.WRONG_PASS: {
                     this.saveCredentials('', '', '');

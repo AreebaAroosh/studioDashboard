@@ -210,9 +210,6 @@ export class LoginPanel extends Compbaser {
                 return false;
             }
             case AuthenticateFlags.TWO_FACTOR_PASS: {
-                msg1 = 'Two factor completed successfully'
-                msg2 = 'please wait...'
-                this.showMessage(msg1, msg2);
                 this.loginState = 'active';
                 return true;
             }

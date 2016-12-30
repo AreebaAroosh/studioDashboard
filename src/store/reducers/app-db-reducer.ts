@@ -34,6 +34,12 @@ export function appDb(state: IAppDb, action: any): IAppDb {
             state.userModel = userModel.setTime();
             return state;
 
+        case StoreActions.ACTION_TWO_FACTOR_REMOVED:
+            var userModel = state.userModel;
+            userModel = userModel.setTwoFactorRequired(false);
+            state.userModel = userModel.setTime();
+            return state;
+
         case StoreActions.ACTION_AUTH_STATUS:
             state.appAuthStatus = Map({authStatus: action.payload});
             return state;

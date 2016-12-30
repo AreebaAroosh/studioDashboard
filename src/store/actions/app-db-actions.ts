@@ -27,8 +27,9 @@ export const TWO_FACTOR_SERVER_RESULT = 'TWO_FACTOR_SERVER_RESULT';
 export const ACTION_UPDATE_USER_MODEL = 'ACTION_UPDATE_USER_MODEL';
 export const ACTION_AUTH_STATUS = 'ACTION_AUTH_STATUS';
 export const ACTION_TWO_FACTOR_AUTH = 'ACTION_TWO_FACTOR_AUTH';
-export const ACTION_TWO_FACTOR_UPDATE = 'ACTION_TWO_FACTOR_UPDATE';
+export const ACTION_TWO_FACTOR_UPDATING = 'ACTION_TWO_FACTOR_UPDATING';
 export const ACTION_TWO_FACTOR_UPDATED = 'ACTION_TWO_FACTOR_UPDATED';
+export const ACTION_TWO_FACTOR_REMOVED = 'ACTION_TWO_FACTOR_REMOVED';
 export const APP_INIT = 'APP_INIT';
 
 export enum AuthenticateFlags {
@@ -42,7 +43,8 @@ export enum AuthenticateFlags {
     TWO_FACTOR_CHECK,
     TWO_FACTOR_FAIL,
     TWO_FACTOR_PASS,
-    TWO_FACTOR_UPDATE
+    TWO_FACTOR_UPDATE_PASS,
+    TWO_FACTOR_UPDATE_FAIL
 
 }
 // export type AuthenticateFlagsMapType = Map<string,AuthenticateFlags>;
@@ -86,7 +88,7 @@ export class AppdbAction {
     }
 
     @Effect() updatedTwoFactor$: Observable<Action> = this.actions$
-        .ofType(ACTION_TWO_FACTOR_UPDATE)
+        .ofType(ACTION_TWO_FACTOR_UPDATING)
         .switchMap(action => this.updatedTwoFactor(action))
         .map(authStatus => ({type: AUTH_END, payload: authStatus}));
 
@@ -104,7 +106,17 @@ export class AppdbAction {
                     })
                     .map(res => {
                         var status = res.json().result;
-                        this.store.dispatch({type: ACTION_TWO_FACTOR_UPDATED, payload: status})
+                        status == true ? this.store.dispatch({
+                                type: ACTION_AUTH_STATUS,
+                                payload: AuthenticateFlags.TWO_FACTOR_UPDATE_PASS
+                            }) : this.store.dispatch({
+                                type: ACTION_AUTH_STATUS,
+                                payload: AuthenticateFlags.TWO_FACTOR_UPDATE_FAIL
+                            })
+                        this.store.dispatch({
+                            type: ACTION_TWO_FACTOR_UPDATED,
+                            payload: status
+                        })
                     })
             })
     }
@@ -219,6 +231,7 @@ export class AppdbAction {
                         return Observable.throw(err);
                     })
                     .map(res => {
+                        this.store.dispatch({type: ACTION_TWO_FACTOR_REMOVED})
                         return res.text();
                     })
             })

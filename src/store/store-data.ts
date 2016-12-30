@@ -58,7 +58,7 @@ export const INITIAL_APP_DB: IAppDb = {
         authenticated: false,
         businessId: -1,
         rememberMe: false,
-        twoFactorRequired: null,
+        twoFactorRequired: false,
         accountType: -1
     }),
     appAuthStatus: Map({authStatus: AuthenticateFlags.NONE}),
