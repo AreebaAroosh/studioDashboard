@@ -1,7 +1,5 @@
 import {UiState, INITIAL_UI_STATE} from "./ui-state";
-import {StoreData, INITIAL_STORE_DATA, INITIAL_APP_DB, MyStoreData, IAppDb} from "./store-data";
-import {List} from 'immutable';
-
+import {StoreData, INITIAL_STORE_DATA, INITIAL_APP_DB, IAppDb} from "./store-data";
 
 export interface ApplicationState {
     uiState: UiState,

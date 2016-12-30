@@ -13,15 +13,6 @@ export interface StoreData {
 
 }
 
-export interface MyStoreData {
-    local: Map<string,any>;
-    customers: List<any>;
-}
-
-interface IUserInfo {
-
-}
-
 export interface IAppDb {
     totalStations: string;
     appStartTime: number;

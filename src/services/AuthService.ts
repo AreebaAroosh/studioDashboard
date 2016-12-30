@@ -1,9 +1,7 @@
 import {Injectable, Inject, forwardRef} from "@angular/core";
 import {Router, ActivatedRouteSnapshot, RouterStateSnapshot, ActivatedRoute} from "@angular/router";
-// import {AppStore} from "angular2-redux-util";
 import {LocalStorage} from "./LocalStorage";
 import {StoreService} from "./StoreService";
-// import {AppdbAction, AuthState} from "../appdb/AppdbAction";
 import "rxjs/add/observable/fromPromise";
 import {Observable} from "rxjs/Observable";
 import {Map} from "immutable";
@@ -32,26 +30,12 @@ export class AuthService {
         this.store.select(store => store.appDb.userModel).subscribe((userModel: UserModel) => {
             this.userModel = userModel;
         })
-
-        // this.store.select(store => store.appDb.userModel)
-        //     .subscribe((userModel: UserModel) => {
-        //         this.userModel = userModel;
-        //         if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == false) {
-        //             var user = Ngmslib.Base64().encode(this.userModel.getUser());
-        //             var pass = Ngmslib.Base64().encode(this.userModel.getPass());
-        //             this.router.navigate([`/UserLogin/twoFactor/${user}/${pass}`])
-        //         }
-        //
-        //         if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == true) {
-        //         }
-        //     })
-
         this.listenEvents();
     }
 
     private listenEvents() {
         this.store.select(store => store.appDb.appAuthStatus).subscribe((i_authStatus: Map<string,AuthenticateFlags>) => {
-            let authStatus:AuthenticateFlags = i_authStatus.get('authStatus')
+            let authStatus: AuthenticateFlags = i_authStatus.get('authStatus')
             switch (authStatus) {
                 case AuthenticateFlags.WRONG_PASS: {
                     this.saveCredentials('', '', '');
@@ -125,42 +109,6 @@ export class AuthService {
         }
     }
 
-    //
-    // private listenStores() {
-    //     this.appStore.sub((twoFactorStatus: {status: boolean, twoFactorStatusReceived: Date}) => {
-    //         this.saveCredentials('', '', '');
-    //         if (twoFactorStatus.status)
-    //             this.storeService.loadServices();
-    //     }, 'appdb.twoFactorStatus', false)
-    //
-    //
-    //     this.appStore.sub((credentials: Map<string,any>) => {
-    //         this.m_authState = credentials.get('authenticated');
-    //         var user = credentials.get('user');
-    //         var pass = credentials.get('pass');
-    //         var remember = credentials.get('remember');
-    //         switch (this.m_authState) {
-    //             case AuthState.FAIL: {
-    //                 this.saveCredentials('', '', '');
-    //                 break;
-    //             }
-    //             case AuthState.PASS: {
-    //                 this.storeService.loadServices();
-    //                 this.saveCredentials(user, pass, remember);
-    //                 break;
-    //             }
-    //             case AuthState.TWO_FACTOR: {
-    //                 this.saveCredentials('', '', '');
-    //                 console.log('waiting need two factor');
-    //                 break;
-    //             }
-    //         }
-    //         if (this.m_pendingNotify)
-    //             this.m_pendingNotify(this.m_authState)
-    //     }, 'appdb.credentials');
-    // }
-    //
-
     public  saveCredentials(i_user, i_pass, i_remember) {
         if (i_remember) {
             this.localStorage.setItem('remember_me', {
@@ -189,7 +137,7 @@ export class AuthService {
     }
 
 
-    public getLocalstoreCred(): {u: string, p: string, r: string} {
+    public getLocalstoreCred(): { u: string, p: string, r: string } {
         var credentials = this.localStorage.getItem('remember_me');
         if (!credentials)
             return {
@@ -205,7 +153,7 @@ export class AuthService {
     }
 
     public checkAccess(): Promise<any> {
-        if (this.userModel.getAuthenticated()){
+        if (this.userModel.getAuthenticated()) {
             return Promise.resolve(true);
         } else {
             return Promise.resolve(false);
