@@ -15,14 +15,14 @@ export function appDb(state: IAppDb, action: any): IAppDb {
             state.appBaseUrl = `${baseUrl}`;
             return state;
 
-        case EffectActions.ACTION_UPDATE_USER_MODEL:
+        case EffectActions.EFFECT_UPDATE_USER_MODEL:
             var userModel: UserModel = action.payload;
             state.userModel = userModel.setTime();
             state.appBaseUrlUser = `${baseUrl}?resellerUserName=${userModel.getKey('user')}&resellerPassword=${userModel.getKey('pass')}`;
             state.appBaseUrlCloud = `${appBaseUrlCloud}/END_POINT/${userModel.getKey('user')}/${userModel.getKey('pass')}`;
             return state;
 
-        case EffectActions.ACTION_TWO_FACTOR_UPDATED:
+        case EffectActions.EFFECT_TWO_FACTOR_UPDATED:
             var userModel = state.userModel;
             userModel = userModel.setTwoFactorRequired(action.payload);
             state.userModel = userModel.setTime();
@@ -34,7 +34,7 @@ export function appDb(state: IAppDb, action: any): IAppDb {
             state.userModel = userModel.setTime();
             return state;
 
-        case EffectActions.ACTION_AUTH_STATUS:
+        case EffectActions.EFFECT_AUTH_STATUS:
             state.appAuthStatus = Map({authStatus: action.payload});
             return state;
 

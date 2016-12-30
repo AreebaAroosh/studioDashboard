@@ -35,12 +35,6 @@ export class App1 {
 
     ngOnInit() {
         this.routerActive = true;
-        // this.commBroker.getService(Consts.Services().App).appResized();
-        // setTimeout(()=> {
-        //     alert('1')
-        //     this.router.navigate(['/App1/Dashboard'])
-        // }, 2000)
-
     }
 
     public listenMenuChanges() {

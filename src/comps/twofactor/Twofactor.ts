@@ -8,7 +8,7 @@ import {AppdbAction, AuthenticateFlags} from "../../store/actions/app-db-actions
 import {ApplicationState} from "../../store/application-state";
 import {UserModel} from "../../models/UserModel";
 import {Map} from "immutable";
-import {ACTION_TWO_FACTOR_UPDATING} from "../../store/effects/app-db-effects";
+import {EFFECT_TWO_FACTOR_UPDATING} from "../../store/effects/app-db-effects";
 
 @Component({
     selector: 'Twofactor',
@@ -113,7 +113,7 @@ export class Twofactor extends Compbaser {
         if (this.activateToken.nativeElement.value.length < 6)
             return bootbox.alert('token is too short');
         this.store.dispatch({
-            type: ACTION_TWO_FACTOR_UPDATING,
+            type: EFFECT_TWO_FACTOR_UPDATING,
             payload: {
                 token: this.activateToken.nativeElement.value,
                 enable: true

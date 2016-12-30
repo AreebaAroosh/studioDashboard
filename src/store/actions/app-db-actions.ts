@@ -1,13 +1,11 @@
-import {Injectable, Inject} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/mergeMap";
 import "rxjs/add/operator/merge";
 import "rxjs/add/operator/debounceTime";
-import * as xml2js from "xml2js";
 import {Store} from "@ngrx/store";
 import {ApplicationState} from "../application-state";
-import {Actions} from "@ngrx/effects";
 import {Observable} from "rxjs";
 
 export const APP_INIT = 'APP_INIT';
@@ -30,10 +28,15 @@ export enum AuthenticateFlags {
 
 @Injectable()
 export class AppdbAction {
-    parseString;
 
-    constructor(private actions$: Actions, @Inject('OFFLINE_ENV') private offlineEnv, private store: Store<ApplicationState>, private http: Http) {
-        this.parseString = xml2js.parseString;
+    constructor(private store: Store<ApplicationState>, private http: Http) {
+    }
+
+    public initAppDb() {
+        return {
+            type: APP_INIT,
+            payload: Date.now()
+        }
     }
 
     public getQrCodeTwoFactor(): Observable<string> {
@@ -50,12 +53,5 @@ export class AppdbAction {
                         return res.text();
                     })
             })
-    }
-
-    public initAppDb() {
-        return {
-            type: APP_INIT,
-            payload: Date.now()
-        }
     }
 }

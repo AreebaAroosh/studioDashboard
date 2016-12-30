@@ -11,14 +11,11 @@ import {Store} from "@ngrx/store";
 import {ApplicationState} from "../store/application-state";
 import {AppdbAction, AuthenticateFlags} from "../store/actions/app-db-actions";
 import {UserModel} from "../models/UserModel";
-import {AUTH_START, ACTION_TWO_FACTOR_AUTH} from "../store/effects/app-db-effects";
-
+import {EFFECT_AUTH_START, EFFECT_TWO_FACTOR_AUTH} from "../store/effects/app-db-effects";
 
 @Injectable()
 export class AuthService {
     private m_authenticateFlags: AuthenticateFlags;
-    private m_pendingNotify: any;
-
     private userModel: UserModel;
 
     constructor(private router: Router,
@@ -71,8 +68,8 @@ export class AuthService {
         setTimeout(() => {
             console.log('enter app');
             this.router.navigate(['/App1/Dashboard']);
+            this.storeService.loadServices();
         }, 1000)
-
     }
 
     public start() {
@@ -128,13 +125,13 @@ export class AuthService {
 
     public authUser(user: string, pass: string, rememberMe: boolean = false): void {
         this.store.dispatch({
-            type: AUTH_START,
+            type: EFFECT_AUTH_START,
             payload: this.userModel.setUser(user.trim()).setPass(pass.trim()).setRememberMe(rememberMe)
         })
     }
 
     public authServerTwoFactor(token): void {
-        this.store.dispatch({type: ACTION_TWO_FACTOR_AUTH, payload: {token: token, enable: false}})
+        this.store.dispatch({type: EFFECT_TWO_FACTOR_AUTH, payload: {token: token, enable: false}})
     }
 
 

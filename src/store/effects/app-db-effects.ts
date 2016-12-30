@@ -13,29 +13,32 @@ import * as _ from 'lodash';
 import {UserModel} from "../../models/UserModel";
 import {AuthenticateFlags} from "../actions/app-db-actions";
 
-export const AUTH_START = 'AUTH_START';
-export const AUTH_END = 'AUTH_END';
-export const ACTION_UPDATE_USER_MODEL = 'ACTION_UPDATE_USER_MODEL';
-export const ACTION_AUTH_STATUS = 'ACTION_AUTH_STATUS';
-export const ACTION_TWO_FACTOR_AUTH = 'ACTION_TWO_FACTOR_AUTH';
-export const ACTION_TWO_FACTOR_UPDATING = 'ACTION_TWO_FACTOR_UPDATING';
-export const ACTION_TWO_FACTOR_UPDATED = 'ACTION_TWO_FACTOR_UPDATED';
+export const EFFECT_AUTH_START = 'EFFECT_AUTH_START';
+export const EFFECT_AUTH_END = 'EFFECT_AUTH_END';
+export const EFFECT_UPDATE_USER_MODEL = 'EFFECT_UPDATE_USER_MODEL';
+export const EFFECT_AUTH_STATUS = 'EFFECT_AUTH_STATUS';
+export const EFFECT_TWO_FACTOR_AUTH = 'EFFECT_TWO_FACTOR_AUTH';
+export const EFFECT_TWO_FACTOR_UPDATING = 'EFFECT_TWO_FACTOR_UPDATING';
+export const EFFECT_TWO_FACTOR_UPDATED = 'EFFECT_TWO_FACTOR_UPDATED';
 
 @Injectable()
 export class AppDbEffects {
     parseString;
 
-    constructor(private actions$: Actions, @Inject('OFFLINE_ENV') private offlineEnv, private store: Store<ApplicationState>, private http: Http) {
+    constructor(private actions$: Actions,
+                @Inject('OFFLINE_ENV') private offlineEnv,
+                private store: Store<ApplicationState>,
+                private http: Http) {
         this.parseString = xml2js.parseString;
     }
 
     @Effect() authTwoFactor$: Observable<Action> = this.actions$
-        .ofType(ACTION_TWO_FACTOR_AUTH)
+        .ofType(EFFECT_TWO_FACTOR_AUTH)
         .switchMap(action => this.authTwoFactor(action))
-        .map(authStatus => ({type: AUTH_END, payload: authStatus}));
+        .map(authStatus => ({type: EFFECT_AUTH_END, payload: authStatus}));
 
     private authTwoFactor(action: Action): Observable<any> {
-        this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_CHECK})
+        this.store.dispatch({type: EFFECT_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_CHECK})
 
         return this.store.select(store => store.appDb.appBaseUrlCloud)
             .take(1)
@@ -51,18 +54,18 @@ export class AppDbEffects {
                     .map(res => {
                         var status = res.json();
                         if (status.result) {
-                            this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_PASS})
+                            this.store.dispatch({type: EFFECT_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_PASS})
                         } else {
-                            this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_FAIL})
+                            this.store.dispatch({type: EFFECT_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_FAIL})
                         }
                     })
             })
     }
 
     @Effect() updatedTwoFactor$: Observable<Action> = this.actions$
-        .ofType(ACTION_TWO_FACTOR_UPDATING)
+        .ofType(EFFECT_TWO_FACTOR_UPDATING)
         .switchMap(action => this.updatedTwoFactor(action))
-        .map(authStatus => ({type: AUTH_END, payload: authStatus}));
+        .map(authStatus => ({type: EFFECT_AUTH_END, payload: authStatus}));
 
     private updatedTwoFactor(action: Action): Observable<any> {
         return this.store.select(store => store.appDb.appBaseUrlCloud)
@@ -79,14 +82,14 @@ export class AppDbEffects {
                     .map(res => {
                         var status = res.json().result;
                         status == true ? this.store.dispatch({
-                                type: ACTION_AUTH_STATUS,
+                                type: EFFECT_AUTH_STATUS,
                                 payload: AuthenticateFlags.TWO_FACTOR_UPDATE_PASS
                             }) : this.store.dispatch({
-                                type: ACTION_AUTH_STATUS,
+                                type: EFFECT_AUTH_STATUS,
                                 payload: AuthenticateFlags.TWO_FACTOR_UPDATE_FAIL
                             })
                         this.store.dispatch({
-                            type: ACTION_TWO_FACTOR_UPDATED,
+                            type: EFFECT_TWO_FACTOR_UPDATED,
                             payload: status
                         })
                     })
@@ -94,13 +97,13 @@ export class AppDbEffects {
     }
 
     @Effect() authUser$: Observable<Action> = this.actions$
-        .ofType(AUTH_START)
+        .ofType(EFFECT_AUTH_START)
         .switchMap(action => this.authUser(action))
-        .map(authStatus => ({type: AUTH_END, payload: authStatus}));
+        .map(authStatus => ({type: EFFECT_AUTH_END, payload: authStatus}));
 
     private authUser(action: Action): Observable<any> {
         let userModel: UserModel = action.payload;
-        this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+        this.store.dispatch({type: EFFECT_UPDATE_USER_MODEL, payload: userModel});
 
         return this.store.select(store => store.appDb.appBaseUrl)
             .take(1)
@@ -123,24 +126,24 @@ export class AppDbEffects {
                         if (_.isNull(result)) {
                             userModel = userModel.setAuthenticated(false);
                             userModel = userModel.setAccountType(-1);
-                            this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
-                            this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.WRONG_PASS});
+                            this.store.dispatch({type: EFFECT_UPDATE_USER_MODEL, payload: userModel});
+                            this.store.dispatch({type: EFFECT_AUTH_STATUS, payload: AuthenticateFlags.WRONG_PASS});
                             return;
 
                         } else if (result && !result.Businesses) {
                             userModel = userModel.setAuthenticated(true);
                             userModel = userModel.setAccountType(AuthenticateFlags.USER_ACCOUNT);
-                            this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+                            this.store.dispatch({type: EFFECT_UPDATE_USER_MODEL, payload: userModel});
                             this.store.dispatch({
-                                type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.USER_ACCOUNT
+                                type: EFFECT_AUTH_STATUS, payload: AuthenticateFlags.USER_ACCOUNT
                             });
 
                         } else {
                             userModel = userModel.setAuthenticated(true);
                             userModel = userModel.setAccountType(AuthenticateFlags.ENTERPRISE_ACCOUNT);
-                            this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+                            this.store.dispatch({type: EFFECT_UPDATE_USER_MODEL, payload: userModel});
                             this.store.dispatch({
-                                type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.ENTERPRISE_ACCOUNT
+                                type: EFFECT_AUTH_STATUS, payload: AuthenticateFlags.ENTERPRISE_ACCOUNT
                             });
                         }
 
@@ -151,15 +154,15 @@ export class AppDbEffects {
                                 .subscribe((twoFactorResult) => {
                                     userModel = userModel.setBusinessId(twoFactorResult.businessId);
                                     userModel = userModel.setTwoFactorRequired(twoFactorResult.enabled);
-                                    this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+                                    this.store.dispatch({type: EFFECT_UPDATE_USER_MODEL, payload: userModel});
                                     if (twoFactorResult.enabled) {
                                         this.store.dispatch({
-                                            type: ACTION_AUTH_STATUS,
+                                            type: EFFECT_AUTH_STATUS,
                                             payload: AuthenticateFlags.TWO_FACTOR_ENABLED
                                         });
                                     } else {
                                         this.store.dispatch({
-                                            type: ACTION_AUTH_STATUS,
+                                            type: EFFECT_AUTH_STATUS,
                                             payload: AuthenticateFlags.AUTH_PASS_NO_TWO_FACTOR
                                         });
                                     }
