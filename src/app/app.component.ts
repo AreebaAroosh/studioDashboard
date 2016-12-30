@@ -1,5 +1,4 @@
 import {Component, ViewContainerRef, VERSION} from "@angular/core";
-import {StyleService} from "../styles/StyleService";
 import "rxjs/add/operator/catch";
 import {Router, ActivatedRoute, NavigationEnd} from "@angular/router";
 import {CommBroker} from "../services/CommBroker";
@@ -14,7 +13,6 @@ import {LocalStorage} from "../services/LocalStorage";
 
 @Component({
     selector: 'app-root',
-    providers: [StyleService],
     templateUrl: './app.component.html'
 })
 export class AppComponent {

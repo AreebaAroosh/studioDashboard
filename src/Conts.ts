@@ -39,7 +39,6 @@ export class Consts {
         return {
             App: 'Application',
             Properties: 'Properties',
-            StyleService: 'StyleService',
             ActionService: 'ActionService'
         };
     }
