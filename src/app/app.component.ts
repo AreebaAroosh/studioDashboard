@@ -16,7 +16,6 @@ import {LocalStorage} from "../services/LocalStorage";
     templateUrl: './app.component.html'
 })
 export class AppComponent {
-
     public version: string;
     private ngVersion: string;
 
