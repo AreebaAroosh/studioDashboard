@@ -4,10 +4,11 @@ import * as _ from "lodash";
 import {LocalStorage} from "../../services/LocalStorage";
 import {Compbaser} from "../compbaser/Compbaser";
 import {Store} from "@ngrx/store";
-import {AppdbAction, ACTION_TWO_FACTOR_UPDATING, AuthenticateFlags} from "../../store/actions/app-db-actions";
+import {AppdbAction, AuthenticateFlags} from "../../store/actions/app-db-actions";
 import {ApplicationState} from "../../store/application-state";
 import {UserModel} from "../../models/UserModel";
 import {Map} from "immutable";
+import {ACTION_TWO_FACTOR_UPDATING} from "../../store/effects/app-db-effects";
 
 @Component({
     selector: 'Twofactor',

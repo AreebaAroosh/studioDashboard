@@ -35,6 +35,7 @@ import {StoreDevtoolsModule} from "@ngrx/store-devtools";
 import {appDb} from "../store/reducers/app-db-reducer";
 import {storeData} from "../store/reducers/uiStoreDataReducer";
 import {AppdbAction} from "../store/actions/app-db-actions";
+import {AppDbEffects} from "../store/effects/app-db-effects";
 import {Dashboard} from "../comps/app1/dashboard/dashboard";
 import {App1} from "../comps/app1/App1";
 import {Privileges} from "../comps/app1/privileges/Privileges";
@@ -84,7 +85,7 @@ var decelerations = [AppComponent, AutoLogin, LoginPanel, Logo, App1, Account, D
             storeData,
             appDb
         }), INITIAL_APPLICATION_STATE),
-        EffectsModule.run(AppdbAction),
+        EffectsModule.run(AppDbEffects),
         //EffectsModule.run(AnotherEffectService),
         StoreDevtoolsModule.instrumentOnlyWithExtension(),
         ChartModule,
