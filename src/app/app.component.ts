@@ -28,11 +28,11 @@ export class AppComponent {
         // this.localStorage.removeItem('business_id')
 
         // fake
-        this.localStorage.setItem('remember_me', {
-            u: 'aa',
-            p: 'bb',
-            r: true
-        });
+        // this.localStorage.setItem('remember_me', {
+        //     u: 'aa',
+        //     p: 'bb',
+        //     r: true
+        // });
     }
 
     // constructor(private router: Router,

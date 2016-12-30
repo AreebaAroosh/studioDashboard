@@ -57,13 +57,18 @@ export class AuthService {
     }
 
     private listenEvents() {
-
         this.store.select(store => store.appDb.appAuthStatus).subscribe((i_authStatus: Map<string,AuthenticateFlags>) => {
             let authStatus = i_authStatus.get('authStatus')
             switch (authStatus) {
                 case AuthenticateFlags.WRONG_PASS: {
                     this.saveCredentials('', '', '');
                     this.router.navigate(['/UserLogin']);
+                    break;
+                }
+                case AuthenticateFlags.TWO_FACTOR_ENABLED: {
+                    var user = Ngmslib.Base64().encode(this.userModel.getUser());
+                    var pass = Ngmslib.Base64().encode(this.userModel.getPass());
+                    this.router.navigate([`/UserLogin/twoFactor/${user}/${pass}`])
                     break;
                 }
                 case AuthenticateFlags.TWO_FACTOR_PASS: {
@@ -190,78 +195,38 @@ export class AuthService {
         this.store.dispatch({type: ACTION_TWO_FACTOR_AUTH, payload: {token: token, enable: false}})
     }
 
-    //
-    // public getLocalstoreCred(): {u: string, p: string, r: string} {
-    //     var credentials = this.localStorage.getItem('remember_me');
-    //     if (!credentials)
-    //         return {
-    //             u: '',
-    //             p: '',
-    //             r: ''
-    //         };
-    //     return {
-    //         u: credentials.u,
-    //         p: credentials.p,
-    //         r: credentials.r,
-    //     }
-    // }
-    //
-    // public checkAccess(): Promise<any> {
-    //     let target = ['/AutoLogin'];
-    //
-    //     switch (this.m_authState) {
-    //         case AuthState.FAIL: {
-    //             break;
-    //         }
-    //         case AuthState.PASS: {
-    //             return Promise.resolve(true);
-    //         }
-    //         case AuthState.TWO_FACTOR: {
-    //             return Promise.resolve(true);
-    //         }
-    //     }
-    //     if (this.getLocalstoreCred().u == '') {
-    //         this.router.navigate(target);
-    //         return Promise.resolve(false);
-    //     }
-    //     return new Promise((resolve) => {
-    //         var credentials = this.localStorage.getItem('remember_me');
-    //         var user = credentials.u;
-    //         var pass = credentials.p;
-    //         var remember = credentials.r;
-    //
-    //         this.appdbAction.createDispatcher(this.appdbAction.authenticateUser)(user, pass, remember);
-    //
-    //         this.m_pendingNotify = (i_authState: AuthState) => {
-    //
-    //             switch (i_authState) {
-    //                 case AuthState.FAIL: {
-    //                     resolve(false);
-    //                     break;
-    //                 }
-    //                 case AuthState.PASS: {
-    //                     this.router.navigate(target);
-    //                     resolve(true);
-    //                     break;
-    //                 }
-    //                 case AuthState.TWO_FACTOR: {
-    //                     console.log('waiting on 2 factor...');
-    //                     resolve(false);
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     });
-    // }
-    //
-    // public canActivate(activatedRouteSnapshot: ActivatedRouteSnapshot, routerStateSnapshot: RouterStateSnapshot): Observable<boolean> {
-    //     return Observable
-    //         .fromPromise(this.checkAccess())
-    //         .do(result => {
-    //             if (!result)
-    //                 this.router.navigate(['/AutoLogin']);
-    //         });
-    // }
+
+    public getLocalstoreCred(): {u: string, p: string, r: string} {
+        var credentials = this.localStorage.getItem('remember_me');
+        if (!credentials)
+            return {
+                u: '',
+                p: '',
+                r: ''
+            };
+        return {
+            u: credentials.u,
+            p: credentials.p,
+            r: credentials.r,
+        }
+    }
+
+    public checkAccess(): Promise<any> {
+        if (this.userModel.getAuthenticated()){
+            return Promise.resolve(true);
+        } else {
+            return Promise.resolve(false);
+        }
+    }
+
+    public canActivate(activatedRouteSnapshot: ActivatedRouteSnapshot, routerStateSnapshot: RouterStateSnapshot): Observable<boolean> {
+        return Observable
+            .fromPromise(this.checkAccess())
+            .do(result => {
+                if (!result)
+                    this.router.navigate(['/AutoLogin']);
+            });
+    }
 }
 
 export const AUTH_PROVIDERS: Array<any> = [{
