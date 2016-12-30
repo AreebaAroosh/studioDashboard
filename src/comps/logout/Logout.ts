@@ -1,7 +1,5 @@
 import {Component} from "@angular/core";
-import {AppStore} from "angular2-redux-util";
 import {LocalStorage} from "../../services/LocalStorage";
-import * as _ from 'lodash'
 
 @Component({
     selector: 'Logout',
@@ -13,13 +11,10 @@ import * as _ from 'lodash'
 })
 
 export class Logout {
-    constructor(private appStore:AppStore, private localStorage:LocalStorage) {
-        var linksHome = this.appStore.getState().reseller.getIn(['whitelabel']).getKey('linksHome');
-        if (_.isEmpty(linksHome))
-            linksHome = 'http://www.digitalsignage.com';
+    constructor(private localStorage: LocalStorage) {
         this.localStorage.removeItem('remember_me')
         jQuery('body').fadeOut(1000, function () {
-            window.location.replace(linksHome);
+            window.location.replace('http://www.digitalsignage.com');
         });
     }
 }
