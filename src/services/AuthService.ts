@@ -11,7 +11,7 @@ import {Ngmslib} from "ng-mslib";
 import * as _ from "lodash";
 import {Store} from "@ngrx/store";
 import {ApplicationState} from "../store/application-state";
-import {AppdbAction, AuthenticateFlags, AUTH_START} from "../store/actions/app-db-actions";
+import {AppdbAction, AuthenticateFlags, AUTH_START, ACTION_TWO_FACTOR_AUTH} from "../store/actions/app-db-actions";
 import {UserModel} from "../models/UserModel";
           
 
@@ -149,10 +149,10 @@ export class AuthService {
         })
     }
 
-    //
-    // public authServerTwoFactor(i_twoFactorToken): void {
-    //     this.appStore.dispatch(this.appdbAction.authenticateTwoFactor(i_twoFactorToken, false));
-    // }
+    public authServerTwoFactor(token): void {
+        this.store.dispatch({type: ACTION_TWO_FACTOR_AUTH, payload: {token: token, enable: false}})
+    }
+
     //
     // public getLocalstoreCred(): {u: string, p: string, r: string} {
     //     var credentials = this.localStorage.getItem('remember_me');

@@ -234,11 +234,11 @@ export class LoginPanel extends Compbaser {
     private onClickedLogin() {
         if (this.m_showTwoFactor) {
             // this.toast.warning('Authenticating Two factor...');
-            // this.authService.authServerTwoFactor(this.m_twoFactor);
+            this.authService.authServerTwoFactor(this.m_twoFactor);
         } else {
             // this.toast.info('Authenticating...');
-            this.authService.authUser(this.m_user, this.m_pass, this.m_rememberMe);
-            // this.authService.authUser('reseller@ms.com','123123', this.m_rememberMe);
+            // this.authService.authUser(this.m_user, this.m_pass, this.m_rememberMe);
+            this.authService.authUser('reseller@ms.com','123123', this.m_rememberMe);
 
         }
     }
@@ -261,6 +261,18 @@ export class LoginPanel extends Compbaser {
                 msg1 = 'Invalid token'
                 msg2 = 'Wrong token entered or the 60 seconds limit may have exceeded, try again...'
                 break;
+            }
+            case AuthenticateFlags.TWO_FACTOR_CHECK: {
+                alert('checking secure login');
+                return false;
+            }
+            case AuthenticateFlags.TWO_FACTOR_PASS: {
+                alert('two facor pass, enter app');
+                return false;
+            }
+            case AuthenticateFlags.TWO_FACTOR_FAIL: {
+                alert('two factor fail');
+                return false;
             }
             default: {
                 return false;

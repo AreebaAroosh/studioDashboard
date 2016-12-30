@@ -26,27 +26,9 @@ export const TWO_FACTOR_SERVER_RESULT = 'TWO_FACTOR_SERVER_RESULT';
 
 export const ACTION_UPDATE_USER_MODEL = 'ACTION_UPDATE_USER_MODEL';
 export const ACTION_AUTH_STATUS = 'ACTION_AUTH_STATUS';
-
-// export const ACTION_AUTH_START = 'ACTION_AUTH_START';
-// export const ACTION_AUTH_END = 'ACTION_AUTH_END';
-// export const ACTION_TWO_FACTOR_SERVER_RESULT = 'ACTION_TWO_FACTOR_SERVER_RESULT';
-
-
+export const ACTION_TWO_FACTOR_AUTH = 'ACTION_TWO_FACTOR_AUTH';
 export const APP_INIT = 'APP_INIT';
 
-// export enum AuthState {
-//     FAIL,
-//     PASS,
-//     TWO_FACTOR
-// }
-
-
-// export enum FlagsAuth {
-//     WrongPass,
-//     NotEnterprise,
-//     Enterprise,
-//     WrongTwoFactor
-// }
 
 export enum AuthenticateFlags {
     USER_ACCOUNT,
@@ -54,7 +36,10 @@ export enum AuthenticateFlags {
     WRONG_TWO_FACTOR,
     WRONG_PASS,
     TWO_FACTOR_ENABLED,
-    TWO_FACTOR_DISABLED
+    TWO_FACTOR_DISABLED,
+    TWO_FACTOR_CHECK,
+    TWO_FACTOR_FAIL,
+    TWO_FACTOR_PASS
 }
 
 @Injectable()
@@ -65,7 +50,40 @@ export class AppdbAction {
         this.parseString = xml2js.parseString;
     }
 
-    @Effect() userThreads$: Observable<Action> = this.actions$
+    @Effect() authTwoFactor$: Observable<Action> = this.actions$
+        .ofType(ACTION_TWO_FACTOR_AUTH)
+        .switchMap(action => this.authTwoFactor(action))
+        .map(authStatus => ({type: AUTH_END, payload: authStatus}));
+
+    private authTwoFactor(action: Action): Observable<any> {
+        this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_CHECK})
+
+        return this.store.select(store => store.appDb.appBaseUrlCloud)
+            .take(1)
+            .mergeMap(baseUrl => {
+                const url = baseUrl.replace('END_POINT', 'twoFactor') + `/${action.payload.token}/${action.payload.enable}`
+                return this.http.get(url)
+                    .catch((err: any) => {
+                        alert('Error getting two factor');
+                        return Observable.throw(err);
+                    })
+                    .finally(() => {
+                    })
+                    .map(res => {
+                        var status = res.json();
+                        if (status.result) {
+                            this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_PASS})
+                        } else {
+                            this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.TWO_FACTOR_FAIL})
+                        }
+                        // userModel = userModel.setAuthenticated(true);
+                        // userModel = userModel.setAccountType(AuthenticateFlags.USER_ACCOUNT);
+                        // this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+                    })
+            })
+    }
+
+    @Effect() authUser$: Observable<Action> = this.actions$
         .ofType(AUTH_START)
         .switchMap(action => this.authUser(action))
         .map(authStatus => ({type: AUTH_END, payload: authStatus}));
@@ -164,6 +182,20 @@ export class AppdbAction {
                     })
             })
     }
+
+    // public authenticateTwoFactor(i_token: string, i_enable: boolean) {
+    //     return (dispatch) => {
+    //         var appdb: Map<string,any> = this.appStore.getState().appdb;
+    //         var url = appdb.get('appBaseUrlCloud').replace('END_POINT', 'twoFactor') + `/${i_token}/${i_enable}`
+    //         this._http.get(url)
+    //             .map(result => {
+    //                 dispatch({
+    //                     type: TWO_FACTOR_SERVER_RESULT,
+    //                     status: result.json().result
+    //                 })
+    //             }).subscribe()
+    //     };
+    // }
 
     public initAppDb() {
         return {
