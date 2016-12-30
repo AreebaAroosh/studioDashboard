@@ -36,7 +36,6 @@ import {StoreDevtoolsModule} from "@ngrx/store-devtools";
 import {uiState} from "../store/reducers/uiStateReducer";
 import {appDb} from "../store/reducers/app-db-reducer";
 import {storeData} from "../store/reducers/uiStoreDataReducer";
-import weatherReducer from "../store/reducers/weatherReducer";
 import {ThreadsService} from "../services/threads.service";
 import {AppdbAction} from "../store/actions/app-db-actions";
 import {Dashboard} from "../comps/app1/dashboard/dashboard";
@@ -90,7 +89,6 @@ var decelerations = [AppComponent, AutoLogin, LoginPanel, Logo, App1, Account, D
         StoreModule.provideStore(combineReducers({
             uiState,
             storeData,
-            weatherReducer,
             appDb
         }), INITIAL_APPLICATION_STATE),
         EffectsModule.run(LoadThreadsEffectService),
