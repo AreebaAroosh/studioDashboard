@@ -11,8 +11,7 @@ import {
     transition,
     animate
 } from "@angular/core";
-import {Router, ActivatedRoute} from "@angular/router";
-import {BusinessAction} from "../../business/BusinessAction";
+import {ActivatedRoute} from "@angular/router";
 import {LocalStorage} from "../../services/LocalStorage";
 import {AuthService} from "../../services/AuthService";
 import {Map} from "immutable";
@@ -27,7 +26,7 @@ import {AuthenticateFlags} from "../../store/actions/app-db-actions";
 @Injectable()
 @Component({
     selector: 'LoginPanel',
-    providers: [BusinessAction, LocalStorage],
+    providers: [LocalStorage],
     animations: [
 
         trigger('loginState', [

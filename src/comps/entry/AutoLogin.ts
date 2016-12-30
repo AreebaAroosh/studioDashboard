@@ -1,8 +1,6 @@
 import {Component, ChangeDetectionStrategy} from "@angular/core";
 import {Compbaser} from "../compbaser/Compbaser";
-import {AuthState} from "../../appdb/AppdbAction";
 import {Router} from "@angular/router";
-import {Ngmslib} from "ng-mslib";
 import {Store} from "@ngrx/store";
 import {ApplicationState} from "../../store/application-state";
 import {Observable} from "rxjs";
@@ -14,7 +12,7 @@ import {Observable} from "rxjs";
 })
 export class AutoLogin extends Compbaser {
 
-    constructor(private appStore: Store<ApplicationState>, private router:Router) {
+    constructor(private appStore: Store<ApplicationState>, private router: Router) {
         super();
         // this.appStore.select(state => state.appDb.userModel).subscribe((e)=>{
         //     console.log(e);
@@ -44,9 +42,9 @@ export class AutoLogin extends Compbaser {
         // )
     }
 
-    private currentSelectedThreadId$:Observable<any>;
+    private currentSelectedThreadId$: Observable<any>;
 
-    private navigateTo(to){
+    private navigateTo(to) {
         // setTimeout(()=>{
         //     this.router.navigate(to)
         // },1)

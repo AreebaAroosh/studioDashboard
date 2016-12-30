@@ -1,6 +1,5 @@
 import {Component, ViewContainerRef, VERSION} from "@angular/core";
 import {StyleService} from "../styles/StyleService";
-import {AppdbAction} from "../appdb/AppdbAction";
 import "rxjs/add/operator/catch";
 import {Router, ActivatedRoute, NavigationEnd} from "@angular/router";
 import {CommBroker} from "../services/CommBroker";
@@ -9,7 +8,6 @@ import {ToastsManager} from "ng2-toastr";
 import {Ngmslib} from "ng-mslib";
 import {Consts} from "../Conts";
 import {Observable} from "rxjs";
-import {ServerMode} from "./app.module";
 import * as packageJson from "../../package.json";
 import {AuthService} from "../services/AuthService";
 import {LocalStorage} from "../services/LocalStorage";
@@ -18,12 +16,16 @@ import {ApplicationState} from "../store/application-state";
 
 @Component({
     selector: 'app-root',
-    providers: [StyleService, AppdbAction],
+    providers: [StyleService],
     templateUrl: './app.component.html'
 })
 export class AppComponent {
 
-    constructor(private router: Router, private localStorage:LocalStorage, private authService: AuthService){
+    constructor(private router: Router, private localStorage: LocalStorage, private authService: AuthService) {
+
+        this.version = packageJson.version;
+        this.ngVersion = VERSION.full
+
         // this.localStorage.removeItem('remember_me')
         // this.localStorage.removeItem('business_id')
 
@@ -74,9 +76,10 @@ export class AppComponent {
             }
         });
     }
+
     //
-    // public version: string;
-    // private ngVersion: string;
+    public version: string;
+    private ngVersion: string;
     //
     // private checkPlatform() {
     //     switch (platform.name.toLowerCase()) {
