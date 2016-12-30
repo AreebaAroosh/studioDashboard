@@ -31,12 +31,9 @@ import {Slideritem} from "../comps/sliderpanel/Slideritem";
 import {StoreModule, combineReducers} from "@ngrx/store";
 import {INITIAL_APPLICATION_STATE} from "../store/application-state";
 import {EffectsModule} from "@ngrx/effects";
-import {LoadThreadsEffectService} from "../store/effects/load-threads-effect.service";
 import {StoreDevtoolsModule} from "@ngrx/store-devtools";
-import {uiState} from "../store/reducers/uiStateReducer";
 import {appDb} from "../store/reducers/app-db-reducer";
 import {storeData} from "../store/reducers/uiStoreDataReducer";
-import {ThreadsService} from "../services/threads.service";
 import {AppdbAction} from "../store/actions/app-db-actions";
 import {Dashboard} from "../comps/app1/dashboard/dashboard";
 import {App1} from "../comps/app1/App1";
@@ -53,9 +50,6 @@ export var providing = [CommBroker, AUTH_PROVIDERS,
     {
         provide: LocalStorage,
         useClass: LocalStorage
-    }, {
-        provide: ThreadsService,
-        useClass: ThreadsService
     },
     {
         provide: StoreService,
@@ -87,12 +81,11 @@ var decelerations = [AppComponent, AutoLogin, LoginPanel, Logo, App1, Account, D
         Ng2Bs3ModalModule,
         HttpModule,
         StoreModule.provideStore(combineReducers({
-            uiState,
             storeData,
             appDb
         }), INITIAL_APPLICATION_STATE),
-        EffectsModule.run(LoadThreadsEffectService),
         EffectsModule.run(AppdbAction),
+        //EffectsModule.run(AnotherEffectService),
         StoreDevtoolsModule.instrumentOnlyWithExtension(),
         ChartModule,
         ToastModule.forRoot({

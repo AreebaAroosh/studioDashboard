@@ -1,16 +1,11 @@
-import {Participant} from "../../shared/model/participant";
-import {Thread} from "../../shared/model/thread";
-import {Message} from "../../shared/model/message";
 import {Map, List} from 'immutable';
 import {UserModel} from "../models/UserModel";
 import {AuthenticateFlags} from "./actions/app-db-actions";
 
 export interface StoreData {
-
-    participants: { [key: number]: Participant };
-    threads: { [key: number]: Thread };
-    messages: { [key: number]: Message };
-
+    participants: { [key: number]: any };
+    threads: { [key: number]: any };
+    messages: { [key: number]: any };
 }
 
 export interface IAppDb {
