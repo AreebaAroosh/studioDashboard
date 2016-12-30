@@ -45,24 +45,18 @@ export function appDb(state: IAppDb, action: any): IAppDb {
             state.appBaseUrl = `${baseUrl}`;
             return state;
 
-        case StoreActions.ACTION_AUTH_PROGRESS:
+        case StoreActions.ACTION_UPDATE_USER_MODEL:
             var userModel:UserModel = action.payload;
             state.userModel = userModel.setTime();
             state.appBaseUrlUser = `${baseUrl}?resellerUserName=${userModel.getKey('user')}&resellerPassword=${userModel.getKey('pass')}`;
             state.appBaseUrlCloud = `${appBaseUrlCloud}/END_POINT/${userModel.getKey('user')}/${userModel.getKey('pass')}`;
             return state;
 
-        case StoreActions.ACTION_AUTH_FAIL:
-            var userModel:UserModel = action.payload;
-            state.userModel = userModel.setTime();
+        case StoreActions.ACTION_AUTH_STATUS:
+            state.appAuthStatus = action.payload;
             return state;
 
-        case StoreActions.ACTION_AUTH_PASS:
-            var userModel:UserModel = action.payload;
-            state.userModel = userModel.setTime();
-            return state;
-
-
+            
         //
         // case AppdbAction.TWO_FACTOR_SERVER_RESULT:
         //     return state.set('twoFactorStatus', {

@@ -47,7 +47,6 @@ export class AuthService {
                 }
 
                 if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == true) {
-                    alert('show app')
                 }
 
 

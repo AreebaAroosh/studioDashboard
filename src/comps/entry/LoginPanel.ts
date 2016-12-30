@@ -231,7 +231,12 @@ export class LoginPanel extends Compbaser {
                 msg2 = 'Please try again or click forgot password to reset your credentials'
                 break;
             }
-            case AuthenticateFlags.NOT_ENTERPRISE: {
+            case AuthenticateFlags.ENTERPRISE_ACCOUNT: {
+                msg1 = 'Not an enterprise account'
+                msg2 = 'You must login with an Enterprise account, not an end user account...'
+                break;
+            }
+            case AuthenticateFlags.USER_ACCOUNT: {
                 msg1 = 'Not an enterprise account'
                 msg2 = 'You must login with an Enterprise account, not an end user account...'
                 break;

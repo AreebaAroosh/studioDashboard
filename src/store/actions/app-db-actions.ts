@@ -24,12 +24,12 @@ export const AUTH_END = 'AUTH_END';
 export const TWO_FACTOR_SERVER_RESULT = 'TWO_FACTOR_SERVER_RESULT';
 
 
-export const ACTION_AUTH_PROGRESS = 'ACTION_AUTH_PROGRESS';
-export const ACTION_AUTH_PASS = 'ACTION_AUTH_PASS';
-export const ACTION_AUTH_FAIL = 'ACTION_AUTH_FAIL';
-export const ACTION_AUTH_START = 'ACTION_AUTH_START';
-export const ACTION_AUTH_END = 'ACTION_AUTH_END';
-export const ACTION_TWO_FACTOR_SERVER_RESULT = 'ACTION_TWO_FACTOR_SERVER_RESULT';
+export const ACTION_UPDATE_USER_MODEL = 'ACTION_UPDATE_USER_MODEL';
+export const ACTION_AUTH_STATUS = 'ACTION_AUTH_STATUS';
+
+// export const ACTION_AUTH_START = 'ACTION_AUTH_START';
+// export const ACTION_AUTH_END = 'ACTION_AUTH_END';
+// export const ACTION_TWO_FACTOR_SERVER_RESULT = 'ACTION_TWO_FACTOR_SERVER_RESULT';
 
 
 export const APP_INIT = 'APP_INIT';
@@ -49,12 +49,12 @@ export const APP_INIT = 'APP_INIT';
 // }
 
 export enum AuthenticateFlags {
-    PASS,
-    WRONG_PASS,
-    NOT_ENTERPRISE,
-    WRONG_TWO_FACTOR,
     USER_ACCOUNT,
-    ENTERPRISE_ACCOUNT
+    ENTERPRISE_ACCOUNT,
+    WRONG_TWO_FACTOR,
+    WRONG_PASS,
+    TWO_FACTOR_ENABLED,
+    TWO_FACTOR_DISABLED
 }
 
 @Injectable()
@@ -72,10 +72,8 @@ export class AppdbAction {
 
     private authUser(action: Action): Observable<any> {
         let userModel: UserModel = action.payload;
-        this.store.dispatch({
-            type: ACTION_AUTH_PROGRESS,
-            payload: userModel
-        });
+        this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+
         return this.store.select(store => store.appDb.appBaseUrl)
             .take(1)
             .mergeMap(baseUrl => {
@@ -93,41 +91,51 @@ export class AppdbAction {
                         const boundCallback = Observable.bindCallback(this.processXml, (xmlData: any) => xmlData);
                         return boundCallback(this, i_xmlData)
                     }).map(result => {
+
                         if (_.isNull(result)) {
                             userModel = userModel.setAuthenticated(false);
                             userModel = userModel.setAccountType(-1);
-                            userModel = userModel.setReason(AuthenticateFlags.WRONG_PASS);
-                            return this.store.dispatch({
-                                type: ACTION_AUTH_FAIL,
-                                payload: userModel
+                            this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+                            this.store.dispatch({type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.WRONG_PASS})
+                            return;
 
-                            });
                         } else if (result && !result.Businesses) {
                             userModel = userModel.setAuthenticated(true);
                             userModel = userModel.setAccountType(AuthenticateFlags.USER_ACCOUNT);
-                            userModel = userModel.setReason(AuthenticateFlags.NOT_ENTERPRISE);
-                            return this.store.dispatch({
-                                type: ACTION_AUTH_FAIL,
-                                payload: userModel
-
+                            this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+                            this.store.dispatch({
+                                type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.USER_ACCOUNT
                             });
+                            return;
+
                         } else {
-                            // Auth passed, next check if two factor enabled
+                            userModel = userModel.setAuthenticated(true);
                             userModel = userModel.setAccountType(AuthenticateFlags.ENTERPRISE_ACCOUNT);
+                            this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+                            this.store.dispatch({
+                                type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.ENTERPRISE_ACCOUNT
+                            });
+                        }
+
+                        // if passed check for two factor
+                        if (userModel.getAuthenticated()) {
                             this.twoFactorCheck()
                                 .take(1)
                                 .subscribe((twoFactorResult) => {
                                     userModel = userModel.setBusinessId(twoFactorResult.businessId);
                                     userModel = userModel.setTwoFactorRequired(twoFactorResult.enabled);
-                                    if (twoFactorResult.enabled){
-                                        userModel = userModel.setAuthenticated(false);
+                                    this.store.dispatch({type: ACTION_UPDATE_USER_MODEL, payload: userModel});
+                                    if (twoFactorResult.enabled) {
+                                        this.store.dispatch({
+                                            type: ACTION_AUTH_STATUS,
+                                            payload: AuthenticateFlags.TWO_FACTOR_ENABLED
+                                        });
                                     } else {
-                                        userModel = userModel.setAuthenticated(true);
+                                        this.store.dispatch({
+                                            type: ACTION_AUTH_STATUS,
+                                            payload: AuthenticateFlags.TWO_FACTOR_DISABLED
+                                        });
                                     }
-                                    this.store.dispatch({
-                                        type: ACTION_AUTH_PASS,
-                                        payload: userModel
-                                    });
                                 })
                         }
                     })

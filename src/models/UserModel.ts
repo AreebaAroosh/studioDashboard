@@ -2,7 +2,7 @@ import {StoreModel} from "../models/StoreModel";
 import * as _ from 'lodash';
 export class UserModel extends StoreModel {
 
-    constructor(data: {user: string, pass: string, reason: number, authenticated: boolean, businessId: number, rememberMe: boolean, twoFactorRequired:boolean, accountType: number, authTime?: Date}) {
+    constructor(data: {user: string, pass: string, authenticated: boolean, businessId: number, rememberMe: boolean, twoFactorRequired:boolean, accountType: number, authTime?: Date}) {
         super(data);
     }
 
@@ -23,7 +23,7 @@ export class UserModel extends StoreModel {
     // }
 
     public setTime() {
-        return this.setKey<UserModel>(UserModel, 'authTime', _.uniqueId());
+        return this.setKey<UserModel>(UserModel, 'authTime', new Date());
     }
 
     public getTime() {
@@ -60,14 +60,6 @@ export class UserModel extends StoreModel {
 
     pass() {
         return this.getKey('pass');
-    }
-
-    setReason(value:number) {
-        return this.setKey<UserModel>(UserModel, 'reason', value);
-    }
-
-    getReason(): number {
-        return this.getKey('reason');
     }
 
     setAccountType(value:number) {
