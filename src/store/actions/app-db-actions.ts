@@ -29,7 +29,6 @@ export const ACTION_AUTH_STATUS = 'ACTION_AUTH_STATUS';
 export const ACTION_TWO_FACTOR_AUTH = 'ACTION_TWO_FACTOR_AUTH';
 export const APP_INIT = 'APP_INIT';
 
-
 export enum AuthenticateFlags {
     NONE,
     USER_ACCOUNT,
@@ -37,7 +36,7 @@ export enum AuthenticateFlags {
     WRONG_TWO_FACTOR,
     WRONG_PASS,
     TWO_FACTOR_ENABLED,
-    TWO_FACTOR_DISABLED,
+    AUTH_PASS_NO_TWO_FACTOR,
     TWO_FACTOR_CHECK,
     TWO_FACTOR_FAIL,
     TWO_FACTOR_PASS
@@ -149,7 +148,7 @@ export class AppdbAction {
                                     } else {
                                         this.store.dispatch({
                                             type: ACTION_AUTH_STATUS,
-                                            payload: AuthenticateFlags.TWO_FACTOR_DISABLED
+                                            payload: AuthenticateFlags.AUTH_PASS_NO_TWO_FACTOR
                                         });
                                     }
                                 })

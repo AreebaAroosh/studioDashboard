@@ -13,7 +13,7 @@ import {Store} from "@ngrx/store";
 import {ApplicationState} from "../store/application-state";
 import {AppdbAction, AuthenticateFlags, AUTH_START, ACTION_TWO_FACTOR_AUTH} from "../store/actions/app-db-actions";
 import {UserModel} from "../models/UserModel";
-          
+
 
 export enum FlagsAuth {
     WrongPass,
@@ -36,20 +36,60 @@ export class AuthService {
                 @Inject(forwardRef(() => StoreService)) private storeService: StoreService,
                 private activatedRoute: ActivatedRoute) {
 
-        this.store.select(store => store.appDb.userModel)
-            .subscribe((userModel: UserModel) => {
-                this.userModel = userModel;
+        this.store.select(store => store.appDb.userModel).subscribe((userModel: UserModel) => {
+            this.userModel = userModel;
+        })
 
-                if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == false) {
-                    var user = Ngmslib.Base64().encode(this.userModel.getUser());
-                    var pass = Ngmslib.Base64().encode(this.userModel.getPass());
-                    this.router.navigate([`/UserLogin/twoFactor/${user}/${pass}`])
-                }
+        // this.store.select(store => store.appDb.userModel)
+        //     .subscribe((userModel: UserModel) => {
+        //         this.userModel = userModel;
+        //         if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == false) {
+        //             var user = Ngmslib.Base64().encode(this.userModel.getUser());
+        //             var pass = Ngmslib.Base64().encode(this.userModel.getPass());
+        //             this.router.navigate([`/UserLogin/twoFactor/${user}/${pass}`])
+        //         }
+        //
+        //         if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == true) {
+        //         }
+        //     })
 
-                if (userModel.getTwoFactorRequired() == true && userModel.getAuthenticated() == true) {
+        this.listenEvents();
+    }
+
+    private listenEvents() {
+
+        this.store.select(store => store.appDb.appAuthStatus).subscribe((i_authStatus: Map<string,AuthenticateFlags>) => {
+            let authStatus = i_authStatus.get('authStatus')
+            switch (authStatus) {
+                case AuthenticateFlags.WRONG_PASS: {
+                    this.saveCredentials('', '', '');
+                    this.router.navigate(['/UserLogin']);
+                    break;
                 }
-            })
-        // this.listenStores();
+                case AuthenticateFlags.TWO_FACTOR_PASS: {
+                    this.saveCredentials('', '', '');
+                    this.enterApplication();
+                    break;
+                }
+                case AuthenticateFlags.AUTH_PASS_NO_TWO_FACTOR: {
+                    if (this.userModel.getRememberMe()) {
+                        this.saveCredentials(this.userModel.getUser(), this.userModel.getPass(), this.userModel.rememberMe());
+                    } else {
+                        this.saveCredentials('', '', '');
+                    }
+                    this.enterApplication();
+                    break;
+                }
+            }
+        })
+    }
+
+    private enterApplication() {
+        setTimeout(() => {
+            console.log('enter app');
+            // this.router.navigate(['/App1/Dashboard']);
+        }, 1000)
+
     }
 
     public start() {
@@ -122,22 +162,23 @@ export class AuthService {
     //     }, 'appdb.credentials');
     // }
     //
-    // public  saveCredentials(i_user, i_pass, i_remember) {
-    //     if (i_remember) {
-    //         this.localStorage.setItem('remember_me', {
-    //             u: i_user,
-    //             p: i_pass,
-    //             r: i_remember
-    //         });
-    //     } else {
-    //         this.localStorage.setItem('remember_me', {
-    //             u: '',
-    //             p: '',
-    //             r: i_remember
-    //         });
-    //     }
-    // }
-    //
+
+    public  saveCredentials(i_user, i_pass, i_remember) {
+        if (i_remember) {
+            this.localStorage.setItem('remember_me', {
+                u: i_user,
+                p: i_pass,
+                r: i_remember
+            });
+        } else {
+            this.localStorage.setItem('remember_me', {
+                u: '',
+                p: '',
+                r: i_remember
+            });
+        }
+    }
+
     public authUser(user: string, pass: string, rememberMe: boolean = false): void {
         this.store.dispatch({
             type: AUTH_START,

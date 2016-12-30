@@ -16,7 +16,6 @@ export const appBaseUrlCloud = 'https://secure.digitalsignage.com';
 export function appDb(state: IAppDb, action: any): IAppDb {
 
     switch (action.type) {
-
         // case 'RECEIVE_TOTAL_STATIONS':
         //     return state.merge({
         //         totalStations: {

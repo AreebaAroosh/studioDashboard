@@ -23,8 +23,16 @@ import {ApplicationState} from "../store/application-state";
 })
 export class AppComponent {
 
-    constructor(private router: Router, private appStore: Store<ApplicationState>, private authService: AuthService){
+    constructor(private router: Router, private localStorage:LocalStorage, private authService: AuthService){
+        // this.localStorage.removeItem('remember_me')
+        // this.localStorage.removeItem('business_id')
 
+        // fake
+        this.localStorage.setItem('remember_me', {
+            u: 'aa',
+            p: 'bb',
+            r: true
+        });
     }
 
     // constructor(private router: Router,
@@ -42,8 +50,7 @@ export class AppComponent {
     //     //this.checkPlatform();
     //
     //     /** remove localstore **/
-    //     // this.localStorage.removeItem('remember_me')
-    //     // this.localStorage.removeItem('business_id')
+
     //
     //     // todo: add logic to as when on each env
     //     // 0 = cloud, 1 = private 2 = hybrid

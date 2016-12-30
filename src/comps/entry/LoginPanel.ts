@@ -14,9 +14,8 @@ import {
 import {Router, ActivatedRoute} from "@angular/router";
 import {BusinessAction} from "../../business/BusinessAction";
 import {LocalStorage} from "../../services/LocalStorage";
-import {AuthService, FlagsAuth} from "../../services/AuthService";
+import {AuthService} from "../../services/AuthService";
 import {Map} from "immutable";
-import {AuthState} from "../../appdb/AppdbAction";
 import {Compbaser} from "../compbaser/Compbaser";
 import {Ngmslib} from "ng-mslib";
 import {ToastsManager} from "ng2-toastr";
@@ -24,7 +23,6 @@ import {ApplicationState} from "../../store/application-state";
 import {Store} from "@ngrx/store";
 import {UserModel} from "../../models/UserModel";
 import {AuthenticateFlags} from "../../store/actions/app-db-actions";
-import {Observable, Subscriber} from "rxjs";
 
 @Injectable()
 @Component({
@@ -116,7 +114,6 @@ export class LoginPanel extends Compbaser {
 
     constructor(private store: Store<ApplicationState>,
                 private renderer: Renderer,
-                private router: Router,
                 private toast: ToastsManager,
                 private activatedRoute: ActivatedRoute,
                 private authService: AuthService) {
@@ -135,7 +132,7 @@ export class LoginPanel extends Compbaser {
         )
 
         this.cancelOnDestroy(
-            this.store.select(store => store.appDb.appAuthStatus).subscribe((i_authStatus:Map<string,AuthenticateFlags>) => {
+            this.store.select(store => store.appDb.appAuthStatus).subscribe((i_authStatus: Map<string,AuthenticateFlags>) => {
                 let authStatus = i_authStatus.get('authStatus')
                 if (this.isAccessAllowed(authStatus) == false)
                     return;
@@ -145,11 +142,11 @@ export class LoginPanel extends Compbaser {
                         break;
                     }
                     case AuthenticateFlags.TWO_FACTOR_PASS: {
-                        this.enterApplication();
+                        this.loginState = 'active';
                         break;
                     }
-                    case AuthenticateFlags.TWO_FACTOR_DISABLED: {
-                        this.enterApplication();
+                    case AuthenticateFlags.AUTH_PASS_NO_TWO_FACTOR: {
+                        this.loginState = 'active';
                         break;
                     }
                 }
@@ -181,14 +178,6 @@ export class LoginPanel extends Compbaser {
             // this.authService.authUser('reseller@ms.com', '123123', this.m_rememberMe);
 
         }
-    }
-
-    private enterApplication() {
-        this.loginState = 'active';
-        setTimeout(() => {
-            // this.router.navigate(['/App1/Dashboard']);
-        }, 1000)
-
     }
 
     private isAccessAllowed(i_reason: AuthenticateFlags): boolean {
@@ -241,10 +230,6 @@ export class LoginPanel extends Compbaser {
     }
 }
 
-
-// this.m_rememberMe = this.authService.getLocalstoreCred().r;
-
-
 // this.appStore.select(state => state.appDb.credentials).subscribe((e:UserModel)=>{
 //     console.log(e.user());
 // });
@@ -254,7 +239,6 @@ export class LoginPanel extends Compbaser {
 // setInterval(()=>{
 //     this.appStore.dispatch({type: 'APP_INIT'})
 // },1000)
-
 // this.cancelOnDestroy(
 //     this.appStore.sub((credentials: Map<string,any>) => {
 //         var state = credentials.get('authenticated');
@@ -276,7 +260,6 @@ export class LoginPanel extends Compbaser {
 //             }
 //         }
 //     }, 'appdb.credentials'))
-
 // this.cancelOnDestroy(
 //     this.appStore.sub((twoFactorStatus: {status: boolean, twoFactorStatusReceived: Date}) => {
 //         // twoFactorStatus.status = false;//debug
@@ -286,8 +269,6 @@ export class LoginPanel extends Compbaser {
 //             this.isAccessAllowed(FlagsAuth.WrongTwoFactor);
 //         }
 //     }, 'appdb.twoFactorStatus'))
-
-
 // this.store.select(store => store.appDb.userModel)
 //     .filter((userModel: UserModel) => {
 //         console.log('aaaa' + userModel.getReason());
