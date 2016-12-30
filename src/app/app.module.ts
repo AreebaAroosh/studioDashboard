@@ -97,6 +97,10 @@ import {Dashboard} from "../comps/app1/dashboard/dashboard";
 import {App1} from "../comps/app1/App1";
 import {Privileges} from "../comps/app1/privileges/Privileges";
 import {Account} from "../comps/app1/account/Account";
+import {Tab} from "../comps/tabs/tab";
+import {Tabs} from "../comps/tabs/tabs";
+import {InputEdit} from "../comps/inputedit/InputEdit";
+import {Twofactor} from "../comps/twofactor/Twofactor";
 
 export enum ServerMode {
     CLOUD,
@@ -206,11 +210,12 @@ export var providing = [CommBroker, AUTH_PROVIDERS,
 
 
 // var decelerations = [AppComponent, AutoLogin, LoginPanel, Account, App1, Privileges, Dashboard, Logout, Orders, Logo,
-//     LogoCompany, Footer, BlurForwarder, InputEdit, OrderBy, SortBy, FilterPipe, FilterPipeEqual, Tabs, Tab, ServerStats, ServerAvg,
+//     LogoCompany, Footer, BlurForwarder, InputEdit, OrderBy, SortBy, FilterPipe, FilterPipeEqual,  ServerStats, ServerAvg,
 //     StationsMap, StationsGrid, StationDetails, ImgLoader, Ng2Highcharts, StationSnapshot, OrderDetails, simplelist, ModalDialog, Infobox,
 //     Loading, simplelistEditable, MapAddress, ResourceViewer, InputNumeric, InputString, Dropbox, Twofactor, ThrottlePipe, NgMenu, NgMenuItem, Sliderpanel, Slideritem];
 
-var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, App1, Account, Dashboard, Privileges, Sliderpanel, Slideritem, Orders, Logout, NgMenu, NgMenuItem, ImgLoader, BlurForwarder];
+var decelerations = [AppComponent, AutoLogin, LoginPanel, LogoCompany, Logo, App1, Account, Dashboard,
+                        Privileges, Tabs, Tab, Sliderpanel, Slideritem, Orders, Logout, InputEdit, Twofactor, NgMenu, NgMenuItem, ImgLoader, BlurForwarder];
        
 @NgModule({
     declarations: [decelerations],
