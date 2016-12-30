@@ -1,23 +1,26 @@
 import {Component, ChangeDetectionStrategy} from "@angular/core";
 import {Compbaser} from "../../compbaser/Compbaser";
+import {ApplicationState} from "../../../store/application-state";
+import {Store} from "@ngrx/store";
+import {UserModel} from "../../../models/UserModel";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'Dashboard',
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-               <small class="release">dashboard
-                   <i style="font-size: 1.4em" class="fa fa-cog pull-right"></i>
-               </small>
-               <small class="debug">{{me}}</small>
+               <h2>Dashboard</h2>
+               <h4>user name: {{(userModel$ | async)?.getUser() }}</h4>
+               <h4>account type: {{(userModel$ | async)?.getAccountType()}}</h4>
            `,
 })
 export class Dashboard extends Compbaser {
 
-    constructor() {
-        super();
-    }
+    private userModel$: Observable<UserModel>;
 
-    ngOnInit() {
+    constructor(private store: Store<ApplicationState>) {
+        super();
+        this.userModel$ = this.store.select(store => store.appDb.userModel);
     }
 
     destroy() {
