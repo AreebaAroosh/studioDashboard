@@ -24,7 +24,7 @@ import {ApplicationState} from "../../store/application-state";
 import {Store} from "@ngrx/store";
 import {UserModel} from "../../models/UserModel";
 import {AuthenticateFlags} from "../../store/actions/app-db-actions";
-import {Observable} from "rxjs";
+import {Observable, Subscriber} from "rxjs";
 
 @Injectable()
 @Component({
@@ -112,6 +112,7 @@ export class LoginPanel extends Compbaser {
     private m_showTwoFactor: boolean = false;
     private m_rememberMe: any;
     private loginState: string = '';
+    private userModel: UserModel;
 
     constructor(private store: Store<ApplicationState>,
                 private renderer: Renderer,
@@ -137,6 +138,32 @@ export class LoginPanel extends Compbaser {
 
     private listenEvents() {
 
+        this.cancelOnDestroy(
+            this.store.select(store => store.appDb.userModel).subscribe((userModel: UserModel) => {
+                this.userModel = userModel
+            })
+        )
+
+        this.cancelOnDestroy(
+            this.store.select(store => store.appDb.appAuthStatus).subscribe((authStatus: AuthenticateFlags) => {
+
+                if (this.checkFailedLogin(authStatus))
+                    return;
+
+                switch(authStatus){
+                    case AuthenticateFlags.TWO_FACTOR_ENABLED: {
+                        this.m_showTwoFactor = true;
+                        break;
+                    }
+                    case AuthenticateFlags.TWO_FACTOR_DISABLED: {
+                        alert('enter app')
+                        break;
+                    }
+                 }
+            })
+        )
+
+
         // this.store.select(store => store.appDb.userModel)
         //     .filter((userModel: UserModel) => {
         //         console.log('aaaa' + userModel.getReason());
@@ -153,7 +180,7 @@ export class LoginPanel extends Compbaser {
         //     .subscribe((userModel: UserModel) => {
         //         debugger;
         //         // if (userModel.getReason() > -1) {
-        //         //     this.onAuthFail(userModel.getReason());
+        //         //     this.checkFailedLogin(userModel.getReason());
         //         // }
         //     });
 
@@ -173,7 +200,7 @@ export class LoginPanel extends Compbaser {
         //         var reason = credentials.get('reason');
         //         switch (state) {
         //             case AuthState.FAIL: {
-        //                 this.onAuthFail(reason);
+        //                 this.checkFailedLogin(reason);
         //                 break;
         //             }
         //             case AuthState.PASS: {
@@ -195,7 +222,7 @@ export class LoginPanel extends Compbaser {
         //         if (twoFactorStatus.status) {
         //             this.enterApplication();
         //         } else {
-        //             this.onAuthFail(FlagsAuth.WrongTwoFactor);
+        //             this.checkFailedLogin(FlagsAuth.WrongTwoFactor);
         //         }
         //     }, 'appdb.twoFactorStatus'))
     }
@@ -221,8 +248,7 @@ export class LoginPanel extends Compbaser {
         // this.router.navigate(['/App1/Dashboard']);
     }
 
-    private onAuthFail(i_reason) {
-        this.loginState = 'inactive';
+    private checkFailedLogin(i_reason:AuthenticateFlags):boolean {
         let msg1: string;
         let msg2: string;
         switch (i_reason) {
@@ -231,30 +257,24 @@ export class LoginPanel extends Compbaser {
                 msg2 = 'Please try again or click forgot password to reset your credentials'
                 break;
             }
-            case AuthenticateFlags.ENTERPRISE_ACCOUNT: {
-                msg1 = 'Not an enterprise account'
-                msg2 = 'You must login with an Enterprise account, not an end user account...'
-                break;
-            }
-            case AuthenticateFlags.USER_ACCOUNT: {
-                msg1 = 'Not an enterprise account'
-                msg2 = 'You must login with an Enterprise account, not an end user account...'
-                break;
-            }
             case AuthenticateFlags.WRONG_TWO_FACTOR: {
                 msg1 = 'Invalid token'
                 msg2 = 'Wrong token entered or the 60 seconds limit may have exceeded, try again...'
                 break;
             }
+            default: {
+                return false;
+            }
         }
+        this.loginState = 'inactive';
         setTimeout(() => {
             bootbox.dialog({
                 closeButton: true,
                 title: msg1,
                 message: msg2
             });
-        }, 1200);
-        return false;
+        }, 200);
+        return true;
     }
 }
 

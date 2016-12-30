@@ -106,7 +106,6 @@ export class AppdbAction {
                             this.store.dispatch({
                                 type: ACTION_AUTH_STATUS, payload: AuthenticateFlags.USER_ACCOUNT
                             });
-                            return;
 
                         } else {
                             userModel = userModel.setAuthenticated(true);
