@@ -15,13 +15,6 @@ import {AppdbAction, AuthenticateFlags, AUTH_START, ACTION_TWO_FACTOR_AUTH} from
 import {UserModel} from "../models/UserModel";
 
 
-export enum FlagsAuth {
-    WrongPass,
-    NotEnterprise,
-    Enterprise,
-    WrongTwoFactor
-}
-
 @Injectable()
 export class AuthService {
     private m_authenticateFlags: AuthenticateFlags;
